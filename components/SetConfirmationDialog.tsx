@@ -168,7 +168,7 @@ export default function SetConfirmationDialog({
         
         // Unload sound when done
         sound.setOnPlaybackStatusUpdate(status => {
-          if (status.isLoaded && status.didJustFinish) {
+          if (status.isLoaded && status.didJustFinish === true) {
             sound.unloadAsync();
           }
         });

@@ -16,6 +16,7 @@ The app uses sound effects to enhance the user experience. To replace the placeh
 - Sound files should be in MP3 format
 - Keep file sizes small (under 100KB) for better performance
 - Sound effects are disabled on web platform
+- Make sure sounds are fully loaded before playing them
 
 ## Features
 

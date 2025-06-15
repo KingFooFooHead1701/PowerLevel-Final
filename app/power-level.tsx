@@ -13,6 +13,7 @@ export default function PowerLevelScreen() {
   const { getTotalJoules } = useExerciseStore();
   const [totalJoules, setTotalJoules] = useState(0);
   const [showValue, setShowValue] = useState(false);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
   
   // Sound references
   const scannerSound = useRef(new Audio.Sound());
@@ -33,18 +34,19 @@ export default function PowerLevelScreen() {
         if (Platform.OS !== "web") {
           await scannerSound.current.loadAsync(require('@/assets/sounds/beep.mp3'));
           await revealSound.current.loadAsync(require('@/assets/sounds/chirp.mp3'));
+          setSoundsLoaded(true);
+        } else {
+          // On web, we don't need to wait for sounds to load
+          setSoundsLoaded(true);
         }
       } catch (error) {
         console.log("Error loading sounds:", error);
+        // Even if sounds fail to load, we should still allow the animation to run
+        setSoundsLoaded(true);
       }
     };
     
     loadSounds();
-    
-    // Start with a slight delay
-    setTimeout(() => {
-      startScannerAnimation();
-    }, 300);
     
     // Cleanup sounds on unmount
     return () => {
@@ -63,9 +65,19 @@ export default function PowerLevelScreen() {
     };
   }, []);
   
+  // Start animation when sounds are loaded
+  useEffect(() => {
+    if (soundsLoaded) {
+      // Start with a slight delay
+      setTimeout(() => {
+        startScannerAnimation();
+      }, 300);
+    }
+  }, [soundsLoaded]);
+  
   // Play scanner sound
   const playScanner = async () => {
-    if (Platform.OS !== "web") {
+    if (Platform.OS !== "web" && soundsLoaded) {
       try {
         await scannerSound.current.setPositionAsync(0);
         await scannerSound.current.playAsync();
@@ -77,7 +89,7 @@ export default function PowerLevelScreen() {
   
   // Play reveal sound
   const playReveal = async () => {
-    if (Platform.OS !== "web") {
+    if (Platform.OS !== "web" && soundsLoaded) {
       try {
         await revealSound.current.setPositionAsync(0);
         await revealSound.current.playAsync();
