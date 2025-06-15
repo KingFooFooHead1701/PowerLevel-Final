@@ -19,20 +19,20 @@ export default function CustomSplashScreen() {
       useNativeDriver: true,
     }).start();
     
-    // Loading bar animation
+    // Loading bar animation - ensure it goes all the way across
     Animated.loop(
       Animated.sequence([
         Animated.timing(loadingAnim, {
           toValue: 1,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
+          useNativeDriver: false, // Changed to false to ensure proper rendering on web
         }),
         Animated.timing(loadingAnim, {
           toValue: 0,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: true,
+          useNativeDriver: false, // Changed to false to ensure proper rendering on web
         })
       ])
     ).start();
@@ -72,12 +72,14 @@ export default function CustomSplashScreen() {
             style={[
               styles.loadingIndicator,
               {
-                transform: [{
-                  translateX: loadingAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [-100, screenWidth - 100] // Make animation responsive to screen width
-                  })
-                }]
+                width: loadingAnim.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: ['0%', '100%', '0%']
+                }),
+                left: loadingAnim.interpolate({
+                  inputRange: [0, 0.5, 1],
+                  outputRange: ['0%', '0%', '100%']
+                })
               }
             ]} 
           />
@@ -146,9 +148,9 @@ const styles = StyleSheet.create({
   },
   loadingIndicator: {
     height: "100%",
-    width: 100,
     backgroundColor: "#FFD700",
     borderRadius: 3,
+    position: "absolute",
   },
   loadingText: {
     fontSize: 16,

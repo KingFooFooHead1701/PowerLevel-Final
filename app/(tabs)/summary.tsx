@@ -1,12 +1,10 @@
-import React, { useEffect, useState, useCallback, useRef } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { 
   StyleSheet, 
   Text, 
   View, 
   ScrollView, 
-  TouchableOpacity, 
-  Animated, 
-  PanResponder,
+  TouchableOpacity,
   Dimensions
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -42,11 +40,6 @@ export default function SummaryScreen() {
   const [allTimeTotal, setAllTimeTotal] = useState(0);
   const [datesWithData, setDatesWithData] = useState<Date[]>([]);
   
-  // Animation for swipe transitions
-  const slideAnim = useRef(new Animated.Value(0)).current;
-  const screenWidth = Dimensions.get('window').width;
-  const [isAnimating, setIsAnimating] = useState(false);
-  
   // Format selected date
   const formattedDate = selectedDate.toLocaleDateString('en-US', {
     weekday: 'long',
@@ -54,77 +47,6 @@ export default function SummaryScreen() {
     month: 'long',
     day: 'numeric'
   });
-  
-  // Pan responder for swipe gestures
-  const panResponder = useRef(
-    PanResponder.create({
-      onStartShouldSetPanResponder: () => true,
-      onMoveShouldSetPanResponder: (evt, gestureState) => {
-        // Only respond to horizontal gestures that are significant
-        return Math.abs(gestureState.dx) > Math.abs(gestureState.dy) * 2 && 
-               Math.abs(gestureState.dx) > 10;
-      },
-      onPanResponderMove: (evt, gestureState) => {
-        // Only respond to horizontal gestures
-        if (Math.abs(gestureState.dx) > Math.abs(gestureState.dy)) {
-          slideAnim.setValue(gestureState.dx);
-        }
-      },
-      onPanResponderRelease: (evt, gestureState) => {
-        // Prevent handling if already animating
-        if (isAnimating) return;
-        
-        // Threshold for triggering date change
-        const threshold = screenWidth * 0.25;
-        
-        if (gestureState.dx > threshold) {
-          // Swipe right - go to previous day
-          setIsAnimating(true);
-          Animated.timing(slideAnim, {
-            toValue: screenWidth,
-            duration: 200,
-            useNativeDriver: true,
-          }).start(() => {
-            slideAnim.setValue(0);
-            goToPreviousDay();
-            setIsAnimating(false);
-          });
-        } else if (gestureState.dx < -threshold) {
-          // Swipe left - go to next day
-          setIsAnimating(true);
-          Animated.timing(slideAnim, {
-            toValue: -screenWidth,
-            duration: 200,
-            useNativeDriver: true,
-          }).start(() => {
-            slideAnim.setValue(0);
-            goToNextDay();
-            setIsAnimating(false);
-          });
-        } else {
-          // Return to original position
-          setIsAnimating(true);
-          Animated.spring(slideAnim, {
-            toValue: 0,
-            useNativeDriver: true,
-            friction: 8,
-          }).start(() => {
-            setIsAnimating(false);
-          });
-        }
-      },
-      onPanResponderTerminate: () => {
-        // If the gesture is terminated for any reason, reset position
-        Animated.spring(slideAnim, {
-          toValue: 0,
-          useNativeDriver: true,
-          friction: 8,
-        }).start(() => {
-          setIsAnimating(false);
-        });
-      },
-    })
-  ).current;
   
   // Get all dates with workout data
   useEffect(() => {
@@ -289,81 +211,73 @@ export default function SummaryScreen() {
       />
       
       <View style={styles.contentWrapper}>
-        <Animated.View 
-          style={[
-            styles.contentContainer,
-            { transform: [{ translateX: slideAnim }] }
-          ]}
-          {...panResponder.panHandlers}
+        <ScrollView 
+          style={styles.scrollView}
+          showsVerticalScrollIndicator={true}
+          contentContainerStyle={styles.scrollViewContent}
         >
-          <ScrollView 
-            style={styles.scrollView}
-            showsVerticalScrollIndicator={true}
-            contentContainerStyle={styles.scrollViewContent}
-          >
-            {exerciseSummary.length > 0 ? (
-              <>
-                {exerciseSummary.map((summary) => (
-                  <View 
-                    key={summary.exerciseId} 
-                    style={[styles.exerciseCard, { backgroundColor: theme.cardBackground }]}
-                  >
-                    <Text style={[styles.exerciseName, { color: theme.text }]}>
-                      {summary.exerciseName}
-                    </Text>
-                    
-                    {summary.sets.map((set, index) => (
-                      <View 
-                        key={set.id} 
-                        style={[
-                          styles.setRow, 
-                          index < summary.sets.length - 1 && { 
-                            borderBottomWidth: 1, 
-                            borderBottomColor: theme.border 
-                          }
-                        ]}
-                      >
-                        <Text style={[styles.setNumber, { color: theme.textSecondary }]}>
-                          Set {index + 1}
-                        </Text>
-                        <Text style={[styles.setReps, { color: theme.text }]}>
-                          {set.reps} reps
-                        </Text>
-                        <Text style={[styles.setWeight, { color: theme.text }]}>
-                          {formatWeight(set.weight)}
-                        </Text>
-                      </View>
-                    ))}
-                    
-                    <View style={styles.exerciseTotalRow}>
-                      <Text style={[styles.exerciseTotal, { color: theme.primary }]}>
-                        Total for {summary.exerciseName}: {formatTotalWeight(summary.totalWeight)}
+          {exerciseSummary.length > 0 ? (
+            <>
+              {exerciseSummary.map((summary) => (
+                <View 
+                  key={summary.exerciseId} 
+                  style={[styles.exerciseCard, { backgroundColor: theme.cardBackground }]}
+                >
+                  <Text style={[styles.exerciseName, { color: theme.text }]}>
+                    {summary.exerciseName}
+                  </Text>
+                  
+                  {summary.sets.map((set, index) => (
+                    <View 
+                      key={set.id} 
+                      style={[
+                        styles.setRow, 
+                        index < summary.sets.length - 1 && { 
+                          borderBottomWidth: 1, 
+                          borderBottomColor: theme.border 
+                        }
+                      ]}
+                    >
+                      <Text style={[styles.setNumber, { color: theme.textSecondary }]}>
+                        Set {index + 1}
+                      </Text>
+                      <Text style={[styles.setReps, { color: theme.text }]}>
+                        {set.reps} reps
+                      </Text>
+                      <Text style={[styles.setWeight, { color: theme.text }]}>
+                        {formatWeight(set.weight)}
                       </Text>
                     </View>
+                  ))}
+                  
+                  <View style={styles.exerciseTotalRow}>
+                    <Text style={[styles.exerciseTotal, { color: theme.primary }]}>
+                      Total for {summary.exerciseName}: {formatTotalWeight(summary.totalWeight)}
+                    </Text>
                   </View>
-                ))}
-                
-                <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
-                  <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
-                    All-Time Total Weight Lifted
-                  </Text>
-                  <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
-                    {formatTotalWeight(allTimeTotal)}
-                  </Text>
                 </View>
-              </>
-            ) : (
-              <View style={[styles.emptyState, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.emptyStateText, { color: theme.textSecondary }]}>
-                  {isToday(selectedDate.toISOString()) 
-                    ? "No exercises logged today. Head over to the Exercises tab to start logging your sets!"
-                    : `No exercises logged on ${selectedDate.toLocaleDateString()}.`
-                  }
+              ))}
+              
+              <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
+                <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
+                  All-Time Total Weight Lifted
+                </Text>
+                <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
+                  {formatTotalWeight(allTimeTotal)}
                 </Text>
               </View>
-            )}
-          </ScrollView>
-        </Animated.View>
+            </>
+          ) : (
+            <View style={[styles.emptyState, { backgroundColor: theme.cardBackground }]}>
+              <Text style={[styles.emptyStateText, { color: theme.textSecondary }]}>
+                {isToday(selectedDate.toISOString()) 
+                  ? "No exercises logged today. Head over to the Exercises tab to start logging your sets!"
+                  : `No exercises logged on ${selectedDate.toLocaleDateString()}.`
+                }
+              </Text>
+            </View>
+          )}
+        </ScrollView>
       </View>
       
       {/* Date Picker Modal */}
@@ -431,10 +345,6 @@ const styles = StyleSheet.create({
     fontWeight: "600",
   },
   contentWrapper: {
-    flex: 1,
-    overflow: "hidden",
-  },
-  contentContainer: {
     flex: 1,
   },
   scrollView: {

@@ -249,7 +249,7 @@ export default function PowerLevelScreen() {
             {formatEnergy(totalJoules).abbreviated}
           </Animated.Text>
           
-          {/* Full joules display */}
+          {/* Full joules display - Always visible but with opacity animation */}
           <Animated.Text 
             style={[
               styles.fullJoulesValue, 

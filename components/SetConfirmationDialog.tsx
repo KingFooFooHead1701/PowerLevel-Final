@@ -157,7 +157,7 @@ export default function SetConfirmationDialog({
     }
   }, [visible]);
   
-  // Play confirmation sound
+  // Play confirmation sound - using hammertink.mp3 instead of beep.mp3
   const playConfirmationSound = async () => {
     if (Platform.OS !== "web") {
       try {
