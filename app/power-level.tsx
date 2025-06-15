@@ -248,6 +248,19 @@ export default function PowerLevelScreen() {
           >
             {formatEnergy(totalJoules).abbreviated}
           </Animated.Text>
+          
+          {/* Full joules display */}
+          <Animated.Text 
+            style={[
+              styles.fullJoulesValue, 
+              { 
+                color: theme.textSecondary,
+                opacity: valueOpacityAnim,
+              }
+            ]}
+          >
+            {formatEnergy(totalJoules).full}
+          </Animated.Text>
         </View>
         
         {/* Show the power tier after animation completes */}
@@ -308,6 +321,11 @@ const styles = StyleSheet.create({
   powerValue: {
     fontSize: 64,
     fontWeight: "bold",
+    zIndex: 10,
+  },
+  fullJoulesValue: {
+    fontSize: 16,
+    marginTop: 8,
     zIndex: 10,
   },
   tierContainer: {
