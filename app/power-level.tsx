@@ -16,8 +16,8 @@ export default function PowerLevelScreen() {
   const [soundsLoaded, setSoundsLoaded] = useState(false);
   
   // Sound references
-  const scannerSound = useRef(new Audio.Sound());
-  const revealSound = useRef(new Audio.Sound());
+  const scannerSound = useRef<Audio.Sound | null>(null);
+  const revealSound = useRef<Audio.Sound | null>(null);
   
   // Animation refs
   const scannerAnim = useRef(new Animated.Value(0)).current;
@@ -32,8 +32,19 @@ export default function PowerLevelScreen() {
     const loadSounds = async () => {
       try {
         if (Platform.OS !== "web") {
-          await scannerSound.current.loadAsync(require('@/assets/sounds/beep.mp3'));
-          await revealSound.current.loadAsync(require('@/assets/sounds/chirp.mp3'));
+          // Create and load the sounds
+          const { sound: scanner } = await Audio.Sound.createAsync(
+            require('@/assets/sounds/beep.mp3'),
+            { shouldPlay: false }
+          );
+          scannerSound.current = scanner;
+          
+          const { sound: reveal } = await Audio.Sound.createAsync(
+            require('@/assets/sounds/chirp.mp3'),
+            { shouldPlay: false }
+          );
+          revealSound.current = reveal;
+          
           setSoundsLoaded(true);
         } else {
           // On web, we don't need to wait for sounds to load
@@ -53,8 +64,12 @@ export default function PowerLevelScreen() {
       const unloadSounds = async () => {
         try {
           if (Platform.OS !== "web") {
-            await scannerSound.current.unloadAsync();
-            await revealSound.current.unloadAsync();
+            if (scannerSound.current) {
+              await scannerSound.current.unloadAsync();
+            }
+            if (revealSound.current) {
+              await revealSound.current.unloadAsync();
+            }
           }
         } catch (error) {
           console.log("Error unloading sounds:", error);
@@ -68,16 +83,16 @@ export default function PowerLevelScreen() {
   // Start animation when sounds are loaded
   useEffect(() => {
     if (soundsLoaded) {
-      // Start with a slight delay
+      // Start with a slight delay to ensure sounds are ready
       setTimeout(() => {
         startScannerAnimation();
-      }, 300);
+      }, 500);
     }
   }, [soundsLoaded]);
   
   // Play scanner sound
   const playScanner = async () => {
-    if (Platform.OS !== "web" && soundsLoaded) {
+    if (Platform.OS !== "web" && soundsLoaded && scannerSound.current) {
       try {
         await scannerSound.current.setPositionAsync(0);
         await scannerSound.current.playAsync();
@@ -89,7 +104,7 @@ export default function PowerLevelScreen() {
   
   // Play reveal sound
   const playReveal = async () => {
-    if (Platform.OS !== "web" && soundsLoaded) {
+    if (Platform.OS !== "web" && soundsLoaded && revealSound.current) {
       try {
         await revealSound.current.setPositionAsync(0);
         await revealSound.current.playAsync();
@@ -112,6 +127,11 @@ export default function PowerLevelScreen() {
       duration: 300,
       useNativeDriver: true,
     }).start();
+    
+    // Play scanner sound at the start with a slight delay to ensure it's ready
+    setTimeout(() => {
+      playScanner();
+    }, 100);
     
     // First pass (right to left) - normal speed
     const firstPass = Animated.timing(scannerAnim, {
@@ -145,9 +165,7 @@ export default function PowerLevelScreen() {
       easing: Easing.out(Easing.cubic),
     });
     
-    // Run the sequence with sound effects
-    playScanner(); // Play scanner sound at the start
-    
+    // Run the sequence
     Animated.sequence([
       firstPass,
       secondPass,
