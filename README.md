@@ -8,9 +8,10 @@ The app uses sound effects to enhance the user experience. To replace the placeh
 
 1. Create a folder named `assets/sounds` in your project if it doesn't already exist
 2. Add your own audio files with these exact names:
-   - `beep.mp3` - Used for scanner animation and set confirmation
+   - `beep.mp3` - Used for scanner animation
    - `chirp.mp3` - Used for power level reveal
    - `thump.mp3` - Used for milestone celebration
+   - `hammertink.mp3` - Used for set confirmation
 
 **Important Notes:**
 - Sound files should be in MP3 format

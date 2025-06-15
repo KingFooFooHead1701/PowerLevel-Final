@@ -162,7 +162,7 @@ export default function SetConfirmationDialog({
     if (Platform.OS !== "web") {
       try {
         const { sound } = await Audio.Sound.createAsync(
-          require('@/assets/sounds/beep.mp3')
+          require('@/assets/sounds/hammertink.mp3')
         );
         await sound.playAsync();
         
