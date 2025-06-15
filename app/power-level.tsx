@@ -23,6 +23,7 @@ export default function PowerLevelScreen() {
   const scannerAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const valueOpacityAnim = useRef(new Animated.Value(0)).current;
+  const tierOpacityAnim = useRef(new Animated.Value(0)).current;
   
   // Initialize data and load sounds
   useEffect(() => {
@@ -123,6 +124,7 @@ export default function PowerLevelScreen() {
     scannerAnim.setValue(0);
     opacityAnim.setValue(0);
     valueOpacityAnim.setValue(0);
+    tierOpacityAnim.setValue(0);
     
     // Fade in the scanner
     Animated.timing(opacityAnim, {
@@ -168,6 +170,14 @@ export default function PowerLevelScreen() {
       easing: Easing.out(Easing.cubic),
     });
     
+    // Tier text fade in
+    const tierReveal = Animated.timing(tierOpacityAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+      easing: Easing.out(Easing.cubic),
+    });
+    
     // Run the sequence
     Animated.sequence([
       firstPass,
@@ -184,6 +194,10 @@ export default function PowerLevelScreen() {
       // Start the reveal animation
       reveal.start(() => {
         setShowValue(true);
+        // After the value is shown, fade in the tier text
+        setTimeout(() => {
+          tierReveal.start();
+        }, 500);
       });
     });
   };
@@ -220,7 +234,7 @@ export default function PowerLevelScreen() {
                 transform: [{
                   translateX: scannerAnim.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [-100, 100],
+                    outputRange: [Platform.OS === 'web' ? -150 : -100, Platform.OS === 'web' ? 150 : 100],
                   }),
                 }],
                 opacity: opacityAnim,
@@ -264,16 +278,19 @@ export default function PowerLevelScreen() {
         </View>
         
         {/* Show the power tier after animation completes */}
-        {showValue && (
-          <View style={styles.tierContainer}>
-            <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
-              Power Tier:
-            </Text>
-            <Text style={[styles.tierValue, { color: theme.primary }]}>
-              {powerTierName}
-            </Text>
-          </View>
-        )}
+        <Animated.View 
+          style={[
+            styles.tierContainer,
+            { opacity: tierOpacityAnim }
+          ]}
+        >
+          <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
+            Power Tier:
+          </Text>
+          <Text style={[styles.tierValue, { color: theme.primary }]}>
+            {powerTierName}
+          </Text>
+        </Animated.View>
       </View>
     </View>
   );
@@ -299,6 +316,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    marginBottom: 24,
   },
   scannerBackground: {
     position: "absolute",
@@ -329,7 +347,6 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   tierContainer: {
-    marginTop: 24,
     alignItems: "center",
   },
   tierLabel: {

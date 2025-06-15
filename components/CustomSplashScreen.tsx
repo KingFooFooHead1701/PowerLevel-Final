@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, Animated, Easing, Dimensions } from "react-native";
+import { StyleSheet, View, Text, Animated, Easing, Dimensions, Platform } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Zap } from "lucide-react-native";
 
@@ -26,17 +26,20 @@ export default function CustomSplashScreen() {
           toValue: 1,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: false, // Changed to false to ensure proper rendering on web
+          useNativeDriver: Platform.OS !== 'web', // Use native driver except on web
         }),
         Animated.timing(loadingAnim, {
           toValue: 0,
           duration: 1000,
           easing: Easing.inOut(Easing.ease),
-          useNativeDriver: false, // Changed to false to ensure proper rendering on web
+          useNativeDriver: Platform.OS !== 'web', // Use native driver except on web
         })
       ])
     ).start();
   }, []);
+
+  // Calculate loading bar width based on platform
+  const loadingBarWidth = Platform.OS === 'web' ? '100%' : screenWidth - 80;
 
   return (
     <View style={styles.container}>
@@ -67,22 +70,39 @@ export default function CustomSplashScreen() {
           { opacity: fadeAnim }
         ]}
       >
-        <View style={styles.loadingBar}>
-          <Animated.View 
-            style={[
-              styles.loadingIndicator,
-              {
-                width: loadingAnim.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: ['0%', '100%', '0%']
-                }),
-                left: loadingAnim.interpolate({
-                  inputRange: [0, 0.5, 1],
-                  outputRange: ['0%', '0%', '100%']
-                })
-              }
-            ]} 
-          />
+        <View style={[styles.loadingBar, { width: loadingBarWidth }]}>
+          {Platform.OS === 'web' ? (
+            // Web-specific implementation
+            <Animated.View 
+              style={[
+                styles.loadingIndicator,
+                {
+                  left: loadingAnim.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: ['0%', '80%', '0%']
+                  }),
+                  width: '20%'
+                }
+              ]} 
+            />
+          ) : (
+            // Native implementation
+            <Animated.View 
+              style={[
+                styles.loadingIndicator,
+                {
+                  width: loadingAnim.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: ['0%', '100%', '0%']
+                  }),
+                  left: loadingAnim.interpolate({
+                    inputRange: [0, 0.5, 1],
+                    outputRange: ['0%', '0%', '100%']
+                  })
+                }
+              ]} 
+            />
+          )}
         </View>
         <Text style={styles.loadingText}>Loading...</Text>
       </Animated.View>
@@ -140,7 +160,6 @@ const styles = StyleSheet.create({
   },
   loadingBar: {
     height: 6,
-    width: "100%",
     backgroundColor: "rgba(255, 255, 255, 0.2)",
     borderRadius: 3,
     overflow: "hidden",

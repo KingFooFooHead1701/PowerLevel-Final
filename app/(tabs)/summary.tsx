@@ -215,6 +215,8 @@ export default function SummaryScreen() {
           style={styles.scrollView}
           showsVerticalScrollIndicator={true}
           contentContainerStyle={styles.scrollViewContent}
+          scrollEnabled={true}
+          horizontal={false}
         >
           {exerciseSummary.length > 0 ? (
             <>
