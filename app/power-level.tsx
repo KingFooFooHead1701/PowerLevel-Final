@@ -34,14 +34,12 @@ export default function PowerLevelScreen() {
         if (Platform.OS !== "web") {
           // Create and load the sounds
           const { sound: scanner } = await Audio.Sound.createAsync(
-            require('@/assets/sounds/beep.mp3'),
-            { shouldPlay: false }
+            require('@/assets/sounds/beep.mp3')
           );
           scannerSound.current = scanner;
           
           const { sound: reveal } = await Audio.Sound.createAsync(
-            require('@/assets/sounds/chirp.mp3'),
-            { shouldPlay: false }
+            require('@/assets/sounds/chirp.mp3')
           );
           revealSound.current = reveal;
           
@@ -86,7 +84,7 @@ export default function PowerLevelScreen() {
       // Start with a slight delay to ensure sounds are ready
       setTimeout(() => {
         startScannerAnimation();
-      }, 500);
+      }, 1000); // Increased delay to ensure sounds are fully loaded
     }
   }, [soundsLoaded]);
   
@@ -94,7 +92,11 @@ export default function PowerLevelScreen() {
   const playScanner = async () => {
     if (Platform.OS !== "web" && soundsLoaded && scannerSound.current) {
       try {
+        // Make sure the sound is reset to the beginning
         await scannerSound.current.setPositionAsync(0);
+        // Set volume to ensure it's audible
+        await scannerSound.current.setVolumeAsync(1.0);
+        // Play the sound
         await scannerSound.current.playAsync();
       } catch (error) {
         console.log("Error playing scanner sound:", error);
@@ -107,6 +109,7 @@ export default function PowerLevelScreen() {
     if (Platform.OS !== "web" && soundsLoaded && revealSound.current) {
       try {
         await revealSound.current.setPositionAsync(0);
+        await revealSound.current.setVolumeAsync(1.0);
         await revealSound.current.playAsync();
       } catch (error) {
         console.log("Error playing reveal sound:", error);
@@ -131,7 +134,7 @@ export default function PowerLevelScreen() {
     // Play scanner sound at the start with a slight delay to ensure it's ready
     setTimeout(() => {
       playScanner();
-    }, 100);
+    }, 300);
     
     // First pass (right to left) - normal speed
     const firstPass = Animated.timing(scannerAnim, {

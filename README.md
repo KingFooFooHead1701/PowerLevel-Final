@@ -27,6 +27,10 @@ The app uses sound effects to enhance the user experience. To replace the placeh
 
 If you're using Expo Go, you'll need to rebuild the app with the new sound files included.
 
+## Migrating from expo-av (Future Update)
+
+In a future update, we'll need to migrate from expo-av to expo-audio and expo-video as expo-av will be deprecated in SDK 54.
+
 ## Features
 
 - Track exercises and sets
