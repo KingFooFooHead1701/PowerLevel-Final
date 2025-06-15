@@ -1,9 +1,12 @@
 import React, { useEffect } from "react";
-import { StyleSheet, View, Text, Animated, Easing } from "react-native";
+import { StyleSheet, View, Text, Animated, Easing, Dimensions } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { Zap } from "lucide-react-native";
 
 export default function CustomSplashScreen() {
+  // Get screen dimensions
+  const screenWidth = Dimensions.get('window').width;
+  
   // Animation values
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
   const loadingAnim = React.useRef(new Animated.Value(0)).current;
@@ -72,7 +75,7 @@ export default function CustomSplashScreen() {
                 transform: [{
                   translateX: loadingAnim.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [-100, 300]
+                    outputRange: [-100, screenWidth - 100] // Make animation responsive to screen width
                   })
                 }]
               }
