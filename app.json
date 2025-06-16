@@ -15,14 +15,14 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "app.rork.power-level-p3dmi9l"
+      "bundleIdentifier": "com.kingfoofoohead.powerlevel"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "app.rork.power-level-p3dmi9l"
+      "package": "com.kingfoofoohead.powerlevel"
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
