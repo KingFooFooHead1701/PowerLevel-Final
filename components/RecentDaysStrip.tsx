@@ -67,10 +67,12 @@ export default function RecentDaysStrip({
     if (scrollToToday && scrollViewRef.current && todayIndex.current >= 0) {
       // Use a timeout to ensure the scroll happens after layout
       setTimeout(() => {
-        scrollViewRef.current?.scrollTo({
-          x: todayIndex.current * 68, // 60px width + 8px margin
-          animated: true
-        });
+        if (scrollViewRef.current) {
+          scrollViewRef.current.scrollTo({
+            x: todayIndex.current * 68, // 60px width + 8px margin
+            animated: true
+          });
+        }
       }, 100);
     }
   }, [scrollToToday]);

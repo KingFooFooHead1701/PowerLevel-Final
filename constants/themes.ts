@@ -154,7 +154,7 @@ export const themes = {
     inputBackground: "#1E3C1E",
     error: "#FF4D4D",
   },
-  SharinganRed: {
+  CrimsonVision: { // Renamed from SharinganRed
     primary: "#FF2D55",
     secondary: "#000000",
     background: "#1A0000",
@@ -176,7 +176,7 @@ export const themes = {
     inputBackground: "#2E2E2E",
     error: "#FF4D4D",
   },
-  IceZanpakuto: {
+  FrostBlade: { // Renamed from IceZanpakuto
     primary: "#5AC8FA",
     secondary: "#FFFFFF",
     background: "#0A141E",
@@ -253,7 +253,7 @@ export const themes = {
     inputBackground: "#424242",
     error: "#FF4D4D",
   },
-  SaiyanPrince: {
+  RoyalPride: { // Renamed from SaiyanPrince
     primary: "#5856D6",
     secondary: "#FFCC00",
     background: "#0A0A1A",
@@ -478,7 +478,7 @@ export const themes = {
     inputBackground: "#421E00",
     error: "#FF4D4D",
   },
-  MistHashira: {
+  LavenderMist: { // Renamed from MistHashira
     primary: "#E6E6FA", // Lavender
     secondary: "#9370DB", // Medium Purple
     background: "#1A1A1A",
