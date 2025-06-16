@@ -42,7 +42,7 @@ export default function RecentDaysStrip({
 }: RecentDaysStripProps) {
   const { theme } = useTheme();
   const scrollViewRef = useRef<ScrollView>(null);
-  const todayRef = useRef<TouchableOpacity>(null);
+  const todayRef = useRef<typeof TouchableOpacity>(null);
   const todayIndex = useRef<number>(-1);
   
   // Generate array of all days in the current month

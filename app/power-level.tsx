@@ -363,7 +363,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    marginBottom: 80, // Add space below for the tier text
   },
   scannerBackground: {
     position: "absolute",
@@ -396,7 +395,7 @@ const styles = StyleSheet.create({
   },
   tierContainer: {
     position: "absolute",
-    bottom: 40,
+    bottom: -80, // Position below the animation container
     alignItems: "center",
     width: "100%",
   },
