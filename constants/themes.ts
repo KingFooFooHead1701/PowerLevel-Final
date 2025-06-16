@@ -264,6 +264,231 @@ export const themes = {
     inputBackground: "#282850",
     error: "#FF4D4D",
   },
+  // New anime-inspired themes from the provided list
+  // Naruto-inspired
+  NineTailsFury: {
+    primary: "#FF6B00", // Orange Blaze
+    secondary: "#0066FF", // Deep Blue
+    background: "#1A1A1A", // Dark background
+    cardBackground: "#2A2A2A", // Slate Gray background
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  SharinganShadow: {
+    primary: "#DC143C", // Crimson Red
+    secondary: "#483D8B", // Cool Indigo
+    background: "#0A0A0A", // Midnight Black
+    cardBackground: "#1A1A1A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#2A2A2A",
+    inputBackground: "#2A2A2A",
+    error: "#FF4D4D",
+  },
+  CopyNinja: {
+    primary: "#708090", // Smoky Gray
+    secondary: "#228B22", // Leaf Green
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  CherryBlossom: {
+    primary: "#FFB6C1", // Soft Pink
+    secondary: "#228B22", // Forest Green
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  Sandstorm: {
+    primary: "#D2B48C", // Desert Tan
+    secondary: "#800000", // Maroon
+    background: "#1A1A14",
+    cardBackground: "#2A2A1E",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A28",
+    inputBackground: "#3A3A28",
+    error: "#FF4D4D",
+  },
+  // Bleach-inspired
+  HollowBurst: {
+    primary: "#FF8C00", // Bright Orange
+    secondary: "#FFFFFF", // Ice White
+    background: "#0A0A0A", // Jet Black
+    cardBackground: "#1A1A1A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#2A2A2A",
+    inputBackground: "#2A2A2A",
+    error: "#FF4D4D",
+  },
+  FrostReaper: {
+    primary: "#87CEFA", // Ice Blue
+    secondary: "#FFFFFF", // Snow White
+    background: "#0A0A0A", // Onyx Black
+    cardBackground: "#1A1A1A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#2A2A2A",
+    inputBackground: "#2A2A2A",
+    error: "#FF4D4D",
+  },
+  BlossomSovereign: {
+    primary: "#9370DB", // Royal Purple
+    secondary: "#FFFFFF", // Pearl White
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A", // Steel Gray
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  BattleManiac: {
+    primary: "#B22222", // Blood Red
+    secondary: "#FFFFFF", // Bone White
+    background: "#1A1A1A", // Charcoal
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  IceDragon: {
+    primary: "#00BFFF", // Arctic Blue
+    secondary: "#008080", // Dark Teal
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A", // Silver
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  // One Piece-inspired
+  GumGumSurge: {
+    primary: "#FF0000", // Pirate Red
+    secondary: "#FFD700", // Straw Hat Yellow
+    background: "#00008B", // Ocean Blue
+    cardBackground: "#000080",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#000066",
+    inputBackground: "#000066",
+    error: "#FF4D4D",
+  },
+  ThreeSwordJade: {
+    primary: "#2E8B57", // Emerald Green
+    secondary: "#FFFFFF", // Bone White
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A", // Steel Gray
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  DiableJambe: {
+    primary: "#FF4500", // Diablo Orange
+    secondary: "#FFD700", // Flame Yellow
+    background: "#0A0A0A", // Black
+    cardBackground: "#1A1A1A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#2A2A2A",
+    inputBackground: "#2A2A2A",
+    error: "#FF4D4D",
+  },
+  StormNavigator: {
+    primary: "#FF8C00", // Tangerine
+    secondary: "#FFD700", // Gold Accent
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  SurgeonsOath: {
+    primary: "#20B2AA", // Hospital Green
+    secondary: "#FFFFFF", // Surgical White
+    background: "#0A0A0A", // Black
+    cardBackground: "#1A1A1A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#2A2A2A",
+    inputBackground: "#2A2A2A",
+    error: "#FF4D4D",
+  },
+  // Additional anime-inspired themes
+  DemonSlayer: {
+    primary: "#00FF00", // Neon Green
+    secondary: "#000000", // Black
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  ThunderBreath: {
+    primary: "#FFD700", // Gold
+    secondary: "#4B0082", // Indigo
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
+  WaterPillar: {
+    primary: "#1E90FF", // Dodger Blue
+    secondary: "#00FFFF", // Cyan
+    background: "#0A0A14",
+    cardBackground: "#14142E",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#1E1E42",
+    inputBackground: "#1E1E42",
+    error: "#FF4D4D",
+  },
+  SunBreather: {
+    primary: "#FF4500", // Orange Red
+    secondary: "#FFD700", // Gold
+    background: "#1A0A00",
+    cardBackground: "#2E1400",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#421E00",
+    inputBackground: "#421E00",
+    error: "#FF4D4D",
+  },
+  MistHashira: {
+    primary: "#E6E6FA", // Lavender
+    secondary: "#9370DB", // Medium Purple
+    background: "#1A1A1A",
+    cardBackground: "#2A2A2A",
+    text: "#FFFFFF",
+    textSecondary: "#B0B0B0",
+    border: "#3A3A3A",
+    inputBackground: "#3A3A3A",
+    error: "#FF4D4D",
+  },
 };
 
 export type ThemeName = keyof typeof themes;
