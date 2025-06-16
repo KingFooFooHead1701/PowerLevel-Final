@@ -272,28 +272,30 @@ export default function PowerLevelScreen() {
               />
             </Animated.View>
           ) : (
-            <Animated.View
-              style={[
-                styles.scanner,
-                {
-                  backgroundColor: theme.primary,
-                  transform: [{
-                    translateX: scannerAnim.interpolate({
-                      inputRange: [0, 1],
-                      outputRange: [-maxTranslation, maxTranslation],
-                    }),
-                  }],
-                  opacity: opacityAnim,
-                },
-              ]}
-            >
-              <LinearGradient
-                colors={['transparent', theme.primary, 'transparent']}
-                start={{ x: 0, y: 0.5 }}
-                end={{ x: 1, y: 0.5 }}
-                style={styles.scannerGlow}
-              />
-            </Animated.View>
+            <View style={styles.scannerContainer}>
+              <Animated.View
+                style={[
+                  styles.scanner,
+                  {
+                    backgroundColor: theme.primary,
+                    transform: [{
+                      translateX: scannerAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [-maxTranslation, maxTranslation],
+                      }),
+                    }],
+                    opacity: opacityAnim,
+                  },
+                ]}
+              >
+                <LinearGradient
+                  colors={['transparent', theme.primary, 'transparent']}
+                  start={{ x: 0, y: 0.5 }}
+                  end={{ x: 1, y: 0.5 }}
+                  style={styles.scannerGlow}
+                />
+              </Animated.View>
+            </View>
           )}
           
           {/* Power value display */}
@@ -368,6 +370,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     width: 220,
     height: 120,
+    borderRadius: 12,
+  },
+  scannerContainer: {
+    position: "absolute",
+    width: 220,
+    height: 120,
+    overflow: "hidden", // This ensures the scanner stays within the container
     borderRadius: 12,
   },
   scanner: {
