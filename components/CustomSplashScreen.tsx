@@ -61,6 +61,10 @@ export default function CustomSplashScreen() {
 
   // Calculate loading bar width based on platform
   const loadingBarWidth = Platform.OS === 'web' ? '100%' : screenWidth - 80;
+  
+  // Calculate the maximum translation distance for the loading indicator
+  const maxTranslation = Platform.OS === 'web' ? '80%' : screenWidth - 120;
+  const indicatorWidth = Platform.OS === 'web' ? '20%' : 40;
 
   return (
     <View style={styles.container}>
@@ -102,7 +106,7 @@ export default function CustomSplashScreen() {
                     inputRange: [0, 1],
                     outputRange: ['0%', '80%']
                   }),
-                  width: '20%'
+                  width: indicatorWidth
                 }
               ]} 
             />

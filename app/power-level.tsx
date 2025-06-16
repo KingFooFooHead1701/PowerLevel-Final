@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, Animated, Easing, Platform, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, Animated, Easing, Platform, TouchableOpacity, Dimensions } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
@@ -14,6 +14,9 @@ export default function PowerLevelScreen() {
   const [totalJoules, setTotalJoules] = useState(0);
   const [showValue, setShowValue] = useState(false);
   const [soundsLoaded, setSoundsLoaded] = useState(false);
+  
+  // Get screen dimensions for responsive sizing
+  const screenWidth = Dimensions.get('window').width;
   
   // Sound references
   const scannerSound = useRef<Audio.Sound | null>(null);
@@ -144,7 +147,7 @@ export default function PowerLevelScreen() {
     const firstPass = Animated.timing(scannerAnim, {
       toValue: 1,
       duration: 800,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
       easing: Easing.inOut(Easing.ease),
     });
     
@@ -152,7 +155,7 @@ export default function PowerLevelScreen() {
     const secondPass = Animated.timing(scannerAnim, {
       toValue: 0,
       duration: 1000,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
       easing: Easing.inOut(Easing.ease),
     });
     
@@ -160,7 +163,7 @@ export default function PowerLevelScreen() {
     const thirdPass = Animated.timing(scannerAnim, {
       toValue: 1,
       duration: 1200,
-      useNativeDriver: true,
+      useNativeDriver: Platform.OS !== 'web',
       easing: Easing.inOut(Easing.ease),
     });
     
@@ -221,6 +224,11 @@ export default function PowerLevelScreen() {
   // Get the power tier name
   const powerTierName = getPowerTierName(totalJoules);
 
+  // Calculate the scanner width and animation range based on container size
+  const scannerWidth = 40;
+  const containerWidth = 220;
+  const maxTranslation = (containerWidth - scannerWidth) / 2;
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.contentContainer}>
@@ -242,29 +250,51 @@ export default function PowerLevelScreen() {
           />
           
           {/* Knight Rider scanner */}
-          <Animated.View
-            style={[
-              styles.scanner,
-              {
-                backgroundColor: theme.primary,
-                transform: [{
-                  translateX: scannerAnim.interpolate({
+          {Platform.OS === 'web' ? (
+            <Animated.View
+              style={[
+                styles.scanner,
+                {
+                  backgroundColor: theme.primary,
+                  left: scannerAnim.interpolate({
                     inputRange: [0, 1],
-                    outputRange: [Platform.OS === 'web' ? -150 : -100, Platform.OS === 'web' ? 150 : 100],
+                    outputRange: [(containerWidth - scannerWidth) / 2 - maxTranslation, (containerWidth - scannerWidth) / 2 + maxTranslation]
                   }),
-                }],
-                opacity: opacityAnim,
-              },
-            ]}
-          >
-            {/* Glow effect */}
-            <LinearGradient
-              colors={['transparent', theme.primary, 'transparent']}
-              start={{ x: 0, y: 0.5 }}
-              end={{ x: 1, y: 0.5 }}
-              style={styles.scannerGlow}
-            />
-          </Animated.View>
+                  opacity: opacityAnim,
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={['transparent', theme.primary, 'transparent']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={styles.scannerGlow}
+              />
+            </Animated.View>
+          ) : (
+            <Animated.View
+              style={[
+                styles.scanner,
+                {
+                  backgroundColor: theme.primary,
+                  transform: [{
+                    translateX: scannerAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [-maxTranslation, maxTranslation],
+                    }),
+                  }],
+                  opacity: opacityAnim,
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={['transparent', theme.primary, 'transparent']}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={styles.scannerGlow}
+              />
+            </Animated.View>
+          )}
           
           {/* Power value display */}
           <Animated.Text 
@@ -293,7 +323,7 @@ export default function PowerLevelScreen() {
           </Animated.Text>
         </View>
         
-        {/* Show the power tier after animation completes */}
+        {/* Show the power tier after animation completes - positioned absolutely */}
         <Animated.View 
           style={[
             styles.tierContainer,
@@ -321,6 +351,8 @@ const styles = StyleSheet.create({
   contentContainer: {
     alignItems: "center",
     padding: 20,
+    position: "relative",
+    height: 400, // Fixed height to ensure proper positioning
   },
   label: {
     fontSize: 20,
@@ -332,7 +364,6 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
-    marginBottom: 24,
   },
   scannerBackground: {
     position: "absolute",
@@ -345,6 +376,7 @@ const styles = StyleSheet.create({
     width: 40,
     height: 120,
     borderRadius: 8,
+    left: 90, // Center position (220/2 - 40/2)
   },
   scannerGlow: {
     position: "absolute",
@@ -366,6 +398,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     bottom: 20,
     alignItems: "center",
+    width: "100%",
   },
   tierLabel: {
     fontSize: 16,
