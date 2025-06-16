@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useEffect, useState, useCallback, useRef } from "react";
 import { 
   StyleSheet, 
   Text, 
@@ -39,6 +39,7 @@ export default function SummaryScreen() {
   const [exerciseSummary, setExerciseSummary] = useState<ExerciseSummary[]>([]);
   const [allTimeTotal, setAllTimeTotal] = useState(0);
   const [datesWithData, setDatesWithData] = useState<Date[]>([]);
+  const [scrollToToday, setScrollToToday] = useState(false);
   
   // Format selected date
   const formattedDate = selectedDate.toLocaleDateString('en-US', {
@@ -134,6 +135,10 @@ export default function SummaryScreen() {
   // Navigation functions
   const goToToday = () => {
     setSelectedDate(new Date());
+    // Trigger scroll to today
+    setScrollToToday(true);
+    // Reset after a short delay
+    setTimeout(() => setScrollToToday(false), 500);
   };
   
   const goToPreviousDay = () => {
@@ -208,6 +213,7 @@ export default function SummaryScreen() {
         selectedDate={selectedDate}
         datesWithData={datesWithData}
         onSelectDate={setSelectedDate}
+        scrollToToday={scrollToToday}
       />
       
       <View style={styles.contentWrapper}>

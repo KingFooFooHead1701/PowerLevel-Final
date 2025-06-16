@@ -210,12 +210,12 @@ export default function PowerLevelScreen() {
         
         // After the value is shown, fade in the full joules text
         setTimeout(() => {
-          fullJoulesReveal.start(() => {
-            // After full joules is shown, fade in the tier text
-            setTimeout(() => {
-              tierReveal.start();
-            }, 300);
-          });
+          fullJoulesReveal.start();
+          
+          // After full joules is shown, fade in the tier text
+          setTimeout(() => {
+            tierReveal.start();
+          }, 300);
         }, 200);
       });
     });
@@ -352,7 +352,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     padding: 20,
     position: "relative",
-    height: 400, // Fixed height to ensure proper positioning
   },
   label: {
     fontSize: 20,
@@ -364,6 +363,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     position: "relative",
+    marginBottom: 80, // Add space below for the tier text
   },
   scannerBackground: {
     position: "absolute",
@@ -396,7 +396,7 @@ const styles = StyleSheet.create({
   },
   tierContainer: {
     position: "absolute",
-    bottom: 20,
+    bottom: 40,
     alignItems: "center",
     width: "100%",
   },

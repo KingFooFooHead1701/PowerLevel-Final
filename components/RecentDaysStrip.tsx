@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useEffect } from "react";
 import { 
   StyleSheet, 
   Text, 
@@ -12,6 +12,7 @@ interface RecentDaysStripProps {
   selectedDate: Date;
   datesWithData: Date[];
   onSelectDate: (date: Date) => void;
+  scrollToToday?: boolean;
 }
 
 // Helper function to check if two dates are the same day
@@ -28,38 +29,68 @@ const hasWorkoutData = (date: Date, datesWithData: Date[]) => {
   return datesWithData.some(dataDate => isSameDay(dataDate, date));
 };
 
+// Helper function to get all days in a month
+const getDaysInMonth = (year: number, month: number) => {
+  return new Date(year, month + 1, 0).getDate();
+};
+
 export default function RecentDaysStrip({
   selectedDate,
   datesWithData,
-  onSelectDate
+  onSelectDate,
+  scrollToToday = false
 }: RecentDaysStripProps) {
   const { theme } = useTheme();
+  const scrollViewRef = useRef<ScrollView>(null);
+  const todayRef = useRef<TouchableOpacity>(null);
+  const todayIndex = useRef<number>(-1);
   
-  // Generate array of recent days (last 14 days including today)
-  const generateRecentDays = () => {
-    const days = [];
+  // Generate array of all days in the current month
+  const generateMonthDays = () => {
     const today = new Date();
+    const year = today.getFullYear();
+    const month = today.getMonth();
+    const daysInMonth = getDaysInMonth(year, month);
     
-    for (let i = 13; i >= 0; i--) {
-      const date = new Date();
-      date.setDate(today.getDate() - i);
+    const days = [];
+    for (let i = 1; i <= daysInMonth; i++) {
+      const date = new Date(year, month, i);
       days.push(date);
     }
     
     return days;
   };
   
-  const recentDays = generateRecentDays();
+  const monthDays = generateMonthDays();
+  
+  // Scroll to today when the component mounts or when scrollToToday changes
+  useEffect(() => {
+    if (scrollToToday && scrollViewRef.current && todayIndex.current >= 0) {
+      // Use a timeout to ensure the scroll happens after layout
+      setTimeout(() => {
+        scrollViewRef.current?.scrollTo({
+          x: todayIndex.current * 68, // 60px width + 8px margin
+          animated: true
+        });
+      }, 100);
+    }
+  }, [scrollToToday]);
   
   // Format day name and date
-  const formatDayPill = (date: Date) => {
+  const formatDayPill = (date: Date, index: number) => {
     const isToday = isSameDay(date, new Date());
     const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
     const dayNumber = date.getDate();
     
+    // Store the index of today for scrolling
+    if (isToday) {
+      todayIndex.current = index;
+    }
+    
     return (
       <TouchableOpacity
         key={date.toISOString()}
+        ref={isToday ? todayRef : null}
         style={[
           styles.dayPill,
           { backgroundColor: theme.cardBackground },
@@ -91,11 +122,12 @@ export default function RecentDaysStrip({
   return (
     <View style={styles.container}>
       <ScrollView
+        ref={scrollViewRef}
         horizontal
         showsHorizontalScrollIndicator={false}
         contentContainerStyle={styles.scrollContent}
       >
-        {recentDays.map(date => formatDayPill(date))}
+        {monthDays.map((date, index) => formatDayPill(date, index))}
       </ScrollView>
     </View>
   );
