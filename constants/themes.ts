@@ -277,7 +277,7 @@ export const themes = {
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
   },
-  SharinganShadow: {
+  CrimsonEclipse: { // Renamed from Sharingan Shadow
     primary: "#DC143C", // Crimson Red
     secondary: "#483D8B", // Cool Indigo
     background: "#0A0A0A", // Midnight Black
