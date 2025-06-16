@@ -23,6 +23,7 @@ export default function PowerLevelScreen() {
   const scannerAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const valueOpacityAnim = useRef(new Animated.Value(0)).current;
+  const fullJoulesOpacityAnim = useRef(new Animated.Value(0)).current;
   const tierOpacityAnim = useRef(new Animated.Value(0)).current;
   
   // Initialize data and load sounds
@@ -124,6 +125,7 @@ export default function PowerLevelScreen() {
     scannerAnim.setValue(0);
     opacityAnim.setValue(0);
     valueOpacityAnim.setValue(0);
+    fullJoulesOpacityAnim.setValue(0);
     tierOpacityAnim.setValue(0);
     
     // Fade in the scanner
@@ -170,6 +172,14 @@ export default function PowerLevelScreen() {
       easing: Easing.out(Easing.cubic),
     });
     
+    // Full joules text fade in
+    const fullJoulesReveal = Animated.timing(fullJoulesOpacityAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+      easing: Easing.out(Easing.cubic),
+    });
+    
     // Tier text fade in
     const tierReveal = Animated.timing(tierOpacityAnim, {
       toValue: 1,
@@ -194,10 +204,16 @@ export default function PowerLevelScreen() {
       // Start the reveal animation
       reveal.start(() => {
         setShowValue(true);
-        // After the value is shown, fade in the tier text
+        
+        // After the value is shown, fade in the full joules text
         setTimeout(() => {
-          tierReveal.start();
-        }, 500);
+          fullJoulesReveal.start(() => {
+            // After full joules is shown, fade in the tier text
+            setTimeout(() => {
+              tierReveal.start();
+            }, 300);
+          });
+        }, 200);
       });
     });
   };
@@ -269,7 +285,7 @@ export default function PowerLevelScreen() {
               styles.fullJoulesValue, 
               { 
                 color: theme.textSecondary,
-                opacity: valueOpacityAnim,
+                opacity: fullJoulesOpacityAnim,
               }
             ]}
           >
@@ -347,6 +363,8 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   tierContainer: {
+    position: "absolute",
+    bottom: 20,
     alignItems: "center",
   },
   tierLabel: {

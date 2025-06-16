@@ -217,6 +217,7 @@ export default function SummaryScreen() {
           contentContainerStyle={styles.scrollViewContent}
           scrollEnabled={true}
           horizontal={false}
+          directionalLockEnabled={true} // Lock to vertical scrolling only
         >
           {exerciseSummary.length > 0 ? (
             <>

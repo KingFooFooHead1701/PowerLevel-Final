@@ -19,23 +19,44 @@ export default function CustomSplashScreen() {
       useNativeDriver: true,
     }).start();
     
-    // Loading bar animation - ensure it goes all the way across
-    Animated.loop(
-      Animated.sequence([
-        Animated.timing(loadingAnim, {
-          toValue: 1,
-          duration: 1000,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: Platform.OS !== 'web', // Use native driver except on web
-        }),
-        Animated.timing(loadingAnim, {
-          toValue: 0,
-          duration: 1000,
-          easing: Easing.inOut(Easing.ease),
-          useNativeDriver: Platform.OS !== 'web', // Use native driver except on web
-        })
-      ])
-    ).start();
+    // Loading bar animation
+    if (Platform.OS === 'web') {
+      // Web-specific animation that works properly
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(loadingAnim, {
+            toValue: 1,
+            duration: 1500,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: false, // Must be false for web
+          }),
+          Animated.timing(loadingAnim, {
+            toValue: 0,
+            duration: 1500,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: false, // Must be false for web
+          })
+        ])
+      ).start();
+    } else {
+      // Native animation
+      Animated.loop(
+        Animated.sequence([
+          Animated.timing(loadingAnim, {
+            toValue: 1,
+            duration: 1000,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          }),
+          Animated.timing(loadingAnim, {
+            toValue: 0,
+            duration: 1000,
+            easing: Easing.inOut(Easing.ease),
+            useNativeDriver: true,
+          })
+        ])
+      ).start();
+    }
   }, []);
 
   // Calculate loading bar width based on platform
@@ -72,14 +93,14 @@ export default function CustomSplashScreen() {
       >
         <View style={[styles.loadingBar, { width: loadingBarWidth }]}>
           {Platform.OS === 'web' ? (
-            // Web-specific implementation
+            // Web-specific implementation with left position animation
             <Animated.View 
               style={[
                 styles.loadingIndicator,
                 {
                   left: loadingAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: ['0%', '80%', '0%']
+                    inputRange: [0, 1],
+                    outputRange: ['0%', '80%']
                   }),
                   width: '20%'
                 }
@@ -91,14 +112,13 @@ export default function CustomSplashScreen() {
               style={[
                 styles.loadingIndicator,
                 {
-                  width: loadingAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: ['0%', '100%', '0%']
-                  }),
-                  left: loadingAnim.interpolate({
-                    inputRange: [0, 0.5, 1],
-                    outputRange: ['0%', '0%', '100%']
-                  })
+                  transform: [{
+                    translateX: loadingAnim.interpolate({
+                      inputRange: [0, 1],
+                      outputRange: [0, screenWidth - 120]
+                    })
+                  }],
+                  width: 40
                 }
               ]} 
             />
