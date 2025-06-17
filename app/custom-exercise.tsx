@@ -61,7 +61,7 @@ export default function CustomExerciseScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top', 'bottom', 'left', 'right']}>
       <StatusBar barStyle="light-content" />
       
       <Stack.Screen 

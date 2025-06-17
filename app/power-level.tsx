@@ -240,7 +240,7 @@ export default function PowerLevelScreen() {
   const maxTranslation = (containerWidth - scannerWidth) / 2;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['bottom', 'left', 'right']}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top', 'bottom', 'left', 'right']}>
       <StatusBar barStyle="light-content" />
       
       <Stack.Screen 
@@ -348,7 +348,7 @@ export default function PowerLevelScreen() {
           </Animated.Text>
         </View>
         
-        {/* Show the power tier after animation completes - positioned absolutely */}
+        {/* Show the power tier after animation completes */}
         <Animated.View 
           style={[
             styles.tierContainer,
@@ -376,8 +376,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    position: "relative",
-    marginTop: -40, // Adjust to center the content in the available space
   },
   label: {
     fontSize: 20,
@@ -427,8 +425,7 @@ const styles = StyleSheet.create({
     zIndex: 10,
   },
   tierContainer: {
-    position: "absolute",
-    bottom: -80, // Position below the animation container
+    marginTop: 32,
     alignItems: "center",
     width: "100%",
   },
