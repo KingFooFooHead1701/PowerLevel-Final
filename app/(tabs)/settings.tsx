@@ -74,7 +74,7 @@ export default function SettingsScreen() {
                 ]}
                 value={bodyWeight > 0 ? bodyWeight.toString() : ""}
                 onChangeText={handleBodyWeightChange}
-                placeholder="Enter weight"
+                placeholder="???"
                 placeholderTextColor={theme.textSecondary}
                 keyboardType="decimal-pad"
               />
