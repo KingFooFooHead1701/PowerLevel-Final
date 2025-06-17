@@ -467,98 +467,119 @@ export const defaultExercises: Exercise[] = [
     name: "Overhead Press", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Stand holding weight at shoulder level, press overhead until arms are extended, then lower with control. The exercise that makes you realize how low your ceilings are at home, usually the hard way."
+    description: "Stand with a barbell or dumbbells at shoulder height, press overhead until arms lock out, then lower with control. Makes you rethink low doorways—and small talk."
   },
   { 
     id: "lateral-raise", 
     name: "Lateral Raise", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Stand holding weights at sides, raise arms out to sides until parallel with floor, then lower. Like trying to slowly fly away from your problems while gravity laughs at your ambition."
+    description: "Hold dumbbells at your sides, lift arms out to shoulder height, then lower. Turns your arms into wings—flight not included."
   },
   { 
     id: "front-raise", 
     name: "Front Raise", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Stand holding weights at front of thighs, raise arms forward until parallel with floor, then lower. The exercise that makes you look like you're dramatically presenting invisible pizza boxes."
+    description: "With weights in front of thighs, lift straight arms to shoulder level, then lower. Perfect for opening that top cabinet you can't quite reach."
   },
   { 
     id: "rear-delt-fly", 
     name: "Rear Delt Fly", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Bend at hips with back flat, raise weights out to sides with slight elbow bend, then lower. The shoulder exercise most people forget exists until their posture resembles a question mark."
+    description: "Hinge at hips, dumbbells in hand, lift arms out to sides, then lower. Because nobody ever forgets a strong back—especially your posture."
   },
   { 
     id: "shrug", 
     name: "Shrug", 
     category: "Shoulders", 
     displacement: 0.3,
-    description: "Stand holding weights at sides, lift shoulders toward ears, hold briefly, then lower with control. The exercise that perfectly mimics how you respond to difficult questions about your diet."
+    description: "Hold dumbbells or barbell at sides, raise shoulders toward ears, hold, then relax. Your go-to move for \"I have no clue what I'm doing.\""
   },
   { 
     id: "upright-row", 
     name: "Upright Row", 
     category: "Shoulders", 
     displacement: 0.4,
-    description: "Stand holding weight in front of thighs, pull up toward chin by raising elbows, then lower. Like trying to start a lawnmower that's directly in front of you while wearing invisible suspenders."
+    description: "Grip barbell or dumbbells in front, lift elbows past shoulders, then lower. Like yanking your sleeves up—only with added style points."
   },
   { 
     id: "arnold-press", 
     name: "Arnold Press", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Sit holding dumbbells at shoulders with palms facing you, press overhead while rotating palms forward. Named after Arnold, but sadly doesn't give you his accent or movie career."
+    description: "Start palms facing you at shoulder level, rotate as you press overhead, then reverse on the way down. Channel your inner Schwarzenegger, minus the accent."
   },
   { 
     id: "push-press-shoulders", 
     name: "Push Press", 
     category: "Shoulders", 
     displacement: 0.6,
-    description: "Dip slightly at knees, then explosively drive weight overhead using leg momentum, lowering with control. Like cheating at overhead press, but with official permission and technique validation."
+    description: "Slight knee bend followed by explosive drive to press weight overhead, then lower. Cheating never felt so legit."
   },
   { 
     id: "shoulder-press-machine", 
     name: "Shoulder Press Machine", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Sit at machine with hands on handles at shoulder height, press upward until arms extend. For when free weights are too free-spirited for you and you prefer your shoulder pain predictable."
+    description: "Sit and press handles upward on a machine, then lower. For when you want guidance wheels on your overhead lift."
   },
   { 
     id: "smith-machine-shoulder-press", 
     name: "Smith Machine Shoulder Press", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Perform shoulder press using Smith machine with fixed barbell path, pressing up and lowering. For when you want to press overhead but also stay in your lane like a train on very shiny tracks."
+    description: "Press barbell overhead on a Smith machine track, then lower. Fixed path, zero surprises—except for your pump."
   },
   { 
     id: "cable-lateral-raise", 
     name: "Cable Lateral Raise", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Stand sideways to cable machine, raise arm out to side until parallel with floor, then lower. Like regular lateral raises but with a robot offering resistance and no place to hide from form checks."
+    description: "Stand beside a cable column, lift handle out to side to shoulder height, then lower. Constant tension courtesy of robotic resistance."
   },
   { 
     id: "face-pull-shoulders", 
     name: "Face Pull (Shoulders)", 
     category: "Shoulders", 
     displacement: 0.4,
-    description: "Stand facing cable machine, pull rope attachment toward face with elbows high and out. The exercise that makes you look like you're aggressively flossing your entire upper body in public."
+    description: "At a cable with rope, pull handles toward face with elbows high, then release. Feels like tantrum therapy for your rear delts."
   },
   { 
     id: "landmine-press-shoulders", 
     name: "Landmine Press", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "With barbell secured in landmine, hold end at shoulder, press up and away at angle, then lower. Like trying to push away a very persistent barbell that's determined to test your shoulder stability."
+    description: "Barbell in a landmine, press the free end upward at an angle, then lower. All the shoulder work, half the overhead drama."
   },
   { 
     id: "bradford-press", 
     name: "Bradford Press", 
     category: "Shoulders", 
     displacement: 0.5,
-    description: "Press barbell from front of shoulders to behind neck and back in continuous motion. Named after Jim Bradford, who apparently enjoyed shoulder torture and showing off at parties."
+    description: "Press barbell from front rack to behind neck in a fluid arc, then reverse. A dinner-party trick for when you're too strong for standard presses."
+  },
+  { 
+    id: "reverse-fly", 
+    name: "Reverse Fly (Bent-Over)", 
+    category: "Shoulders", 
+    displacement: 0.5,
+    description: "Hinge at hips, dumbbells in hand, lift arms back in a reverse hugging motion, then lower. The exercise your mom wished you did at the dinner table."
+  },
+  { 
+    id: "cable-front-raise", 
+    name: "Cable Front Raise", 
+    category: "Shoulders", 
+    displacement: 0.5,
+    description: "Facing a low cable, lift handle straight forward to shoulder height, then lower. A one-way ticket to the \"Why is my front delt sore?\" club."
+  },
+  { 
+    id: "plate-front-raise", 
+    name: "Plate Front Raise", 
+    category: "Shoulders", 
+    displacement: 0.5,
+    description: "Hold a weight plate with both hands at thighs, lift to eye level, then lower. Because sometimes dumbbells are too mainstream."
   },
   
   // Core
@@ -724,165 +745,6 @@ export const defaultExercises: Exercise[] = [
     isCardio: true, 
     metValue: 8.0,
     description: "Run on treadmill at your chosen pace and incline, maintaining consistent stride and breathing. Like running from your problems, except you stay in exactly the same place and pay for the privilege."
-  },
-  
-  { 
-    id: "elliptical-low", 
-    name: "Elliptical (Low Resistance)", 
-    category: "Cardio", 
-    displacement: 0.03, 
-    isCardio: true, 
-    metValue: 5.0,
-    description: "Use elliptical machine with minimal resistance, maintaining smooth motion and good posture. For when you want to pretend you're cross-country skiing without the snow, skill, or scenery."
-  },
-  { 
-    id: "elliptical-medium", 
-    name: "Elliptical (Medium Resistance)", 
-    category: "Cardio", 
-    displacement: 0.05, 
-    isCardio: true, 
-    metValue: 7.0,
-    description: "Use elliptical machine with moderate resistance, focusing on pushing and pulling with arms and legs. Like running through shallow mud but without getting dirty or having interesting stories after."
-  },
-  { 
-    id: "elliptical-high", 
-    name: "Elliptical (High Resistance)", 
-    category: "Cardio", 
-    displacement: 0.08, 
-    isCardio: true, 
-    metValue: 9.0,
-    description: "Use elliptical machine with challenging resistance, engaging core and maintaining consistent effort. For when you want the burn of running without the joint impact or actual achievement."
-  },
-  
-  { 
-    id: "stair-stepper-low", 
-    name: "Stair Stepper (Low Intensity)", 
-    category: "Cardio", 
-    displacement: 0.1, 
-    isCardio: true, 
-    metValue: 4.0,
-    description: "Use stair stepper machine at slow pace, maintaining upright posture and controlled breathing. Like climbing endless stairs while going absolutely nowhere and questioning your life choices."
-  },
-  { 
-    id: "stair-stepper-medium", 
-    name: "Stair Stepper (Medium Intensity)", 
-    category: "Cardio", 
-    displacement: 0.15, 
-    isCardio: true, 
-    metValue: 6.0,
-    description: "Use stair stepper machine at moderate pace, focusing on full foot placement and posture. For when you want to know what living in a fifth-floor walkup feels like without the benefit of reaching an apartment."
-  },
-  { 
-    id: "stair-stepper-high", 
-    name: "Stair Stepper (High Intensity)", 
-    category: "Cardio", 
-    displacement: 0.2, 
-    isCardio: true, 
-    metValue: 8.0,
-    description: "Use stair stepper machine at fast pace, maintaining control and minimizing handrail support. Like escaping a burning building but forever, with no exit and questionable cardiovascular benefits."
-  },
-  
-  { 
-    id: "stationary-bike-low", 
-    name: "Stationary Bike (Low Resistance)", 
-    category: "Cardio", 
-    displacement: 0.02, 
-    isCardio: true, 
-    metValue: 4.0,
-    description: "Cycle on stationary bike with minimal resistance, maintaining steady cadence and proper form. For when you want to exercise but also read a magazine, check emails, and avoid actual cycling skills."
-  },
-  { 
-    id: "stationary-bike-medium", 
-    name: "Stationary Bike (Medium Resistance)", 
-    category: "Cardio", 
-    displacement: 0.04, 
-    isCardio: true, 
-    metValue: 6.0,
-    description: "Cycle on stationary bike with moderate resistance, focusing on consistent pedaling and engagement. Like biking through a perpetual slight headwind while scenery remains suspiciously identical."
-  },
-  { 
-    id: "stationary-bike-high", 
-    name: "Stationary Bike (High Resistance)", 
-    category: "Cardio", 
-    displacement: 0.06, 
-    isCardio: true, 
-    metValue: 8.5,
-    description: "Cycle on stationary bike with challenging resistance, maintaining proper form and breathing. For when you want to experience biking uphill without the reward of ever going downhill afterward."
-  },
-  
-  { 
-    id: "rowing-machine-low", 
-    name: "Rowing Machine (Low Resistance)", 
-    category: "Cardio", 
-    displacement: 0.05, 
-    isCardio: true, 
-    metValue: 5.0,
-    description: "Use rowing machine with minimal resistance, focusing on proper sequence: legs, back, arms, then reverse. Like rowing a boat on a perfectly calm lake but indoors and significantly less Instagram-worthy."
-  },
-  { 
-    id: "rowing-machine-medium", 
-    name: "Rowing Machine (Medium Resistance)", 
-    category: "Cardio", 
-    displacement: 0.08, 
-    isCardio: true, 
-    metValue: 7.0,
-    description: "Use rowing machine with moderate resistance, maintaining good form and consistent pace. For when you want to pretend you're escaping Alcatraz at a reasonable pace without getting wet."
-  },
-  { 
-    id: "rowing-machine-high", 
-    name: "Rowing Machine (High Resistance)", 
-    category: "Cardio", 
-    displacement: 0.12, 
-    isCardio: true, 
-    metValue: 9.0,
-    description: "Use rowing machine with challenging resistance, focusing on power and technique throughout. Like rowing through molasses while someone yells 'stroke' at you and your hands develop character-building blisters."
-  },
-  
-  { 
-    id: "jump-rope", 
-    name: "Jump Rope", 
-    category: "Cardio", 
-    displacement: 0.1, 
-    isCardio: true, 
-    requiresBodyWeight: true, 
-    metValue: 10.0,
-    description: "Jump rope at steady pace, keeping jumps low and rhythm consistent with relaxed shoulders. The exercise that looks easy until you try it for more than 30 seconds and your lungs file for divorce."
-  },
-  { 
-    id: "battle-ropes", 
-    name: "Battle Ropes", 
-    category: "Cardio", 
-    displacement: 0.05, 
-    isCardio: true, 
-    metValue: 8.0,
-    description: "Create waves with heavy ropes by moving arms rapidly, maintaining stable lower body and core. Like trying to control two angry snakes while standing still and pretending it's a normal workout activity."
-  },
-  { 
-    id: "sled-push", 
-    name: "Sled Push", 
-    category: "Cardio", 
-    displacement: 0.3, 
-    isCardio: true, 
-    metValue: 9.0,
-    description: "Push weighted sled across floor using legs and arms, maintaining low body position and power. Like pushing a broken-down car but on purpose and with people nodding approvingly instead of offering help."
-  },
-  { 
-    id: "assault-bike", 
-    name: "Assault Bike", 
-    category: "Cardio", 
-    displacement: 0.05, 
-    isCardio: true, 
-    metValue: 9.0,
-    description: "Cycle on fan bike using both arms and legs, maintaining consistent effort and breathing. Named 'assault' because that's exactly what it feels like to your entire cardiovascular system and dignity."
-  },
-  { 
-    id: "jacob-ladder", 
-    name: "Jacob's Ladder", 
-    category: "Cardio", 
-    displacement: 0.2, 
-    isCardio: true, 
-    metValue: 9.0,
-    description: "Climb on self-paced rotating ladder, maintaining steady rhythm and upright posture. Like trying to climb your way to heaven but never quite making it because cardio hell is apparently endless."
   },
   
   // Full Body

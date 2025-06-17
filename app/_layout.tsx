@@ -21,7 +21,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 // App version for data migration checks
-const APP_VERSION = "1.0.1"; // Incremented to force data reset
+const APP_VERSION = "1.0.2"; // Incremented to force data reset
 const APP_VERSION_KEY = "app-version";
 
 export default function RootLayout() {
@@ -61,8 +61,9 @@ export default function RootLayout() {
           // Store current version
           await AsyncStorage.setItem(APP_VERSION_KEY, APP_VERSION);
           
-          // For development: Clear all data on version change
+          // For version change, clear all data
           if (storedVersion && storedVersion !== APP_VERSION) {
+            console.log("App version changed, clearing all data");
             await clearAllAppData();
           }
         }

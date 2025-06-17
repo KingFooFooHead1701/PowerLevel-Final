@@ -14,7 +14,7 @@ interface SettingsState {
 }
 
 // Current version of the store schema - increment this when making changes to force a reset
-const CURRENT_VERSION = 3; // Incremented to force reset
+const CURRENT_VERSION = 4; // Incremented to force reset
 
 // Default settings
 const DEFAULT_SETTINGS = {

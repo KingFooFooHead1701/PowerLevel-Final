@@ -8,6 +8,7 @@ import { Trash2 } from 'lucide-react-native';
 
 export default function ResetDataButton() {
   const { theme, resetTheme } = useTheme();
+
   const { resetToDefaults } = useExerciseStore();
   const { resetSettings } = useSettingsStore();
 
