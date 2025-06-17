@@ -1,10 +1,10 @@
 import React from "react";
-import { StyleSheet, Text, View, Switch, TouchableOpacity, ScrollView } from "react-native";
+import { StyleSheet, Text, View, Switch, TouchableOpacity, ScrollView, TextInput, Alert } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/hooks/use-theme";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { themes, ThemeName } from "@/constants/themes";
-import { Palette } from "lucide-react-native";
+import { Palette, Weight } from "lucide-react-native";
 
 export default function SettingsScreen() {
   const { theme, setThemeName, themeName } = useTheme();
@@ -12,8 +12,19 @@ export default function SettingsScreen() {
     useMetricUnits, 
     toggleUseMetricUnits,
     usePseudoJoules,
-    toggleUsePseudoJoules
+    toggleUsePseudoJoules,
+    bodyWeight,
+    setBodyWeight
   } = useSettingsStore();
+
+  const handleBodyWeightChange = (value: string) => {
+    const numValue = parseFloat(value);
+    if (!isNaN(numValue) && numValue > 0) {
+      setBodyWeight(numValue);
+    } else if (value === "") {
+      setBodyWeight(0);
+    }
+  };
 
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -37,6 +48,40 @@ export default function SettingsScreen() {
               trackColor={{ false: "#767577", true: theme.primary }}
               thumbColor="#f4f3f4"
             />
+          </View>
+        </View>
+
+        <View style={[styles.section, { borderBottomColor: theme.border }]}>
+          <Text style={[styles.sectionTitle, { color: theme.text }]}>Body Information</Text>
+          <View style={styles.settingRow}>
+            <View style={styles.settingTextContainer}>
+              <Text style={[styles.settingLabel, { color: theme.text }]}>
+                Body Weight ({useMetricUnits ? "kg" : "lbs"})
+              </Text>
+              <Text style={[styles.settingDescription, { color: theme.textSecondary }]}>
+                Required for body weight exercises and accurate energy calculations
+              </Text>
+            </View>
+            <View style={styles.weightInputContainer}>
+              <TextInput
+                style={[
+                  styles.weightInput,
+                  { 
+                    backgroundColor: theme.inputBackground,
+                    color: theme.text,
+                    borderColor: theme.border
+                  }
+                ]}
+                value={bodyWeight > 0 ? bodyWeight.toString() : ""}
+                onChangeText={handleBodyWeightChange}
+                placeholder="Enter weight"
+                placeholderTextColor={theme.textSecondary}
+                keyboardType="decimal-pad"
+              />
+              <Text style={[styles.weightUnit, { color: theme.textSecondary }]}>
+                {useMetricUnits ? "kg" : "lbs"}
+              </Text>
+            </View>
           </View>
         </View>
 
@@ -145,6 +190,23 @@ const styles = StyleSheet.create({
   settingDescription: {
     fontSize: 14,
     lineHeight: 20,
+  },
+  weightInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: 120,
+  },
+  weightInput: {
+    flex: 1,
+    height: 40,
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  weightUnit: {
+    marginLeft: 8,
+    fontSize: 16,
   },
   themesGrid: {
     flexDirection: "row",

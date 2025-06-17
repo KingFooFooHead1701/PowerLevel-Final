@@ -4,6 +4,16 @@ export interface JoulesCalculationParams {
   useMetricUnits: boolean;
   displacement: number;
   usePseudoJoules: boolean;
+  exercise?: {
+    requiresBodyWeight?: boolean;
+    isCardio?: boolean;
+    isIsometric?: boolean;
+    metValue?: number;
+  };
+  bodyWeight?: number;
+  duration?: number; // in seconds, for cardio and isometric exercises
+  distance?: number; // in meters, for cardio exercises
+  speed?: number; // in km/h or mph, for cardio exercises
 }
 
 export function calculateJoules({
@@ -12,22 +22,102 @@ export function calculateJoules({
   useMetricUnits,
   displacement,
   usePseudoJoules,
+  exercise,
+  bodyWeight = 0,
+  duration = 0,
+  distance = 0,
+  speed = 0,
 }: JoulesCalculationParams): number {
   // Convert weight to kg if needed
   const weightInKg = useMetricUnits ? weight : weight * 0.453592;
   
+  // Convert body weight to kg if needed
+  const bodyWeightInKg = useMetricUnits ? bodyWeight : bodyWeight * 0.453592;
+  
   // Gravity constant (m/s²)
   const gravity = 9.8;
   
-  // Calculate joules
+  // Calculate joules based on exercise type
   let joules: number;
   
-  if (usePseudoJoules) {
-    // Simplified calculation (ignoring displacement)
-    joules = weightInKg * gravity * reps;
-  } else {
-    // Standard calculation with displacement
-    joules = weightInKg * gravity * displacement * reps;
+  // For cardio exercises, use MET-based calculation
+  if (exercise?.isCardio) {
+    // MET-based calculation (calories = MET × weight in kg × duration in hours)
+    // 1 calorie = 4.184 joules
+    const metValue = exercise.metValue || 5.0; // Default MET value if not specified
+    const durationHours = duration / 3600; // Convert seconds to hours
+    
+    // Calculate calories burned
+    const caloriesBurned = metValue * bodyWeightInKg * durationHours;
+    
+    // Convert calories to joules
+    joules = caloriesBurned * 4.184;
+    
+    // If distance is provided, add work done against gravity for incline
+    if (distance > 0 && displacement > 0) {
+      const heightChange = distance * displacement; // Total vertical displacement
+      const additionalJoules = bodyWeightInKg * gravity * heightChange;
+      joules += additionalJoules;
+    }
+  }
+  // For isometric exercises (like planks)
+  else if (exercise?.isIsometric) {
+    // For isometric exercises, use a time-based calculation
+    // Approximate energy expenditure based on body weight and time
+    // This is a simplified model: joules = bodyWeight * gravity * 0.1 * duration
+    joules = bodyWeightInKg * gravity * 0.1 * duration;
+  }
+  // For body weight exercises
+  else if (exercise?.requiresBodyWeight) {
+    // For body weight exercises, use body weight as the resistance
+    // Often only a percentage of body weight is actually moved
+    let effectiveWeight: number;
+    
+    // Different percentages of body weight for different exercises
+    // These are approximate values and could be refined
+    switch (true) {
+      case /push-up|diamond-push-up/.test(weight.toString()):
+        effectiveWeight = bodyWeightInKg * 0.65; // ~65% of body weight for push-ups
+        break;
+      case /pull-up|chin-up/.test(weight.toString()):
+        effectiveWeight = bodyWeightInKg * 0.95; // ~95% of body weight for pull-ups
+        break;
+      case /dip/.test(weight.toString()):
+        effectiveWeight = bodyWeightInKg * 0.75; // ~75% of body weight for dips
+        break;
+      case /crunch|sit-up|v-up/.test(weight.toString()):
+        effectiveWeight = bodyWeightInKg * 0.3; // ~30% of body weight for ab exercises
+        break;
+      case /leg-raise|hanging-leg-raise/.test(weight.toString()):
+        effectiveWeight = bodyWeightInKg * 0.35; // ~35% of body weight for leg raises
+        break;
+      case /burpee|jumping-jack|mountain-climber/.test(weight.toString()):
+        effectiveWeight = bodyWeightInKg * 0.7; // ~70% of body weight for dynamic exercises
+        break;
+      default:
+        effectiveWeight = bodyWeightInKg * 0.5; // Default to 50% if not specified
+    }
+    
+    // Add any additional weight being used
+    effectiveWeight += weightInKg;
+    
+    if (usePseudoJoules) {
+      // Simplified calculation (ignoring displacement)
+      joules = effectiveWeight * gravity * reps;
+    } else {
+      // Standard calculation with displacement
+      joules = effectiveWeight * gravity * displacement * reps;
+    }
+  }
+  // For standard weight exercises
+  else {
+    if (usePseudoJoules) {
+      // Simplified calculation (ignoring displacement)
+      joules = weightInKg * gravity * reps;
+    } else {
+      // Standard calculation with displacement
+      joules = weightInKg * gravity * displacement * reps;
+    }
   }
   
   return Math.round(joules);

@@ -10,6 +10,8 @@ interface SetInputProps {
   onWeightChange: (value: string) => void;
   useMetricUnits: boolean;
   onAddSet: () => void;
+  requiresBodyWeight?: boolean;
+  bodyWeight?: number;
 }
 
 export default function SetInput({ 
@@ -18,7 +20,9 @@ export default function SetInput({
   onRepsChange, 
   onWeightChange, 
   useMetricUnits,
-  onAddSet 
+  onAddSet,
+  requiresBodyWeight,
+  bodyWeight
 }: SetInputProps) {
   const { theme } = useTheme();
   
@@ -70,6 +74,14 @@ export default function SetInput({
         </View>
       </View>
       
+      {requiresBodyWeight && (
+        <View style={styles.bodyWeightInfo}>
+          <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
+            Using body weight: {bodyWeight && bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
+          </Text>
+        </View>
+      )}
+      
       <TouchableOpacity
         style={[styles.addButton, { backgroundColor: theme.primary }]}
         onPress={onAddSet}
@@ -109,6 +121,13 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     paddingHorizontal: 12,
     fontSize: 16,
+  },
+  bodyWeightInfo: {
+    marginBottom: 16,
+  },
+  bodyWeightText: {
+    fontSize: 14,
+    fontStyle: "italic",
   },
   addButton: {
     flexDirection: "row",

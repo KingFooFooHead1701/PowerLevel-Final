@@ -162,7 +162,10 @@ export default function PowerLevelScreen() {
         style={[styles.safeArea, { backgroundColor: theme.background }]}
       >
         <View style={[styles.header, { backgroundColor: theme.background }]}>
-          <TouchableOpacity onPress={handleGoBack} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+          <TouchableOpacity 
+            onPress={handleGoBack} 
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          >
             <ChevronLeft size={24} color={theme.text} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: theme.text }]}>Power Level</Text>

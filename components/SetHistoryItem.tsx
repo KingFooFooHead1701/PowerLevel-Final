@@ -3,21 +3,37 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
 import { formatDate } from "@/utils/date-utils";
-import { Trash2 } from "lucide-react-native";
+import { Trash2, Clock } from "lucide-react-native";
 import { Set } from "@/hooks/use-exercise-store";
 
 interface SetHistoryItemProps {
   set: Set;
   useMetricUnits: boolean;
   onDelete: () => void;
+  isCardio?: boolean;
+  isIsometric?: boolean;
 }
 
 export default function SetHistoryItem({ 
   set, 
   useMetricUnits, 
-  onDelete 
+  onDelete,
+  isCardio,
+  isIsometric
 }: SetHistoryItemProps) {
   const { theme } = useTheme();
+  
+  const formatDuration = (seconds: number) => {
+    if (!seconds) return "N/A";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
+  const formatDistance = (distance: number) => {
+    if (!distance) return "N/A";
+    return `${distance} ${useMetricUnits ? "km" : "mi"}`;
+  };
   
   return (
     <View style={[styles.container, { backgroundColor: theme.cardBackground }]}>
@@ -37,23 +53,62 @@ export default function SetHistoryItem({
         </View>
         
         <View style={styles.details}>
-          <View style={styles.detailItem}>
-            <Text style={[styles.detailValue, { color: theme.text }]}>
-              {set.reps}
-            </Text>
-            <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
-              Reps
-            </Text>
-          </View>
-          
-          <View style={styles.detailItem}>
-            <Text style={[styles.detailValue, { color: theme.text }]}>
-              {set.weight} {useMetricUnits ? "kg" : "lbs"}
-            </Text>
-            <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
-              Weight
-            </Text>
-          </View>
+          {(isCardio || isIsometric) ? (
+            <>
+              {set.duration > 0 && (
+                <View style={styles.detailItem}>
+                  <Text style={[styles.detailValue, { color: theme.text }]}>
+                    {formatDuration(set.duration)}
+                  </Text>
+                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                    Duration
+                  </Text>
+                </View>
+              )}
+              
+              {isCardio && set.distance > 0 && (
+                <View style={styles.detailItem}>
+                  <Text style={[styles.detailValue, { color: theme.text }]}>
+                    {formatDistance(set.distance)}
+                  </Text>
+                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                    Distance
+                  </Text>
+                </View>
+              )}
+              
+              {set.reps > 0 && (
+                <View style={styles.detailItem}>
+                  <Text style={[styles.detailValue, { color: theme.text }]}>
+                    {set.reps}
+                  </Text>
+                  <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                    Reps
+                  </Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <>
+              <View style={styles.detailItem}>
+                <Text style={[styles.detailValue, { color: theme.text }]}>
+                  {set.reps}
+                </Text>
+                <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                  Reps
+                </Text>
+              </View>
+              
+              <View style={styles.detailItem}>
+                <Text style={[styles.detailValue, { color: theme.text }]}>
+                  {set.weight} {useMetricUnits ? "kg" : "lbs"}
+                </Text>
+                <Text style={[styles.detailLabel, { color: theme.textSecondary }]}>
+                  Weight
+                </Text>
+              </View>
+            </>
+          )}
           
           <View style={styles.detailItem}>
             <Text style={[styles.detailValue, { color: theme.text }]}>

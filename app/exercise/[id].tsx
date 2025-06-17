@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, ScrollView, Alert, TextInput } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { calculateJoules, formatEnergy } from "@/utils/energy-utils";
-import { Trash2 } from "lucide-react-native";
+import { Trash2, Clock } from "lucide-react-native";
 import SetInput from "@/components/SetInput";
 import SetHistoryItem from "@/components/SetHistoryItem";
 import { checkMilestone } from "@/utils/milestone-utils";
@@ -16,11 +16,13 @@ export default function ExerciseDetailScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const { exercises, sets, addSet, removeSet, getTotalJoules } = useExerciseStore();
-  const { useMetricUnits, usePseudoJoules } = useSettingsStore();
+  const { useMetricUnits, usePseudoJoules, bodyWeight } = useSettingsStore();
   
   const [activeTab, setActiveTab] = useState("log");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
+  const [duration, setDuration] = useState(""); // For cardio/isometric exercises
+  const [distance, setDistance] = useState(""); // For cardio exercises
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lastAddedSet, setLastAddedSet] = useState<any>(null);
   const [totalJoules, setTotalJoules] = useState(0);
@@ -41,18 +43,64 @@ export default function ExerciseDetailScreen() {
     return null;
   }
 
+  const checkBodyWeightRequired = () => {
+    if (exercise.requiresBodyWeight && (!bodyWeight || bodyWeight <= 0)) {
+      Alert.alert(
+        "Body Weight Required",
+        "This exercise requires your body weight for accurate energy calculation. Please set your body weight in Settings.",
+        [
+          { text: "Cancel", style: "cancel" },
+          { 
+            text: "Go to Settings", 
+            onPress: () => router.push("/settings")
+          }
+        ]
+      );
+      return false;
+    }
+    return true;
+  };
+
   const handleAddSet = () => {
-    if (!reps || !weight) {
-      Alert.alert("Missing Information", "Please enter both reps and weight.");
+    // Check if body weight is required and set
+    if (!checkBodyWeightRequired()) {
       return;
     }
 
-    const repsNum = parseInt(reps, 10);
-    const weightNum = parseFloat(weight);
-    
-    if (isNaN(repsNum) || isNaN(weightNum) || repsNum <= 0 || weightNum <= 0) {
-      Alert.alert("Invalid Input", "Please enter valid numbers for reps and weight.");
-      return;
+    // Validate inputs based on exercise type
+    if (exercise.isCardio || exercise.isIsometric) {
+      if (!duration) {
+        Alert.alert("Missing Information", "Please enter the duration.");
+        return;
+      }
+      
+      if (exercise.isCardio && !distance && !reps) {
+        Alert.alert("Missing Information", "Please enter either distance or repetitions.");
+        return;
+      }
+    } else {
+      if (!reps || !weight) {
+        Alert.alert("Missing Information", "Please enter both reps and weight.");
+        return;
+      }
+    }
+
+    const repsNum = parseInt(reps, 10) || 0;
+    const weightNum = parseFloat(weight) || 0;
+    const durationNum = parseInt(duration, 10) || 0; // in seconds
+    const distanceNum = parseFloat(distance) || 0; // in meters/km
+
+    // Validate numeric inputs
+    if (exercise.isCardio || exercise.isIsometric) {
+      if (durationNum <= 0) {
+        Alert.alert("Invalid Input", "Please enter a valid duration.");
+        return;
+      }
+    } else {
+      if (repsNum <= 0 || weightNum < 0) {
+        Alert.alert("Invalid Input", "Please enter valid numbers for reps and weight.");
+        return;
+      }
     }
 
     const joules = calculateJoules({
@@ -61,6 +109,10 @@ export default function ExerciseDetailScreen() {
       useMetricUnits,
       displacement: exercise.displacement,
       usePseudoJoules,
+      exercise,
+      bodyWeight,
+      duration: durationNum,
+      distance: distanceNum
     });
 
     // Store the current total joules before adding the new set
@@ -74,6 +126,8 @@ export default function ExerciseDetailScreen() {
       reps: repsNum,
       weight: weightNum,
       joules,
+      duration: durationNum,
+      distance: distanceNum
     };
 
     addSet(newSet);
@@ -127,6 +181,12 @@ export default function ExerciseDetailScreen() {
     setShowConfirmation(false);
   };
 
+  const formatDuration = (seconds: number) => {
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ title: exercise.name }} />
@@ -169,26 +229,136 @@ export default function ExerciseDetailScreen() {
 
       {activeTab === "log" ? (
         <View style={styles.logContainer}>
-          <SetInput
-            reps={reps}
-            weight={weight}
-            onRepsChange={setReps}
-            onWeightChange={setWeight}
-            useMetricUnits={useMetricUnits}
-            onAddSet={handleAddSet}
-          />
+          {exercise.isCardio || exercise.isIsometric ? (
+            <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
+              <Text style={[styles.title, { color: theme.text }]}>
+                Log {exercise.isCardio ? "Cardio" : "Isometric"} Exercise
+              </Text>
+              
+              <View style={styles.inputRow}>
+                <View style={styles.inputGroup}>
+                  <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                    Duration (min:sec)
+                  </Text>
+                  <View style={styles.durationContainer}>
+                    <Clock size={20} color={theme.textSecondary} style={styles.durationIcon} />
+                    <TextInput
+                      style={[
+                        styles.input,
+                        { 
+                          backgroundColor: theme.inputBackground,
+                          color: theme.text,
+                          borderColor: theme.border,
+                        }
+                      ]}
+                      value={duration}
+                      onChangeText={setDuration}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="number-pad"
+                    />
+                    <Text style={[styles.durationLabel, { color: theme.textSecondary }]}>seconds</Text>
+                  </View>
+                </View>
+              </View>
+              
+              {exercise.isCardio && (
+                <View style={styles.inputRow}>
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Distance ({useMetricUnits ? "km" : "miles"})
+                    </Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        { 
+                          backgroundColor: theme.inputBackground,
+                          color: theme.text,
+                          borderColor: theme.border,
+                        }
+                      ]}
+                      value={distance}
+                      onChangeText={setDistance}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="decimal-pad"
+                    />
+                  </View>
+                  
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Reps (optional)
+                    </Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        { 
+                          backgroundColor: theme.inputBackground,
+                          color: theme.text,
+                          borderColor: theme.border,
+                        }
+                      ]}
+                      value={reps}
+                      onChangeText={setReps}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="number-pad"
+                    />
+                  </View>
+                </View>
+              )}
+              
+              {exercise.requiresBodyWeight && (
+                <View style={styles.bodyWeightInfo}>
+                  <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
+                    Using body weight: {bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
+                  </Text>
+                </View>
+              )}
+              
+              <TouchableOpacity
+                style={[styles.addButton, { backgroundColor: theme.primary }]}
+                onPress={handleAddSet}
+              >
+                <Text style={styles.buttonText}>Log Activity</Text>
+              </TouchableOpacity>
+            </View>
+          ) : (
+            <SetInput
+              reps={reps}
+              weight={weight}
+              onRepsChange={setReps}
+              onWeightChange={setWeight}
+              useMetricUnits={useMetricUnits}
+              onAddSet={handleAddSet}
+              requiresBodyWeight={exercise.requiresBodyWeight}
+              bodyWeight={bodyWeight}
+            />
+          )}
           
           <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
             <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
             <Text style={[styles.infoText, { color: theme.textSecondary }]}>
               Category: {exercise.category}
             </Text>
-            <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-              Displacement: {exercise.displacement} meters
-            </Text>
+            {!exercise.isIsometric && (
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                Displacement: {exercise.displacement} meters
+              </Text>
+            )}
+            {exercise.isCardio && exercise.metValue && (
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                MET Value: {exercise.metValue} (intensity measure)
+              </Text>
+            )}
             <Text style={[styles.infoText, { color: theme.textSecondary }]}>
               Energy calculation: {usePseudoJoules ? "Simplified" : "Standard"} joules
             </Text>
+            {exercise.requiresBodyWeight && (
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                This exercise uses your body weight in calculations
+              </Text>
+            )}
           </View>
         </View>
       ) : (
@@ -200,6 +370,8 @@ export default function ExerciseDetailScreen() {
                 set={set}
                 useMetricUnits={useMetricUnits}
                 onDelete={() => handleDeleteSet(set.id)}
+                isCardio={exercise.isCardio}
+                isIsometric={exercise.isIsometric}
               />
             ))
           ) : (
@@ -249,6 +421,65 @@ const styles = StyleSheet.create({
   historyContainer: {
     flex: 1,
     padding: 16,
+  },
+  cardioInputContainer: {
+    padding: 16,
+    borderRadius: 8,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 16,
+  },
+  inputRow: {
+    flexDirection: "row",
+    marginBottom: 16,
+  },
+  inputGroup: {
+    flex: 1,
+    marginHorizontal: 4,
+  },
+  inputLabel: {
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  input: {
+    height: 48,
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    fontSize: 16,
+  },
+  durationContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  durationIcon: {
+    marginRight: 8,
+  },
+  durationLabel: {
+    marginLeft: 8,
+    fontSize: 14,
+  },
+  bodyWeightInfo: {
+    marginBottom: 16,
+  },
+  bodyWeightText: {
+    fontSize: 14,
+    fontStyle: "italic",
+  },
+  addButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    height: 48,
+    borderRadius: 8,
+    marginTop: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
   },
   infoCard: {
     padding: 16,

@@ -140,6 +140,62 @@ const CONFIRMATION_MESSAGES = [
   }
 ];
 
+// Cardio-specific messages
+const CARDIO_MESSAGES = [
+  {
+    title: "Cardio Boost!",
+    message: "{duration} seconds of {exercise} complete! You've earned {energy} J."
+  },
+  {
+    title: "Endurance Champion!",
+    message: "You crushed {exercise} for {duration} seconds—that's {energy} J added to your power level!"
+  },
+  {
+    title: "Distance Crusher!",
+    message: "You covered {distance} {dist_unit} in {duration} seconds—adding {energy} J to your total!"
+  },
+  {
+    title: "Cardio Power!",
+    message: "{exercise} for {duration} seconds → +{energy} J. Your heart is getting stronger!"
+  },
+  {
+    title: "Endurance Builder!",
+    message: "Great cardio session! {duration} seconds of {exercise} = {energy} J earned."
+  },
+  {
+    title: "Cardio King!",
+    message: "You just dominated {exercise} for {duration} seconds. That's {energy} J in the bank!"
+  },
+  {
+    title: "Steady Progress!",
+    message: "{duration} seconds of {exercise} logged. You've earned {energy} J toward your next milestone!"
+  }
+];
+
+// Isometric-specific messages
+const ISOMETRIC_MESSAGES = [
+  {
+    title: "Hold Strong!",
+    message: "You held {exercise} for {duration} seconds! That's {energy} J added to your power level."
+  },
+  {
+    title: "Static Strength!",
+    message: "{duration}-second {exercise} complete! You've earned {energy} J for your effort."
+  },
+  {
+    title: "Isometric Power!",
+    message: "Impressive {duration}-second hold on {exercise}! That's {energy} J added to your total."
+  },
+  {
+    title: "Core Stability!",
+    message: "You maintained {exercise} for {duration} seconds—adding {energy} J to your power level!"
+  },
+  {
+    title: "Tension Builder!",
+    message: "Great isometric work! {duration} seconds of {exercise} = {energy} J earned."
+  }
+];
+
 export default function SetConfirmationDialog({
   visible,
   onClose,
@@ -184,24 +240,58 @@ export default function SetConfirmationDialog({
   
   if (!set || !exercise) return null;
   
+  // Select appropriate message array based on exercise type
+  let messageArray = CONFIRMATION_MESSAGES;
+  if (exercise.isCardio && set.duration) {
+    messageArray = CARDIO_MESSAGES;
+  } else if (exercise.isIsometric && set.duration) {
+    messageArray = ISOMETRIC_MESSAGES;
+  }
+  
   // Select a random message
-  const randomIndex = Math.floor(Math.random() * CONFIRMATION_MESSAGES.length);
-  const selectedMessage = CONFIRMATION_MESSAGES[randomIndex];
+  const randomIndex = Math.floor(Math.random() * messageArray.length);
+  const selectedMessage = messageArray[randomIndex];
   
   // Format the energy values
   const energyFormatted = formatEnergy(set.joules);
   const totalEnergyFormatted = formatEnergy(totalJoules);
   
+  // Format duration if available
+  const formatDuration = (seconds: number) => {
+    if (!seconds) return "0";
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return minutes > 0 
+      ? `${minutes}m ${remainingSeconds}s` 
+      : `${remainingSeconds}s`;
+  };
+  
   // Replace placeholders in the message
   const formatMessage = (text: string) => {
-    return text
-      .replace("{reps}", set.reps.toString())
-      .replace("{weight}", set.weight.toString())
-      .replace("{unit}", useMetricUnits ? "kg" : "lbs")
+    let formattedText = text
       .replace("{exercise}", exercise.name)
       .replace("{energy}", energyFormatted.abbreviated)
       .replace("{total_energy}", totalEnergyFormatted.abbreviated)
       .replace("{best_unit}", totalEnergyFormatted.abbreviated.split(" ")[1]);
+    
+    // Add exercise-specific replacements
+    if (exercise.isCardio || exercise.isIsometric) {
+      formattedText = formattedText
+        .replace("{duration}", formatDuration(set.duration || 0));
+      
+      if (set.distance) {
+        formattedText = formattedText
+          .replace("{distance}", set.distance.toString())
+          .replace("{dist_unit}", useMetricUnits ? "km" : "miles");
+      }
+    } else {
+      formattedText = formattedText
+        .replace("{reps}", set.reps.toString())
+        .replace("{weight}", set.weight.toString())
+        .replace("{unit}", useMetricUnits ? "kg" : "lbs");
+    }
+    
+    return formattedText;
   };
   
   const title = formatMessage(selectedMessage.title);

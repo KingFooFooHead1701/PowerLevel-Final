@@ -25,6 +25,10 @@ export default function CustomExerciseScreen() {
   const [category, setCategory] = useState("Custom");
   const [displacement, setDisplacement] = useState("0.5");
   const [description, setDescription] = useState("");
+  const [requiresBodyWeight, setRequiresBodyWeight] = useState(false);
+  const [isCardio, setIsCardio] = useState(false);
+  const [isIsometric, setIsIsometric] = useState(false);
+  const [metValue, setMetValue] = useState("");
   const [showCategoryPicker, setShowCategoryPicker] = useState(false);
 
   const categories = [
@@ -49,6 +53,16 @@ export default function CustomExerciseScreen() {
       Alert.alert("Invalid Input", "Please enter a valid displacement value (0 or greater).");
       return;
     }
+
+    let metValueNum = 0;
+    if (isCardio && metValue) {
+      metValueNum = parseFloat(metValue);
+      if (isNaN(metValueNum) || metValueNum <= 0) {
+        Alert.alert("Invalid Input", "Please enter a valid MET value for cardio exercise.");
+        return;
+      }
+    }
+
     const id = `custom-${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
     const newExercise: Exercise = {
       id,
@@ -56,6 +70,10 @@ export default function CustomExerciseScreen() {
       category,
       displacement: displacementValue,
       description: description.trim(),
+      requiresBodyWeight: requiresBodyWeight,
+      isCardio: isCardio,
+      isIsometric: isIsometric,
+      metValue: metValueNum > 0 ? metValueNum : undefined,
     };
     addExercise(newExercise);
     Alert.alert("Exercise Added", `${name} has been added.`, [
@@ -73,7 +91,10 @@ export default function CustomExerciseScreen() {
       {/* custom header */}
       <SafeAreaView edges={["top"]} style={[styles.safeArea, { backgroundColor: theme.background }]}>
         <View style={[styles.header, { backgroundColor: theme.background }]}>
-          <TouchableOpacity onPress={handleGoBack} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
+          <TouchableOpacity 
+            onPress={handleGoBack} 
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          >
             <ChevronLeft size={24} color={theme.text} />
           </TouchableOpacity>
           <Text style={[styles.headerTitle, { color: theme.text }]}>Add Custom Exercise</Text>
@@ -142,6 +163,84 @@ export default function CustomExerciseScreen() {
             Displacement is the vertical distance moved per rep.
           </Text>
 
+          <View style={styles.checkboxContainer}>
+            <TouchableOpacity
+              style={[
+                styles.checkbox,
+                { borderColor: theme.border },
+                requiresBodyWeight && { backgroundColor: theme.primary, borderColor: theme.primary }
+              ]}
+              onPress={() => setRequiresBodyWeight(!requiresBodyWeight)}
+            >
+              {requiresBodyWeight && <View style={styles.checkboxInner} />}
+            </TouchableOpacity>
+            <Text style={[styles.checkboxLabel, { color: theme.text }]}>
+              Requires Body Weight
+            </Text>
+          </View>
+
+          <View style={styles.checkboxContainer}>
+            <TouchableOpacity
+              style={[
+                styles.checkbox,
+                { borderColor: theme.border },
+                isCardio && { backgroundColor: theme.primary, borderColor: theme.primary }
+              ]}
+              onPress={() => {
+                setIsCardio(!isCardio);
+                if (!isCardio) {
+                  setIsIsometric(false); // Can't be both cardio and isometric
+                }
+              }}
+            >
+              {isCardio && <View style={styles.checkboxInner} />}
+            </TouchableOpacity>
+            <Text style={[styles.checkboxLabel, { color: theme.text }]}>
+              Cardio Exercise
+            </Text>
+          </View>
+
+          {isCardio && (
+            <>
+              <Text style={[styles.label, { color: theme.text }]}>MET Value (optional)</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
+                ]}
+                placeholder="Enter MET value (e.g., 5.0)"
+                placeholderTextColor={theme.textSecondary}
+                value={metValue}
+                onChangeText={setMetValue}
+                keyboardType="decimal-pad"
+              />
+              <Text style={[styles.helperText, { color: theme.textSecondary }]}>
+                MET (Metabolic Equivalent of Task) helps calculate energy expenditure.
+              </Text>
+            </>
+          )}
+
+          <View style={styles.checkboxContainer}>
+            <TouchableOpacity
+              style={[
+                styles.checkbox,
+                { borderColor: theme.border },
+                isIsometric && { backgroundColor: theme.primary, borderColor: theme.primary }
+              ]}
+              onPress={() => {
+                setIsIsometric(!isIsometric);
+                if (!isIsometric) {
+                  setIsCardio(false); // Can't be both isometric and cardio
+                }
+              }}
+            >
+              {isIsometric && <View style={styles.checkboxInner} />}
+            </TouchableOpacity>
+            <Text style={[styles.checkboxLabel, { color: theme.text }]}>
+              Isometric Exercise (time-based)
+            </Text>
+          </View>
+
           <Text style={[styles.label, { color: theme.text }]}>Description (Optional)</Text>
           <TextInput
             style={[
@@ -188,6 +287,10 @@ const styles = StyleSheet.create({
   categorySelector: { height: 48, borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, justifyContent: "center", marginBottom: 16 },
   categoryList: { borderRadius: 8, borderWidth: 1, marginBottom: 16, maxHeight: 200 },
   categoryItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.1)" },
+  checkboxContainer: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
+  checkbox: { width: 20, height: 20, borderRadius: 4, borderWidth: 2, marginRight: 8, justifyContent: "center", alignItems: "center" },
+  checkboxInner: { width: 10, height: 10, backgroundColor: "#fff", borderRadius: 2 },
+  checkboxLabel: { fontSize: 16 },
   saveButton: { flexDirection: "row", alignItems: "center", justifyContent: "center", height: 56, borderRadius: 8, margin: 16 },
   buttonIcon: { marginRight: 8 },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "600" },

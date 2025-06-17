@@ -16,7 +16,7 @@ export const useSettingsStore = create<SettingsState>()(
     (set) => ({
       useMetricUnits: false,
       usePseudoJoules: false,
-      bodyWeight: 70, // Default body weight in kg
+      bodyWeight: 0, // Default to 0 to indicate not set
       
       toggleUseMetricUnits: () => set((state) => ({ useMetricUnits: !state.useMetricUnits })),
       toggleUsePseudoJoules: () => set((state) => ({ usePseudoJoules: !state.usePseudoJoules })),
