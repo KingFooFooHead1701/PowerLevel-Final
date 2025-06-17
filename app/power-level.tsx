@@ -115,37 +115,37 @@ export default function PowerLevelScreen() {
     const firstPass = Animated.timing(scannerAnim, {
       toValue: 1,
       duration: 800,
-      easing: Easing.inOut(Easing.ease),
+      easing: Easing.inOut(Easing.quad),
       useNativeDriver: Platform.OS !== "web",
     });
     const secondPass = Animated.timing(scannerAnim, {
       toValue: 0,
       duration: 1000,
-      easing: Easing.inOut(Easing.ease),
+      easing: Easing.inOut(Easing.quad),
       useNativeDriver: Platform.OS !== "web",
     });
     const thirdPass = Animated.timing(scannerAnim, {
       toValue: 1,
       duration: 1200,
-      easing: Easing.inOut(Easing.ease),
+      easing: Easing.inOut(Easing.quad),
       useNativeDriver: Platform.OS !== "web",
     });
     const reveal = Animated.timing(valueOpacityAnim, {
       toValue: 1,
       duration: 500,
-      easing: Easing.out(Easing.cubic),
+      easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     });
     const fullJoulesReveal = Animated.timing(fullJoulesOpacityAnim, {
       toValue: 1,
       duration: 500,
-      easing: Easing.out(Easing.cubic),
+      easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     });
     const tierReveal = Animated.timing(tierOpacityAnim, {
       toValue: 1,
       duration: 300,
-      easing: Easing.out(Easing.cubic),
+      easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     });
     
@@ -153,14 +153,14 @@ export default function PowerLevelScreen() {
     const tierScaleUp = Animated.timing(tierScaleAnim, {
       toValue: 1.3,
       duration: 300,
-      easing: Easing.out(Easing.back),
+      easing: Easing.out(Easing.ease),
       useNativeDriver: true,
     });
     
     const tierScaleDown = Animated.timing(tierScaleAnim, {
       toValue: 1,
       duration: 400,
-      easing: Easing.elastic(1),
+      easing: Easing.bounce,
       useNativeDriver: true,
     });
 
@@ -170,13 +170,14 @@ export default function PowerLevelScreen() {
       reveal.start(() => {
         setTimeout(() => fullJoulesReveal.start(), 200);
         setTimeout(() => {
+          // Play thump sound right when tier appears
+          playThump();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
           tierReveal.start();
-          // Wait a moment after tier starts to appear before playing thump and scaling
+          // Start scale animation immediately with the tier reveal
           setTimeout(() => {
-            playThump();
-            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
             Animated.sequence([tierScaleUp, tierScaleDown]).start();
-          }, 300);
+          }, 100);
         }, 500);
       });
     });
