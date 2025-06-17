@@ -38,15 +38,23 @@ export default function PowerLevelScreen() {
       try {
         if (Platform.OS !== "web") {
           // Create and load the sounds
-          const { sound: scanner } = await Audio.Sound.createAsync(
-            require('@/assets/sounds/beep.mp3')
-          );
-          scannerSound.current = scanner;
+          try {
+            const { sound: scanner } = await Audio.Sound.createAsync(
+              require('@/assets/sounds/beep.mp3')
+            );
+            scannerSound.current = scanner;
+          } catch (error) {
+            console.log("Error loading beep sound:", error);
+          }
           
-          const { sound: reveal } = await Audio.Sound.createAsync(
-            require('@/assets/sounds/chirp.mp3')
-          );
-          revealSound.current = reveal;
+          try {
+            const { sound: reveal } = await Audio.Sound.createAsync(
+              require('@/assets/sounds/chirp.mp3')
+            );
+            revealSound.current = reveal;
+          } catch (error) {
+            console.log("Error loading chirp sound:", error);
+          }
           
           setSoundsLoaded(true);
         } else {

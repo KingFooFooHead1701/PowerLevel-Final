@@ -22,17 +22,21 @@ export default function MilestoneScreen() {
           Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
           
           // Play celebration sound
-          const { sound } = await Audio.Sound.createAsync(
-            require('@/assets/sounds/thump.mp3')
-          );
-          await sound.playAsync();
-          
-          // Unload sound when done
-          sound.setOnPlaybackStatusUpdate((status) => {
-            if (status.isLoaded && status.isPlaying === false && status.positionMillis > 0) {
-              sound.unloadAsync();
-            }
-          });
+          try {
+            const { sound } = await Audio.Sound.createAsync(
+              require('@/assets/sounds/thump.mp3')
+            );
+            await sound.playAsync();
+            
+            // Unload sound when done
+            sound.setOnPlaybackStatusUpdate((status) => {
+              if (status.isLoaded && status.isPlaying === false && status.positionMillis > 0) {
+                sound.unloadAsync();
+              }
+            });
+          } catch (error) {
+            console.log("Error playing celebration sound:", error);
+          }
         } catch (error) {
           console.log("Error playing celebration:", error);
         }

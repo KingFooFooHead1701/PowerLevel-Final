@@ -161,17 +161,21 @@ export default function SetConfirmationDialog({
   const playConfirmationSound = async () => {
     if (Platform.OS !== "web") {
       try {
-        const { sound } = await Audio.Sound.createAsync(
-          require('@/assets/sounds/hammertink.mp3')
-        );
-        await sound.playAsync();
-        
-        // Unload sound when done
-        sound.setOnPlaybackStatusUpdate((status) => {
-          if (status.isLoaded && status.isPlaying === false && status.positionMillis > 0) {
-            sound.unloadAsync();
-          }
-        });
+        try {
+          const { sound } = await Audio.Sound.createAsync(
+            require('@/assets/sounds/hammertink.mp3')
+          );
+          await sound.playAsync();
+          
+          // Unload sound when done
+          sound.setOnPlaybackStatusUpdate((status) => {
+            if (status.isLoaded && status.isPlaying === false && status.positionMillis > 0) {
+              sound.unloadAsync();
+            }
+          });
+        } catch (error) {
+          console.log("Error playing confirmation sound:", error);
+        }
       } catch (error) {
         console.log("Error playing confirmation sound:", error);
       }
