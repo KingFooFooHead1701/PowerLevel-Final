@@ -23,14 +23,14 @@ export default function SetHistoryItem({
 }: SetHistoryItemProps) {
   const { theme } = useTheme();
   
-  const formatDuration = (seconds: number) => {
+  const formatDuration = (seconds: number): string => {
     if (!seconds) return "N/A";
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const formatDistance = (distance: number) => {
+  const formatDistance = (distance: number): string => {
     if (!distance) return "N/A";
     return `${distance} ${useMetricUnits ? "km" : "mi"}`;
   };
@@ -55,7 +55,7 @@ export default function SetHistoryItem({
         <View style={styles.details}>
           {(isCardio || isIsometric) ? (
             <>
-              {set.duration > 0 && (
+              {set.duration && set.duration > 0 && (
                 <View style={styles.detailItem}>
                   <Text style={[styles.detailValue, { color: theme.text }]}>
                     {formatDuration(set.duration)}
@@ -66,7 +66,7 @@ export default function SetHistoryItem({
                 </View>
               )}
               
-              {isCardio && set.distance > 0 && (
+              {isCardio && set.distance && set.distance > 0 && (
                 <View style={styles.detailItem}>
                   <Text style={[styles.detailValue, { color: theme.text }]}>
                     {formatDistance(set.distance)}
