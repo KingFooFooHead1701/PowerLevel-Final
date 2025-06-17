@@ -3,6 +3,7 @@ export const themes = {
     primary: "#FF6B00",
     secondary: "#0066FF",
     background: "#121212",
+    backgroundSecondary: "#1A1A1A",
     cardBackground: "#1E1E1E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -14,6 +15,7 @@ export const themes = {
     primary: "#4169E1",
     secondary: "#FFD700",
     background: "#0A0A1A",
+    backgroundSecondary: "#101028",
     cardBackground: "#141428",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -25,6 +27,7 @@ export const themes = {
     primary: "#2E8B57",
     secondary: "#9932CC",
     background: "#0F1A0F",
+    backgroundSecondary: "#152415",
     cardBackground: "#1A2E1A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -36,6 +39,7 @@ export const themes = {
     primary: "#DC143C",
     secondary: "#000000",
     background: "#1A0A0A",
+    backgroundSecondary: "#241414",
     cardBackground: "#2E1414",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -47,6 +51,7 @@ export const themes = {
     primary: "#D2B48C",
     secondary: "#008080",
     background: "#1A1A14",
+    backgroundSecondary: "#242418",
     cardBackground: "#2E2E1E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -58,6 +63,7 @@ export const themes = {
     primary: "#9370DB",
     secondary: "#F0E68C",
     background: "#14141A",
+    backgroundSecondary: "#1A1A24",
     cardBackground: "#1E1E2E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -69,6 +75,7 @@ export const themes = {
     primary: "#483D8B",
     secondary: "#800080",
     background: "#0A0A14",
+    backgroundSecondary: "#10101E",
     cardBackground: "#14142E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -80,6 +87,7 @@ export const themes = {
     primary: "#1E90FF",
     secondary: "#FFFFFF",
     background: "#0A141E",
+    backgroundSecondary: "#101C28",
     cardBackground: "#142838",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -91,6 +99,7 @@ export const themes = {
     primary: "#FF7F50",
     secondary: "#D3D3D3",
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2E2E2E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -102,6 +111,7 @@ export const themes = {
     primary: "#FF6347",
     secondary: "#2E8B57",
     background: "#1A1410",
+    backgroundSecondary: "#241C14",
     cardBackground: "#2E2418",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -113,6 +123,7 @@ export const themes = {
     primary: "#00CED1",
     secondary: "#708090",
     background: "#0A0A0A",
+    backgroundSecondary: "#141414",
     cardBackground: "#1E1E1E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -124,6 +135,7 @@ export const themes = {
     primary: "#FFB6C1",
     secondary: "#C0C0C0",
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2E2E2E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -136,6 +148,7 @@ export const themes = {
     primary: "#FF9500",
     secondary: "#FF2D55",
     background: "#1A1000",
+    backgroundSecondary: "#241800",
     cardBackground: "#2E1A00",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -147,6 +160,7 @@ export const themes = {
     primary: "#00BF63",
     secondary: "#FF9500",
     background: "#0A1A0A",
+    backgroundSecondary: "#102010",
     cardBackground: "#142814",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -158,6 +172,7 @@ export const themes = {
     primary: "#FF2D55",
     secondary: "#000000",
     background: "#1A0000",
+    backgroundSecondary: "#240000",
     cardBackground: "#2E0000",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -169,6 +184,7 @@ export const themes = {
     primary: "#000000",
     secondary: "#FF2D55",
     background: "#0A0A0A",
+    backgroundSecondary: "#141414",
     cardBackground: "#1E1E1E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -180,6 +196,7 @@ export const themes = {
     primary: "#5AC8FA",
     secondary: "#FFFFFF",
     background: "#0A141E",
+    backgroundSecondary: "#101C28",
     cardBackground: "#142838",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -191,6 +208,7 @@ export const themes = {
     primary: "#FF3B30",
     secondary: "#FFCC00",
     background: "#00081A",
+    backgroundSecondary: "#000E24",
     cardBackground: "#001428",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -202,6 +220,7 @@ export const themes = {
     primary: "#34C759",
     secondary: "#000000",
     background: "#0A1400",
+    backgroundSecondary: "#101C00",
     cardBackground: "#142800",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -213,6 +232,7 @@ export const themes = {
     primary: "#FF9500",
     secondary: "#0066FF",
     background: "#1A0A00",
+    backgroundSecondary: "#241000",
     cardBackground: "#2E1400",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -224,6 +244,7 @@ export const themes = {
     primary: "#FF3B30",
     secondary: "#5856D6",
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2E2E2E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -235,6 +256,7 @@ export const themes = {
     primary: "#FF2D55",
     secondary: "#FF9500",
     background: "#1A0A14",
+    backgroundSecondary: "#24101C",
     cardBackground: "#2E1428",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -246,6 +268,7 @@ export const themes = {
     primary: "#FF3B30",
     secondary: "#FFD700",
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2E2E2E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -257,6 +280,7 @@ export const themes = {
     primary: "#5856D6",
     secondary: "#FFCC00",
     background: "#0A0A1A",
+    backgroundSecondary: "#101024",
     cardBackground: "#141428",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -270,6 +294,7 @@ export const themes = {
     primary: "#FF6B00", // Orange Blaze
     secondary: "#0066FF", // Deep Blue
     background: "#1A1A1A", // Dark background
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A", // Slate Gray background
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -281,6 +306,7 @@ export const themes = {
     primary: "#DC143C", // Crimson Red
     secondary: "#483D8B", // Cool Indigo
     background: "#0A0A0A", // Midnight Black
+    backgroundSecondary: "#141414",
     cardBackground: "#1A1A1A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -292,6 +318,7 @@ export const themes = {
     primary: "#708090", // Smoky Gray
     secondary: "#228B22", // Leaf Green
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -303,6 +330,7 @@ export const themes = {
     primary: "#FFB6C1", // Soft Pink
     secondary: "#228B22", // Forest Green
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -314,6 +342,7 @@ export const themes = {
     primary: "#D2B48C", // Desert Tan
     secondary: "#800000", // Maroon
     background: "#1A1A14",
+    backgroundSecondary: "#24241C",
     cardBackground: "#2A2A1E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -326,6 +355,7 @@ export const themes = {
     primary: "#FF8C00", // Bright Orange
     secondary: "#FFFFFF", // Ice White
     background: "#0A0A0A", // Jet Black
+    backgroundSecondary: "#141414",
     cardBackground: "#1A1A1A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -337,6 +367,7 @@ export const themes = {
     primary: "#87CEFA", // Ice Blue
     secondary: "#FFFFFF", // Snow White
     background: "#0A0A0A", // Onyx Black
+    backgroundSecondary: "#141414",
     cardBackground: "#1A1A1A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -348,6 +379,7 @@ export const themes = {
     primary: "#9370DB", // Royal Purple
     secondary: "#FFFFFF", // Pearl White
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A", // Steel Gray
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -359,6 +391,7 @@ export const themes = {
     primary: "#B22222", // Blood Red
     secondary: "#FFFFFF", // Bone White
     background: "#1A1A1A", // Charcoal
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -370,6 +403,7 @@ export const themes = {
     primary: "#00BFFF", // Arctic Blue
     secondary: "#008080", // Dark Teal
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A", // Silver
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -382,6 +416,7 @@ export const themes = {
     primary: "#FF0000", // Pirate Red
     secondary: "#FFD700", // Straw Hat Yellow
     background: "#00008B", // Ocean Blue
+    backgroundSecondary: "#000099",
     cardBackground: "#000080",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -393,6 +428,7 @@ export const themes = {
     primary: "#2E8B57", // Emerald Green
     secondary: "#FFFFFF", // Bone White
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A", // Steel Gray
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -404,6 +440,7 @@ export const themes = {
     primary: "#FF4500", // Diablo Orange
     secondary: "#FFD700", // Flame Yellow
     background: "#0A0A0A", // Black
+    backgroundSecondary: "#141414",
     cardBackground: "#1A1A1A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -415,6 +452,7 @@ export const themes = {
     primary: "#FF8C00", // Tangerine
     secondary: "#FFD700", // Gold Accent
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -426,6 +464,7 @@ export const themes = {
     primary: "#20B2AA", // Hospital Green
     secondary: "#FFFFFF", // Surgical White
     background: "#0A0A0A", // Black
+    backgroundSecondary: "#141414",
     cardBackground: "#1A1A1A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -438,6 +477,7 @@ export const themes = {
     primary: "#00FF00", // Neon Green
     secondary: "#000000", // Black
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -449,6 +489,7 @@ export const themes = {
     primary: "#FFD700", // Gold
     secondary: "#4B0082", // Indigo
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -460,6 +501,7 @@ export const themes = {
     primary: "#1E90FF", // Dodger Blue
     secondary: "#00FFFF", // Cyan
     background: "#0A0A14",
+    backgroundSecondary: "#10101E",
     cardBackground: "#14142E",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -471,6 +513,7 @@ export const themes = {
     primary: "#FF4500", // Orange Red
     secondary: "#FFD700", // Gold
     background: "#1A0A00",
+    backgroundSecondary: "#241000",
     cardBackground: "#2E1400",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",
@@ -482,6 +525,7 @@ export const themes = {
     primary: "#E6E6FA", // Lavender
     secondary: "#9370DB", // Medium Purple
     background: "#1A1A1A",
+    backgroundSecondary: "#242424",
     cardBackground: "#2A2A2A",
     text: "#FFFFFF",
     textSecondary: "#B0B0B0",

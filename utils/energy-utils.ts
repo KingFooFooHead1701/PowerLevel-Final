@@ -9,6 +9,7 @@ export interface JoulesCalculationParams {
     isCardio?: boolean;
     isIsometric?: boolean;
     metValue?: number;
+    name?: string; // Added name property to fix TypeScript errors
   };
   bodyWeight?: number;
   distance?: number; // in meters or km, for cardio exercises
@@ -154,9 +155,9 @@ export function calculateJoules({
     let metValue: number;
     
     // Check if this is a treadmill exercise
-    const isTreadmill = exercise.name?.toLowerCase().includes("treadmill");
-    const isWalking = isTreadmill && exercise.name?.toLowerCase().includes("walk");
-    const isRunning = isTreadmill && exercise.name?.toLowerCase().includes("run");
+    const isTreadmill = exercise.name?.toLowerCase().includes("treadmill") || false;
+    const isWalking = isTreadmill && exercise.name?.toLowerCase().includes("walk") || false;
+    const isRunning = isTreadmill && exercise.name?.toLowerCase().includes("run") || false;
     
     if (isTreadmill) {
       // For treadmill exercises, calculate MET dynamically based on speed and incline
