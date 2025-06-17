@@ -3,9 +3,6 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Exercise, defaultExercises } from "@/constants/exercises";
 
-// Current schema version - increment this when making breaking changes to data structure
-const SCHEMA_VERSION = 2;
-
 export interface Set {
   id: string;
   exerciseId: string;
@@ -23,7 +20,6 @@ interface ExerciseState {
   exercises: Exercise[];
   sets: Set[];
   isLoading: boolean;
-  schemaVersion: number;
   addExercise: (exercise: Exercise) => void;
   updateExercise: (id: string, exercise: Partial<Exercise>) => void;
   removeExercise: (id: string) => void;
@@ -35,10 +31,9 @@ interface ExerciseState {
 export const useExerciseStore = create<ExerciseState>()(
   persist(
     (set, get) => ({
-      exercises: [],
+      exercises: defaultExercises,
       sets: [],
       isLoading: true,
-      schemaVersion: SCHEMA_VERSION,
       
       addExercise: (exercise) => 
         set((state) => ({
@@ -76,27 +71,9 @@ export const useExerciseStore = create<ExerciseState>()(
     {
       name: "power-level-data",
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => async (state) => {
+      onRehydrateStorage: () => (state) => {
         if (state) {
-          // Check if schema version has changed
-          if (!state.schemaVersion || state.schemaVersion !== SCHEMA_VERSION) {
-            // Schema version has changed, seed with default exercises
-            state.exercises = defaultExercises;
-            state.schemaVersion = SCHEMA_VERSION;
-            
-            // Store the current schema version in AsyncStorage
-            await AsyncStorage.setItem('exVersion', SCHEMA_VERSION.toString());
-          }
-          
           state.isLoading = false;
-        } else {
-          // First time initialization (no state)
-          const storedVersion = await AsyncStorage.getItem('exVersion');
-          
-          if (storedVersion !== SCHEMA_VERSION.toString()) {
-            // Either first run or schema version changed
-            await AsyncStorage.setItem('exVersion', SCHEMA_VERSION.toString());
-          }
         }
       },
     }
