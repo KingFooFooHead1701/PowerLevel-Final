@@ -78,8 +78,8 @@ export default function ExerciseDetailScreen() {
 
     // Validate inputs based on exercise type
     if (exercise.isCardio) {
-      if (!distance && !reps) {
-        Alert.alert("Missing Information", "Please enter either distance or repetitions.");
+      if (!distance) {
+        Alert.alert("Missing Information", "Please enter distance.");
         return;
       }
       
@@ -101,8 +101,8 @@ export default function ExerciseDetailScreen() {
 
     // Validate numeric inputs
     if (exercise.isCardio) {
-      if ((distanceNum <= 0 && repsNum <= 0) || speedNum <= 0) {
-        Alert.alert("Invalid Input", "Please enter valid numbers for distance/reps and speed.");
+      if (distanceNum <= 0 || speedNum <= 0) {
+        Alert.alert("Invalid Input", "Please enter valid numbers for distance and speed.");
         return;
       }
     } else if (!exercise.isIsometric) {

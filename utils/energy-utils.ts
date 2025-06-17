@@ -38,7 +38,7 @@ export function calculateJoules({
   // Calculate joules based on exercise type
   let joules: number;
   
-  // For cardio exercises, use distance and speed-based calculation
+  // For cardio exercises, use distance, speed, and MET-based calculation
   if (exercise?.isCardio) {
     // Ensure we have valid inputs for calculation
     if (bodyWeightInKg <= 0) {
@@ -57,31 +57,51 @@ export function calculateJoules({
     // Convert speed to m/s
     const speedInMps = useMetricUnits ? speed / 3.6 : speed * 0.44704;
     
-    // Calculate work done = force * distance
-    // Force = mass * acceleration
-    // For horizontal movement: force = mass * gravity * coefficient of friction (approx 0.1)
-    const horizontalForce = bodyWeightInKg * gravity * 0.1;
+    // Calculate duration in minutes
+    const durationMinutes = distanceInMeters / (speedInMps * 60);
     
-    // Work done horizontally
-    let workDone = horizontalForce * distanceInMeters;
+    // Use MET value if available, or estimate based on speed and incline
+    let metValue = exercise.metValue || 3.5; // Default MET value if not specified
     
-    // Add work done against gravity for incline (if displacement is provided)
-    if (displacement > 0) {
-      const heightChange = distanceInMeters * displacement; // Total vertical displacement
-      const verticalWork = bodyWeightInKg * gravity * heightChange;
-      workDone += verticalWork;
+    // Adjust MET value based on speed if not explicitly set
+    if (!exercise.metValue) {
+      // Walking
+      if (speedInMps < 2.2) { // ~5 mph or 8 km/h
+        metValue = 3.0 + (speedInMps * 0.8) + (displacement * 15);
+      } 
+      // Running
+      else {
+        metValue = 7.0 + (speedInMps * 0.8) + (displacement * 15);
+      }
     }
     
-    // Adjust for intensity based on speed
-    // Higher speeds require more energy per distance
-    const speedFactor = Math.max(1.0, speedInMps / 1.4); // 1.4 m/s is average walking speed
-    workDone *= speedFactor;
+    // Calculate energy expenditure using MET formula
+    // 1 MET = 3.5 ml O2/kg/min
+    // 1 L O2 = 20 kJ (kilojoules) of energy
     
-    joules = workDone;
+    // VO2 (L/min) = MET * 3.5 * bodyWeightInKg / 1000
+    const vo2LMin = (metValue * 3.5 * bodyWeightInKg) / 1000;
+    
+    // Total O2 consumption (L) = VO2 (L/min) * duration (min)
+    const totalO2Consumption = vo2LMin * durationMinutes;
+    
+    // Energy (kJ) = Total O2 consumption (L) * 20 kJ/L
+    const energyKJ = totalO2Consumption * 20;
+    
+    // Convert kJ to J
+    joules = energyKJ * 1000;
     
     // If reps are provided (e.g., for interval training), multiply by reps
     if (reps > 0) {
       joules *= reps;
+    }
+    
+    // Apply additional adjustment for incline if displacement > 0
+    if (displacement > 0) {
+      // Add work done against gravity for incline
+      const heightChange = distanceInMeters * displacement; // Total vertical displacement
+      const verticalWork = bodyWeightInKg * gravity * heightChange;
+      joules += verticalWork;
     }
   }
   // For isometric exercises (like planks)

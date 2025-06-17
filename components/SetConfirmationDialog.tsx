@@ -144,31 +144,31 @@ const CONFIRMATION_MESSAGES = [
 const CARDIO_MESSAGES = [
   {
     title: "Cardio Boost!",
-    message: "{duration} of {exercise} complete! You've earned {energy} J."
+    message: "{distance} {dist_unit} at {speed} {speed_unit} complete! You've earned {energy} J."
   },
   {
     title: "Endurance Champion!",
-    message: "You crushed {exercise} for {duration}—that's {energy} J added to your power level!"
+    message: "You crushed {exercise} for {distance} {dist_unit} at {speed} {speed_unit}—that's {energy} J added to your power level!"
   },
   {
     title: "Distance Crusher!",
-    message: "You covered {distance} {dist_unit} in {duration}—adding {energy} J to your total!"
+    message: "You covered {distance} {dist_unit} at {speed} {speed_unit}—adding {energy} J to your total!"
   },
   {
     title: "Cardio Power!",
-    message: "{exercise} for {duration} → +{energy} J. Your heart is getting stronger!"
+    message: "{exercise} for {distance} {dist_unit} at {speed} {speed_unit} → +{energy} J. Your heart is getting stronger!"
   },
   {
     title: "Endurance Builder!",
-    message: "Great cardio session! {duration} of {exercise} = {energy} J earned."
+    message: "Great cardio session! {distance} {dist_unit} at {speed} {speed_unit} = {energy} J earned."
   },
   {
     title: "Cardio King!",
-    message: "You just dominated {exercise} for {duration}. That's {energy} J in the bank!"
+    message: "You just dominated {exercise} for {distance} {dist_unit}. That's {energy} J in the bank!"
   },
   {
     title: "Steady Progress!",
-    message: "{duration} of {exercise} logged. You've earned {energy} J toward your next milestone!"
+    message: "{distance} {dist_unit} of {exercise} logged. You've earned {energy} J toward your next milestone!"
   }
 ];
 
@@ -176,23 +176,23 @@ const CARDIO_MESSAGES = [
 const ISOMETRIC_MESSAGES = [
   {
     title: "Hold Strong!",
-    message: "You held {exercise} for {duration}! That's {energy} J added to your power level."
+    message: "You completed {reps} sets of {exercise}! That's {energy} J added to your power level."
   },
   {
     title: "Static Strength!",
-    message: "{duration} {exercise} complete! You've earned {energy} J for your effort."
+    message: "{reps} sets of {exercise} complete! You've earned {energy} J for your effort."
   },
   {
     title: "Isometric Power!",
-    message: "Impressive {duration} hold on {exercise}! That's {energy} J added to your total."
+    message: "Impressive {reps} sets of {exercise}! That's {energy} J added to your total."
   },
   {
     title: "Core Stability!",
-    message: "You maintained {exercise} for {duration}—adding {energy} J to your power level!"
+    message: "You maintained {reps} sets of {exercise}—adding {energy} J to your power level!"
   },
   {
     title: "Tension Builder!",
-    message: "Great isometric work! {duration} of {exercise} = {energy} J earned."
+    message: "Great isometric work! {reps} sets of {exercise} = {energy} J earned."
   }
 ];
 
@@ -242,9 +242,9 @@ export default function SetConfirmationDialog({
   
   // Select appropriate message array based on exercise type
   let messageArray = CONFIRMATION_MESSAGES;
-  if (exercise.isCardio && set.duration) {
+  if (exercise.isCardio) {
     messageArray = CARDIO_MESSAGES;
-  } else if (exercise.isIsometric && set.duration) {
+  } else if (exercise.isIsometric) {
     messageArray = ISOMETRIC_MESSAGES;
   }
   
@@ -256,16 +256,6 @@ export default function SetConfirmationDialog({
   const energyFormatted = formatEnergy(set.joules);
   const totalEnergyFormatted = formatEnergy(totalJoules);
   
-  // Format duration if available
-  const formatDuration = (seconds: number) => {
-    if (!seconds) return "0";
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return minutes > 0 
-      ? `${minutes}m ${remainingSeconds}s` 
-      : `${remainingSeconds}s`;
-  };
-  
   // Replace placeholders in the message
   const formatMessage = (text: string) => {
     let formattedText = text
@@ -275,15 +265,12 @@ export default function SetConfirmationDialog({
       .replace("{best_unit}", totalEnergyFormatted.abbreviated.split(" ")[1]);
     
     // Add exercise-specific replacements
-    if (exercise.isCardio || exercise.isIsometric) {
+    if (exercise.isCardio) {
       formattedText = formattedText
-        .replace("{duration}", formatDuration(set.duration || 0));
-      
-      if (set.distance) {
-        formattedText = formattedText
-          .replace("{distance}", set.distance.toString())
-          .replace("{dist_unit}", useMetricUnits ? "km" : "miles");
-      }
+        .replace("{distance}", set.distance?.toString() || "0")
+        .replace("{dist_unit}", useMetricUnits ? "km" : "miles")
+        .replace("{speed}", set.speed?.toString() || "0")
+        .replace("{speed_unit}", useMetricUnits ? "km/h" : "mph");
     } else {
       formattedText = formattedText
         .replace("{reps}", set.reps.toString())

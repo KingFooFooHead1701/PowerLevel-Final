@@ -10,8 +10,9 @@ export interface Set {
   reps: number;
   weight: number;
   joules: number;
-  duration?: number; // in seconds, for cardio and isometric exercises
-  distance?: number; // in meters/km, for cardio exercises
+  duration?: number; // in seconds, for isometric exercises
+  distance?: number; // in km or miles, for cardio exercises
+  speed?: number; // in km/h or mph, for cardio exercises
 }
 
 interface ExerciseState {
