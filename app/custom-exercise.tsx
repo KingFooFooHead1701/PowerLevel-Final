@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
+  Switch,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
@@ -83,6 +84,26 @@ export default function CustomExerciseScreen() {
 
   const handleGoBack = () => router.back();
 
+  // Handle exercise type selection
+  const handleExerciseTypeChange = (type: 'standard' | 'cardio' | 'isometric') => {
+    if (type === 'cardio') {
+      setIsCardio(true);
+      setIsIsometric(false);
+      // Set default values for cardio
+      if (category !== 'Cardio') setCategory('Cardio');
+      if (!metValue) setMetValue("5.0"); // Default MET value
+    } else if (type === 'isometric') {
+      setIsCardio(false);
+      setIsIsometric(true);
+      // Set default values for isometric
+      setDisplacement("0.0"); // Isometric exercises typically have zero displacement
+    } else {
+      // Standard exercise
+      setIsCardio(false);
+      setIsIsometric(false);
+    }
+  };
+
   return (
     <>
       {/* hide default header */}
@@ -139,6 +160,10 @@ export default function CustomExerciseScreen() {
                   onPress={() => {
                     setCategory(cat);
                     setShowCategoryPicker(false);
+                    // Auto-select cardio type if Cardio category is selected
+                    if (cat === 'Cardio' && !isCardio) {
+                      handleExerciseTypeChange('cardio');
+                    }
                   }}
                 >
                   <Text style={{ color: cat === category ? theme.primary : theme.text }}>{cat}</Text>
@@ -147,21 +172,138 @@ export default function CustomExerciseScreen() {
             </View>
           )}
 
-          <Text style={[styles.label, { color: theme.text }]}>Displacement (meters)</Text>
-          <TextInput
-            style={[
-              styles.input,
-              { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
-            ]}
-            placeholder="Enter displacement in meters"
-            placeholderTextColor={theme.textSecondary}
-            value={displacement}
-            onChangeText={setDisplacement}
-            keyboardType="decimal-pad"
-          />
-          <Text style={[styles.helperText, { color: theme.textSecondary }]}>
-            Displacement is the vertical distance moved per rep.
-          </Text>
+          {/* Exercise Type Selection */}
+          <Text style={[styles.sectionTitle, { color: theme.text, marginTop: 16 }]}>Exercise Type</Text>
+          <View style={styles.exerciseTypeContainer}>
+            <TouchableOpacity
+              style={[
+                styles.exerciseTypeButton,
+                { borderColor: theme.border },
+                !isCardio && !isIsometric && { backgroundColor: theme.primary, borderColor: theme.primary }
+              ]}
+              onPress={() => handleExerciseTypeChange('standard')}
+            >
+              <Text style={{ 
+                color: !isCardio && !isIsometric ? "#fff" : theme.text,
+                fontWeight: !isCardio && !isIsometric ? "600" : "normal"
+              }}>
+                Standard
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.exerciseTypeButton,
+                { borderColor: theme.border },
+                isCardio && { backgroundColor: theme.primary, borderColor: theme.primary }
+              ]}
+              onPress={() => handleExerciseTypeChange('cardio')}
+            >
+              <Text style={{ 
+                color: isCardio ? "#fff" : theme.text,
+                fontWeight: isCardio ? "600" : "normal"
+              }}>
+                Cardio
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={[
+                styles.exerciseTypeButton,
+                { borderColor: theme.border },
+                isIsometric && { backgroundColor: theme.primary, borderColor: theme.primary }
+              ]}
+              onPress={() => handleExerciseTypeChange('isometric')}
+            >
+              <Text style={{ 
+                color: isIsometric ? "#fff" : theme.text,
+                fontWeight: isIsometric ? "600" : "normal"
+              }}>
+                Isometric
+              </Text>
+            </TouchableOpacity>
+          </View>
+
+          {/* Standard Exercise Fields */}
+          {!isCardio && !isIsometric && (
+            <>
+              <Text style={[styles.label, { color: theme.text }]}>Displacement (meters)</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
+                ]}
+                placeholder="Enter displacement in meters"
+                placeholderTextColor={theme.textSecondary}
+                value={displacement}
+                onChangeText={setDisplacement}
+                keyboardType="decimal-pad"
+              />
+              <Text style={[styles.helperText, { color: theme.textSecondary }]}>
+                Displacement is the vertical distance moved per rep.
+              </Text>
+            </>
+          )}
+
+          {/* Isometric Exercise Fields */}
+          {isIsometric && (
+            <>
+              <Text style={[styles.label, { color: theme.text }]}>Displacement (meters)</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
+                ]}
+                placeholder="Usually 0 for isometric exercises"
+                placeholderTextColor={theme.textSecondary}
+                value={displacement}
+                onChangeText={setDisplacement}
+                keyboardType="decimal-pad"
+                editable={true}
+              />
+              <Text style={[styles.helperText, { color: theme.textSecondary }]}>
+                Isometric exercises typically have zero displacement as they involve static holds.
+              </Text>
+            </>
+          )}
+
+          {/* Cardio Exercise Fields */}
+          {isCardio && (
+            <>
+              <Text style={[styles.label, { color: theme.text }]}>Displacement (meters)</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
+                ]}
+                placeholder="Enter incline/grade as decimal (e.g., 0.05 for 5%)"
+                placeholderTextColor={theme.textSecondary}
+                value={displacement}
+                onChangeText={setDisplacement}
+                keyboardType="decimal-pad"
+              />
+              <Text style={[styles.helperText, { color: theme.textSecondary }]}>
+                For cardio, displacement represents incline/grade (e.g., 0.05 for 5% treadmill incline).
+              </Text>
+
+              <Text style={[styles.label, { color: theme.text }]}>MET Value</Text>
+              <TextInput
+                style={[
+                  styles.input,
+                  { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
+                ]}
+                placeholder="Enter MET value (e.g., 5.0)"
+                placeholderTextColor={theme.textSecondary}
+                value={metValue}
+                onChangeText={setMetValue}
+                keyboardType="decimal-pad"
+              />
+              <Text style={[styles.helperText, { color: theme.textSecondary }]}>
+                MET (Metabolic Equivalent of Task) helps calculate energy expenditure.
+                Examples: Walking (3-4), Jogging (7-8), Running (8-12), Cycling (4-10).
+              </Text>
+            </>
+          )}
 
           <View style={styles.checkboxContainer}>
             <TouchableOpacity
@@ -178,68 +320,9 @@ export default function CustomExerciseScreen() {
               Requires Body Weight
             </Text>
           </View>
-
-          <View style={styles.checkboxContainer}>
-            <TouchableOpacity
-              style={[
-                styles.checkbox,
-                { borderColor: theme.border },
-                isCardio && { backgroundColor: theme.primary, borderColor: theme.primary }
-              ]}
-              onPress={() => {
-                setIsCardio(!isCardio);
-                if (!isCardio) {
-                  setIsIsometric(false); // Can't be both cardio and isometric
-                }
-              }}
-            >
-              {isCardio && <View style={styles.checkboxInner} />}
-            </TouchableOpacity>
-            <Text style={[styles.checkboxLabel, { color: theme.text }]}>
-              Cardio Exercise
-            </Text>
-          </View>
-
-          {isCardio && (
-            <>
-              <Text style={[styles.label, { color: theme.text }]}>MET Value (optional)</Text>
-              <TextInput
-                style={[
-                  styles.input,
-                  { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
-                ]}
-                placeholder="Enter MET value (e.g., 5.0)"
-                placeholderTextColor={theme.textSecondary}
-                value={metValue}
-                onChangeText={setMetValue}
-                keyboardType="decimal-pad"
-              />
-              <Text style={[styles.helperText, { color: theme.textSecondary }]}>
-                MET (Metabolic Equivalent of Task) helps calculate energy expenditure.
-              </Text>
-            </>
-          )}
-
-          <View style={styles.checkboxContainer}>
-            <TouchableOpacity
-              style={[
-                styles.checkbox,
-                { borderColor: theme.border },
-                isIsometric && { backgroundColor: theme.primary, borderColor: theme.primary }
-              ]}
-              onPress={() => {
-                setIsIsometric(!isIsometric);
-                if (!isIsometric) {
-                  setIsCardio(false); // Can't be both isometric and cardio
-                }
-              }}
-            >
-              {isIsometric && <View style={styles.checkboxInner} />}
-            </TouchableOpacity>
-            <Text style={[styles.checkboxLabel, { color: theme.text }]}>
-              Isometric Exercise (time-based)
-            </Text>
-          </View>
+          <Text style={[styles.helperText, { color: theme.textSecondary, marginTop: -8, marginBottom: 16 }]}>
+            Check this for exercises where your body weight is part of the resistance (push-ups, pull-ups, etc.)
+          </Text>
 
           <Text style={[styles.label, { color: theme.text }]}>Description (Optional)</Text>
           <TextInput
@@ -281,17 +364,32 @@ const styles = StyleSheet.create({
   iconContainer: { alignItems: "center", marginBottom: 24 },
   iconCircle: { width: 80, height: 80, borderRadius: 40, justifyContent: "center", alignItems: "center" },
   label: { fontSize: 16, fontWeight: "500", marginBottom: 8 },
+  sectionTitle: { fontSize: 18, fontWeight: "600", marginBottom: 12 },
   input: { height: 48, borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, fontSize: 16, marginBottom: 16 },
   textArea: { borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 8, fontSize: 16, marginBottom: 16, minHeight: 100 },
   helperText: { fontSize: 12, marginBottom: 16 },
   categorySelector: { height: 48, borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, justifyContent: "center", marginBottom: 16 },
   categoryList: { borderRadius: 8, borderWidth: 1, marginBottom: 16, maxHeight: 200 },
   categoryItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.1)" },
-  checkboxContainer: { flexDirection: "row", alignItems: "center", marginBottom: 16 },
+  checkboxContainer: { flexDirection: "row", alignItems: "center", marginBottom: 8 },
   checkbox: { width: 20, height: 20, borderRadius: 4, borderWidth: 2, marginRight: 8, justifyContent: "center", alignItems: "center" },
   checkboxInner: { width: 10, height: 10, backgroundColor: "#fff", borderRadius: 2 },
   checkboxLabel: { fontSize: 16 },
   saveButton: { flexDirection: "row", alignItems: "center", justifyContent: "center", height: 56, borderRadius: 8, margin: 16 },
   buttonIcon: { marginRight: 8 },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "600" },
+  exerciseTypeContainer: { 
+    flexDirection: "row", 
+    justifyContent: "space-between", 
+    marginBottom: 16 
+  },
+  exerciseTypeButton: { 
+    flex: 1, 
+    height: 40, 
+    borderRadius: 8, 
+    borderWidth: 1, 
+    justifyContent: "center", 
+    alignItems: "center",
+    marginHorizontal: 4
+  },
 });

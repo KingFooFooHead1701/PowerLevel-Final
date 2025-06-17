@@ -216,7 +216,9 @@ export default function PowerLevelScreen() {
           </Animated.Text>
         </View>
         <Animated.View style={[styles.tierContainer, { opacity: tierOpacityAnim }]}>
-          <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>Power Tier:</Text>
+          <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
+            Power Tier:
+          </Text>
           <Text style={[styles.tierValue, { color: theme.primary }]}>{powerTierName}</Text>
         </Animated.View>
       </View>

@@ -23,14 +23,14 @@ export default function SetHistoryItem({
 }: SetHistoryItemProps) {
   const { theme } = useTheme();
   
-  const formatDuration = (seconds: number): string => {
+  const formatDuration = (seconds: number | undefined): string => {
     if (!seconds) return "N/A";
     const minutes = Math.floor(seconds / 60);
     const remainingSeconds = seconds % 60;
     return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
   };
 
-  const formatDistance = (distance: number): string => {
+  const formatDistance = (distance: number | undefined): string => {
     if (!distance) return "N/A";
     return `${distance} ${useMetricUnits ? "km" : "mi"}`;
   };
