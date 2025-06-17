@@ -47,7 +47,7 @@ export default function SetHistoryItem({
           {formattedDate} at {formattedTime}
         </Text>
         <TouchableOpacity onPress={onDelete} hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}>
-          <Trash2 size={18} color={theme.danger} />
+          <Trash2 size={18} color={theme.error} />
         </TouchableOpacity>
       </View>
       
