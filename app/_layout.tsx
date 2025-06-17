@@ -66,7 +66,10 @@ function RootLayoutNav() {
   return (
     <ThemeProvider>
       <StatusBar style="light" />
-      <Stack screenOptions={{ headerShown: false }}>
+      <Stack screenOptions={{ 
+        headerShown: false,
+        headerShadowVisible: false,
+      }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen 
           name="exercise/[id]" 

@@ -61,12 +61,15 @@ export default function CustomExerciseScreen() {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['bottom', 'left', 'right']}>
+      <StatusBar barStyle="light-content" />
+      
       <Stack.Screen 
         options={{ 
           title: "Add Custom Exercise",
           headerStyle: { backgroundColor: theme.background },
           headerTintColor: theme.text,
+          headerShadowVisible: false,
         }} 
       />
       

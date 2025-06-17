@@ -240,7 +240,9 @@ export default function PowerLevelScreen() {
   const maxTranslation = (containerWidth - scannerWidth) / 2;
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['bottom', 'left', 'right']}>
+      <StatusBar barStyle="light-content" />
+      
       <Stack.Screen 
         options={{ 
           headerShown: true,
@@ -248,8 +250,10 @@ export default function PowerLevelScreen() {
           headerTintColor: theme.text,
           headerTitle: "Power Level",
           headerBackTitle: "Back",
+          headerShadowVisible: false,
         }} 
       />
+      
       <View style={styles.contentContainer}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>
           Your Power Level
@@ -368,9 +372,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   contentContainer: {
+    flex: 1,
     alignItems: "center",
+    justifyContent: "center",
     padding: 20,
     position: "relative",
+    marginTop: -40, // Adjust to center the content in the available space
   },
   label: {
     fontSize: 20,
