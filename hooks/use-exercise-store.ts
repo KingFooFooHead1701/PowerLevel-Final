@@ -31,7 +31,7 @@ interface ExerciseState {
 }
 
 // Current version of the store schema - increment this when making changes to force a reset
-const CURRENT_VERSION = 3;
+const CURRENT_VERSION = 4; // Incremented to force reset
 
 export const useExerciseStore = create<ExerciseState>()(
   persist(

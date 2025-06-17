@@ -106,35 +106,35 @@ export const defaultExercises: Exercise[] = [
     category: "Back", 
     displacement: 0.5, 
     requiresBodyWeight: true,
-    description: "Hang from bar with overhand grip, pull body up until chin clears bar, then lower with control. The exercise everyone attempts after watching too many superhero movies and immediately regrets."
+    description: "Hang from a bar with palms facing away, pull your chin over the bar, then lower with control. Because hoisting your own bodyweight is the closest you'll get to defying gravity—until you realize gravity always wins."
   },
   { 
     id: "lat-pulldown", 
     name: "Lat Pulldown", 
     category: "Back", 
     displacement: 0.5,
-    description: "Sit at machine, grip bar with hands wider than shoulders, pull down to upper chest while keeping back straight. Pull-ups for people who enjoy the luxury of sitting down while suffering."
+    description: "Sit, grip the overhead bar wider than shoulders, pull it down to your chest, then return slowly. All the glory of pull-ups, plus a seat—and no sudden realization of how heavy you actually are."
   },
   { 
     id: "bent-over-row", 
     name: "Bent-Over Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Bend at hips with back flat, pull barbell to lower chest, then lower with control. The exercise that simultaneously builds your back and teaches you humility when you drop the weight."
+    description: "Hinge at the hips with a flat back, grab a barbell, pull it toward your lower chest, then lower with control. Turns you into a human anchor—your lats will thank you later."
   },
   { 
     id: "seated-row", 
     name: "Seated Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Sit at cable machine with knees slightly bent, pull handle to abdomen while keeping back straight. Like rowing a boat that's permanently anchored to your disappointment."
+    description: "Sit at a cable row station, chest tall, pull handles to your abdomen, then let them glide back with tension. Rowing without the risk of flipping your boat—or capsizing your ego."
   },
   { 
     id: "deadlift", 
     name: "Deadlift", 
     category: "Back", 
     displacement: 0.6,
-    description: "Stand with bar over feet, bend to grip bar with flat back, drive through heels to stand up straight. The exercise that makes you question all your life choices in real time."
+    description: "Feet under bar, back flat, bend to grip, stand tall by pushing through heels, then lower. The lift that makes you question every life choice—and every time you left leg day for \"light\" cardio."
   },
   { 
     id: "back-extension", 
@@ -142,63 +142,63 @@ export const defaultExercises: Exercise[] = [
     category: "Back", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Position yourself on hyperextension bench with hips on pad, lower upper body toward floor, then raise to slightly above parallel. Like a trust fall with yourself where the floor is always judging you."
+    description: "Secure your hips on a hyperextension bench, lower torso toward the floor, then raise until your spine is straight. Because arching away from a crunch sometimes feels like a trust fall… with yourself."
   },
   { 
     id: "t-bar-row", 
     name: "T-Bar Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Straddle T-bar with chest against pad, grip handles, pull weight up by driving elbows back. The rowing exercise that looks most like you're riding a mechanical bull at a fitness-themed bar."
+    description: "Straddle a loaded T-bar, chest against pad, pull the bar to your torso, then lower slowly. For those who want to row like a Viking—minus the longships and pillaging."
   },
   { 
     id: "single-arm-row", 
     name: "Single-Arm Dumbbell Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Place one knee and hand on bench, pull dumbbell to hip while keeping back flat. For when you want to look like you're starting a lawnmower but with better deltoid definition."
+    description: "One knee and hand on a bench, pull a dumbbell to your hip, then lower with control. Perfect isolation for when you need to remind your back who's boss—one side at a time."
   },
   { 
     id: "face-pull-back", 
     name: "Face Pull (Back)", 
     category: "Back", 
     displacement: 0.4,
-    description: "Stand facing cable machine, pull rope attachment toward face with elbows high, then return with control. The exercise that makes you look like you're aggressively flossing your entire upper body."
+    description: "Stand at a high pulley with rope, pull it toward your forehead with elbows flared, then release. The cable workout that doubles as impressing your dentist with all that teeth-gritting."
   },
   { 
     id: "straight-arm-pulldown", 
     name: "Straight Arm Pulldown", 
     category: "Back", 
     displacement: 0.5,
-    description: "Stand facing cable machine, grip bar with straight arms overhead, pull down in arc to thighs. Like trying to push down an invisible garage door that's fighting for its mechanical life."
+    description: "Stand facing a high cable, arms straight, pull the bar down in an arc to your thighs, then resist back up. Like closing an imaginary garage door—if your lats were the motor."
   },
   { 
     id: "smith-machine-row", 
     name: "Smith Machine Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Bend at hips under Smith machine bar, pull bar to abdomen, then lower with control. For when you want to row but also want to stay in your lane like a swimming pool champion."
+    description: "Bend under a Smith bar, grip it at waist height, pull to your stomach, then lower under tension. Because even your rowing deserves a guided path."
   },
   { 
     id: "lat-pullover", 
     name: "Lat Pullover", 
     category: "Back", 
     displacement: 0.5,
-    description: "Lie across bench with dumbbell held above chest, lower weight in arc behind head, then return. Like you're trying to throw something behind you very slowly while your lats scream for mercy."
+    description: "Lie on a bench holding a dumbbell above your chest, lower it in an arc behind your head, then pull back. Turns your lats into wings—minus the bird calls."
   },
   { 
     id: "meadows-row", 
     name: "Meadows Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Position landmine in corner, stand parallel with feet staggered, row end of bar to hip with outside hand. Named after a legend, feels like wrestling a barbell that knows all your weaknesses."
+    description: "Barbell set in a landmine, staggered stance, row the free end to your hip with one hand. Wrestling with a barbell never looked—or felt—so good."
   },
   { 
     id: "chest-supported-row", 
     name: "Chest Supported Row", 
     category: "Back", 
     displacement: 0.5,
-    description: "Lie face down on incline bench, pull dumbbells up by driving elbows back. For people who want to row but also take a nap and avoid lower back responsibility simultaneously."
+    description: "Face down on an incline bench, pull dumbbells toward your ribs, then lower with control. Momentum be gone—this row ensures only your muscles do the talking."
   },
   
   // Legs
@@ -207,105 +207,105 @@ export const defaultExercises: Exercise[] = [
     name: "Squat", 
     category: "Legs", 
     displacement: 0.6,
-    description: "Stand with barbell across upper back, bend knees and hips to lower until thighs are parallel to floor, then drive up. The exercise that makes stairs your sworn enemy for the next three days."
+    description: "Stand with barbell across upper back, feet shoulder-width, sit hips back until thighs are parallel, then drive through heels to stand. Turns you into a staircase's worst nightmare—prepare for leg day and every day after."
   },
   { 
     id: "leg-press", 
     name: "Leg Press", 
     category: "Legs", 
     displacement: 0.5,
-    description: "Sit in machine with feet on platform, press weight away by extending knees and hips, then return. Squats for people who enjoy sitting down while their quads contemplate a mutiny."
+    description: "Sit in the machine, feet on platform hip-width, push weight away until legs almost straight, then control the return. All the squat gains without the \"please help me up\" moment at the end."
   },
   { 
     id: "leg-extension", 
     name: "Leg Extension", 
     category: "Legs", 
     displacement: 0.5,
-    description: "Sit in machine with pads over ankles, extend knees to lift weight, then lower with control. The exercise that makes you feel like you're kicking invisible enemies in slow motion."
+    description: "Sit with shins under pad, extend knees to lift weight, then lower it slowly. Because sometimes you just want to look like you're kicking bad decisions out of your life."
   },
   { 
     id: "leg-curl", 
     name: "Leg Curl", 
     category: "Legs", 
     displacement: 0.5,
-    description: "Lie face down on machine with pads behind ankles, curl weight by bending knees, then extend. Like trying to kick yourself in the butt for skipping leg day last week."
+    description: "Lie face down (or sit, depending on machine), curl heels toward glutes, then slowly extend legs. Prepares you for every \"kick me\" prank—except it's topping up your hamstrings."
   },
   { 
     id: "calf-raise", 
     name: "Calf Raise", 
     category: "Legs", 
     displacement: 0.2,
-    description: "Stand with balls of feet on elevated surface, lower heels toward floor, then raise up as high as possible. The exercise everyone does while waiting in line, thinking they're being subtle."
+    description: "Stand on a block or platform, lower heels below toes, then lift as high as you can on your toes. Because nobody ever complained about calves that could defuse bombs."
   },
   { 
     id: "lunge", 
     name: "Lunge", 
     category: "Legs", 
     displacement: 0.6,
-    description: "Step forward with one leg, lower until both knees are bent at 90 degrees, then push back to start. Like practicing for when you trip but with weights and intentional suffering."
+    description: "Step forward, drop back knee toward the floor until both knees are ~90°, then push back to start. Perfect training for that one time you trip in public—and maybe won't miss a step."
   },
   { 
     id: "bulgarian-split-squat", 
     name: "Bulgarian Split Squat", 
     category: "Legs", 
     displacement: 0.5,
-    description: "Place rear foot on bench behind you, lower until front thigh is parallel to floor, then push up. Named after Bulgarians, who clearly enjoy watching people suffer in asymmetrical agony."
+    description: "Rear foot elevated on bench, front leg lunges down until front thigh is parallel, then drive up. Elevates one leg and your pride—just don't peek at how deep you're going."
   },
   { 
     id: "hack-squat", 
     name: "Hack Squat", 
     category: "Legs", 
     displacement: 0.6,
-    description: "Position yourself in hack squat machine, lower body by bending knees, then extend to starting position. Like a squat with training wheels, minus the childhood joy and plus adult pain."
+    description: "In the machine with back braced, lower body until thighs parallel, then press back up. Like a squat on rails—minus any chance of enjoying a free-fall."
   },
   { 
     id: "smith-machine-squat", 
     name: "Smith Machine Squat", 
     category: "Legs", 
     displacement: 0.6,
-    description: "Perform squat using Smith machine with fixed barbell path, lowering and raising with control. For when you want to squat but also want to stay in your lane like a bowling ball with guardrails."
+    description: "Bar locked in Smith rails, squat down with guidance, then drive up. For when you want squat confidence without the barbell therapy."
   },
   { 
     id: "goblet-squat", 
     name: "Goblet Squat", 
     category: "Legs", 
     displacement: 0.5,
-    description: "Hold dumbbell or kettlebell close to chest, squat until thighs are parallel to floor, then return to standing. Like hugging a weight while sitting on an invisible chair that hates your quads."
+    description: "Hold a dumbbell or kettlebell at chest, squat down keeping chest up, then stand. Hug your weight like a long-lost friend—until it makes you regret it."
   },
   { 
     id: "sumo-squat", 
     name: "Sumo Squat", 
     category: "Legs", 
     displacement: 0.6,
-    description: "Stand with feet wider than shoulders and toes pointed out, squat while keeping knees in line with toes. Named after sumo wrestlers but sadly doesn't come with the cool outfit or free lunch."
+    description: "Feet wide, toes turned out, descend with hips back until thighs parallel, then rise. Wide stance, wider gains—just don't dance like a sumo wrestler afterward."
   },
   { 
     id: "seated-calf-raise", 
     name: "Seated Calf Raise", 
     category: "Legs", 
     displacement: 0.2,
-    description: "Sit with knees bent and balls of feet on platform, lower heels toward floor, then raise as high as possible. For when standing up to work your calves feels like too much commitment to leg day."
+    description: "Sitting with pads on knees, heels off edge, lift heels up, then lower. Sculpt your calves in chair comfort—because who said calves can't chill?"
   },
   { 
     id: "standing-calf-raise", 
     name: "Standing Calf Raise", 
     category: "Legs", 
     displacement: 0.2,
-    description: "Stand with shoulders under pads and balls of feet on platform, raise heels as high as possible. The exercise that makes you look like you're trying to see over a crowd of judgmental calves."
+    description: "Shoulders under pads, balls of feet on block, lift heels, then lower. Turns you into the person who always sees over the crowd—literally."
   },
   { 
     id: "adductor-machine", 
     name: "Adductor Machine", 
     category: "Legs", 
     displacement: 0.3,
-    description: "Sit in machine with pads against inner thighs, press legs together against resistance, then return. The most awkward-looking exercise in the gym, now with bonus eye contact avoidance."
+    description: "Sit, press knees together against pads, then slowly let them open. The inner-thigh hug you never knew you needed—awkward yet effective."
   },
   { 
     id: "abductor-machine", 
     name: "Abductor Machine", 
     category: "Legs", 
     displacement: 0.3,
-    description: "Sit in machine with pads against outer thighs, press legs outward against resistance, then return. The second most awkward-looking exercise, perfect for establishing your personal space bubble."
+    description: "Sit, press knees outward against resistance, then slowly bring them back. Because sending your thighs on opposing missions builds character."
   },
   { 
     id: "glute-bridge", 
@@ -313,14 +313,14 @@ export const defaultExercises: Exercise[] = [
     category: "Legs", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Lie on back with knees bent and feet flat, lift hips toward ceiling by squeezing glutes, then lower. The exercise that makes you look like you're auditioning for a very strange music video."
+    description: "Lie on back, feet flat, lift hips until body forms a straight line from shoulders to knees, then lower. Bench-free hip thrust—your glutes will write you thank-you notes later."
   },
   { 
     id: "hip-thrust", 
     name: "Hip Thrust", 
     category: "Legs", 
     displacement: 0.3,
-    description: "Sit with upper back against bench and barbell across hips, drive through heels to lift hips to full extension. The exercise you hope no one walks by during, yet everyone somehow does."
+    description: "Upper back on bench, barbell over hips, drive hips up to full extension, then lower. Maximal rear-end activation without awkward bench dates."
   },
   { 
     id: "step-up", 
@@ -328,7 +328,7 @@ export const defaultExercises: Exercise[] = [
     category: "Legs", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Stand facing box or bench, step up with one foot, drive through heel to bring other foot up. Like climbing stairs but with purpose, sweat, and the distant memory of painless walking."
+    description: "Step onto box or bench with one foot, drive through heel to bring other up, then step down. Turns every stair into a personal victory march."
   },
   { 
     id: "box-jump", 
@@ -336,7 +336,7 @@ export const defaultExercises: Exercise[] = [
     category: "Legs", 
     displacement: 0.5, 
     requiresBodyWeight: true,
-    description: "Stand facing box, drop into quarter squat, jump explosively to land on box with soft knees. The exercise with the highest risk-to-Instagram-likes ratio in the entire fitness universe."
+    description: "From standing, squat slightly then explode onto a box, land softly, step down. The closest legal approximation to leaping tall buildings in a single bound—minus the cape."
   },
   
   // Arms
@@ -345,91 +345,91 @@ export const defaultExercises: Exercise[] = [
     name: "Bicep Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Stand holding weights with arms extended, curl weights toward shoulders by bending elbows, then lower. The exercise most likely to be performed directly in front of the dumbbell rack, blocking everyone."
+    description: "Stand holding dumbbells at your sides, curl weights to shoulders, then lower with control. Mirror optional but highly recommended—your guns deserve an audience."
   },
   { 
     id: "hammer-curl", 
     name: "Hammer Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Perform bicep curl with palms facing each other throughout movement, curling up and lowering with control. Named after hammers, but significantly less useful for home renovation projects."
+    description: "Palms face each other as you curl dumbbells up, then lower. Turns your forearms into concrete pillars—no carpentry required."
   },
   { 
     id: "tricep-extension", 
     name: "Tricep Extension", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Hold weight overhead with both hands, lower behind head by bending elbows, then extend arms up. Like trying to elbow someone behind you in slow motion while holding a heavy paperweight."
+    description: "Hold a dumbbell overhead with both hands, lower behind head, then extend arms. Feels like you're elbowing bad ideas out of existence."
   },
   { 
     id: "tricep-pushdown", 
     name: "Tricep Pushdown", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Stand facing cable machine, grip attachment with elbows at sides, extend arms downward against resistance. The arm exercise for people who like pushing things down with extreme prejudice."
+    description: "Facing a cable machine, grip the bar or rope, press down until arms are straight, then release. Because some things deserve to be pushed down—like Monday mornings."
   },
   { 
     id: "skull-crusher", 
     name: "Skull Crusher", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Lie on bench holding weight above face, bend elbows to lower weight toward forehead, then extend arms. Named after what happens if you fail the rep, which is totally reassuring for beginners."
+    description: "Lie on bench, lower bar or dumbbells toward forehead, then extend arms. Named for what could happen if you slack off—no pressure."
   },
   { 
     id: "wrist-curl", 
     name: "Wrist Curl", 
     category: "Arms", 
     displacement: 0.2,
-    description: "Sit with forearms on thighs and wrists beyond knees, palms up, curl weight by bending wrists upward. For when you want forearms like Popeye but hate spinach and nautical adventures."
+    description: "Forearms on thighs, palms up, curl weight with wrists, then lower. Prepares you for opening that impossible jar of pickles."
   },
   { 
     id: "preacher-curl", 
     name: "Preacher Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Sit at preacher bench with arms extended over pad, curl weight toward shoulders, then lower. The bicep curl for people who need supervision to behave and not cheat their reps."
+    description: "Upper arms braced on a preacher bench pad, curl bar to shoulders, then lower. Strict bicep isolation with built-in supervision."
   },
   { 
     id: "concentration-curl", 
     name: "Concentration Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Sit with elbow braced against inner thigh, curl weight toward shoulder, then lower with control. The curl that requires you to stare intensely at your bicep like it owes you rent money."
+    description: "Sit, elbow braced against inner thigh, curl dumbbell to shoulder, then lower. Stare at your bicep like you're negotiating a hostage release."
   },
   { 
     id: "cable-curl", 
     name: "Cable Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Stand facing cable machine with arms extended, curl handle toward shoulders, then lower. Like regular curls but with a robot offering constant resistance and silent judgment."
+    description: "Stand facing cable stack, curl handle toward shoulder, then extend back. Constant tension so your biceps never get a snooze button."
   },
   { 
     id: "ez-bar-curl", 
     name: "EZ Bar Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Perform bicep curl using EZ bar with angled grip, curling up and lowering with control. For when straight bars are too mainstream for your biceps and wrists have trust issues."
+    description: "Use an EZ-curl bar with angled grip, curl up, then lower. For wrists that prefer a more sophisticated handshake."
   },
   { 
     id: "reverse-curl", 
     name: "Reverse Curl", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Perform bicep curl with palms facing down throughout movement, curling up and lowering with control. Like regular curls but with an identity crisis and extra forearm activation."
+    description: "Palms face down as you curl bar or dumbbells up, then lower. Turns you into the person who can lift more than just spirits."
   },
   { 
     id: "overhead-tricep-extension", 
     name: "Overhead Tricep Extension", 
     category: "Arms", 
     displacement: 0.5,
-    description: "Hold dumbbell overhead with both hands, lower behind head by bending elbows, then extend arms. Like trying to reach that itch in the middle of your back while holding a small bowling ball."
+    description: "Dumbbell or plate held overhead, lower behind head, then press up. Scratches the itch between your shoulder blades—sort of."
   },
   { 
     id: "tricep-kickback", 
     name: "Tricep Kickback", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Bend at hips with upper arm parallel to floor, extend forearm backward until arm is straight. The exercise that makes you look like you're impersonating a dinosaur with very small arms."
+    description: "Hinge at hips, upper arm parallel to ground, extend forearm back, then return. Looks like you're impersonating a velociraptor—but feels awesome."
   },
   { 
     id: "diamond-push-up", 
@@ -437,28 +437,28 @@ export const defaultExercises: Exercise[] = [
     category: "Arms", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Perform push-up with hands close together forming diamond shape under chest, lowering and pushing up. Like regular push-ups but with extra suffering and a fancy geometric name to justify it."
+    description: "Hands together in a diamond shape under chest, lower down, then push up. Takes push-ups from \"meh\" to \"why is my triceps crying?\""
   },
   { 
     id: "close-grip-bench", 
     name: "Close Grip Bench Press", 
     category: "Arms", 
     displacement: 0.4,
-    description: "Perform bench press with hands positioned shoulder-width apart, pressing up and lowering with control. For when you want to bench press but also want bigger arms to fill those T-shirt sleeves."
+    description: "Hands shoulder-width on bar, press up from chest, then lower. All the press, more triceps—bench press with an arm day twist."
   },
   { 
     id: "reverse-wrist-curl", 
     name: "Reverse Wrist Curl", 
     category: "Arms", 
     displacement: 0.2,
-    description: "Sit with forearms on thighs and wrists beyond knees, palms down, curl weight by bending wrists upward. The forearm exercise that makes opening stubborn jars a less dramatic life event."
+    description: "Forearms on thighs, palms down, curl weight upward with wrists, then lower. Because strong forearms are the ultimate power move."
   },
   { 
     id: "plate-pinch", 
     name: "Plate Pinch", 
     category: "Arms", 
     displacement: 0.1,
-    description: "Pinch weight plates between thumb and fingers, hold for time, then release. The exercise that makes you look like you're stealing plates from the gym with extremely suspicious technique."
+    description: "Pinch two plates together between fingers and thumb, hold, then release. Your grip will get so good you'll consider pinching yourself just for fun."
   },
   
   // Shoulders

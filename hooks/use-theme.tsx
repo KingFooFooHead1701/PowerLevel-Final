@@ -17,7 +17,7 @@ const defaultTheme = themes.WarriorsAura;
 const DEFAULT_THEME_NAME = "WarriorsAura";
 const THEME_STORAGE_KEY = "app-theme-name";
 const THEME_VERSION_KEY = "app-theme-version";
-const CURRENT_THEME_VERSION = 2; // Increment this to force a theme reset
+const CURRENT_THEME_VERSION = 3; // Incremented to force a theme reset
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: defaultTheme,
