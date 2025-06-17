@@ -10,6 +10,10 @@ export const themes = {
     border: "#2C2C2C",
     inputBackground: "#2C2C2C",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   RoyalStardust: {
     primary: "#4169E1",
@@ -22,6 +26,10 @@ export const themes = {
     border: "#282850",
     inputBackground: "#282850",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   TranquilJadewood: {
     primary: "#2E8B57",
@@ -34,6 +42,10 @@ export const themes = {
     border: "#2E422E",
     inputBackground: "#2E422E",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   TriBeamFlame: {
     primary: "#DC143C",
@@ -46,6 +58,10 @@ export const themes = {
     border: "#421E1E",
     inputBackground: "#421E1E",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   HowlingWolf: {
     primary: "#D2B48C",
@@ -58,6 +74,10 @@ export const themes = {
     border: "#42422E",
     inputBackground: "#42422E",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   ShadowPuppeteer: {
     primary: "#9370DB",
@@ -70,6 +90,10 @@ export const themes = {
     border: "#2E2E42",
     inputBackground: "#2E2E42",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   MidnightKeep: {
     primary: "#483D8B",
@@ -82,6 +106,10 @@ export const themes = {
     border: "#1E1E42",
     inputBackground: "#1E1E42",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   WarriorScholar: {
     primary: "#1E90FF",
@@ -94,6 +122,10 @@ export const themes = {
     border: "#1E3C52",
     inputBackground: "#1E3C52",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   ZenMonk: {
     primary: "#FF7F50",
@@ -106,6 +138,10 @@ export const themes = {
     border: "#424242",
     inputBackground: "#424242",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   EmberLotus: {
     primary: "#FF6347",
@@ -118,6 +154,10 @@ export const themes = {
     border: "#423428",
     inputBackground: "#423428",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   CyberSyndicate: {
     primary: "#00CED1",
@@ -130,6 +170,10 @@ export const themes = {
     border: "#2E2E2E",
     inputBackground: "#2E2E2E",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   SyntheticSister: {
     primary: "#FFB6C1",
@@ -142,6 +186,10 @@ export const themes = {
     border: "#424242",
     inputBackground: "#424242",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   // New anime-inspired themes
   OrangeFox: {
@@ -155,6 +203,10 @@ export const themes = {
     border: "#422800",
     inputBackground: "#422800",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   SpiralSage: {
     primary: "#00BF63",
@@ -167,6 +219,10 @@ export const themes = {
     border: "#1E3C1E",
     inputBackground: "#1E3C1E",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   CrimsonVision: { // Renamed from SharinganRed
     primary: "#FF2D55",
@@ -179,6 +235,10 @@ export const themes = {
     border: "#420000",
     inputBackground: "#420000",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   DeathReaper: {
     primary: "#000000",
@@ -191,6 +251,10 @@ export const themes = {
     border: "#2E2E2E",
     inputBackground: "#2E2E2E",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   FrostBlade: { // Renamed from IceZanpakuto
     primary: "#5AC8FA",
@@ -203,6 +267,10 @@ export const themes = {
     border: "#1E3C52",
     inputBackground: "#1E3C52",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   StrawHatCrew: {
     primary: "#FF3B30",
@@ -215,6 +283,10 @@ export const themes = {
     border: "#002842",
     inputBackground: "#002842",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   PirateHunter: {
     primary: "#34C759",
@@ -227,6 +299,10 @@ export const themes = {
     border: "#1E3C00",
     inputBackground: "#1E3C00",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   FlameEmperor: {
     primary: "#FF9500",
@@ -239,6 +315,10 @@ export const themes = {
     border: "#421E00",
     inputBackground: "#421E00",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   TitanRage: {
     primary: "#FF3B30",
@@ -251,6 +331,10 @@ export const themes = {
     border: "#424242",
     inputBackground: "#424242",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   DragonSlayer: {
     primary: "#FF2D55",
@@ -263,6 +347,10 @@ export const themes = {
     border: "#421E3C",
     inputBackground: "#421E3C",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   AlchemistBrothers: {
     primary: "#FF3B30",
@@ -275,6 +363,10 @@ export const themes = {
     border: "#424242",
     inputBackground: "#424242",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   RoyalPride: { // Renamed from SaiyanPrince
     primary: "#5856D6",
@@ -287,6 +379,10 @@ export const themes = {
     border: "#282850",
     inputBackground: "#282850",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   // New anime-inspired themes from the provided list
   // Naruto-inspired
@@ -301,6 +397,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   CrimsonEclipse: { // Renamed from Sharingan Shadow
     primary: "#DC143C", // Crimson Red
@@ -313,6 +413,10 @@ export const themes = {
     border: "#2A2A2A",
     inputBackground: "#2A2A2A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   CopyNinja: {
     primary: "#708090", // Smoky Gray
@@ -325,6 +429,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   CherryBlossom: {
     primary: "#FFB6C1", // Soft Pink
@@ -337,6 +445,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   Sandstorm: {
     primary: "#D2B48C", // Desert Tan
@@ -349,6 +461,10 @@ export const themes = {
     border: "#3A3A28",
     inputBackground: "#3A3A28",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   // Bleach-inspired
   HollowBurst: {
@@ -362,6 +478,10 @@ export const themes = {
     border: "#2A2A2A",
     inputBackground: "#2A2A2A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   FrostReaper: {
     primary: "#87CEFA", // Ice Blue
@@ -374,6 +494,10 @@ export const themes = {
     border: "#2A2A2A",
     inputBackground: "#2A2A2A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   BlossomSovereign: {
     primary: "#9370DB", // Royal Purple
@@ -386,6 +510,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   BattleManiac: {
     primary: "#B22222", // Blood Red
@@ -398,6 +526,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   IceDragon: {
     primary: "#00BFFF", // Arctic Blue
@@ -410,6 +542,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   // One Piece-inspired
   GumGumSurge: {
@@ -423,6 +559,10 @@ export const themes = {
     border: "#000066",
     inputBackground: "#000066",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   ThreeSwordJade: {
     primary: "#2E8B57", // Emerald Green
@@ -435,6 +575,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   DiableJambe: {
     primary: "#FF4500", // Diablo Orange
@@ -447,6 +591,10 @@ export const themes = {
     border: "#2A2A2A",
     inputBackground: "#2A2A2A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   StormNavigator: {
     primary: "#FF8C00", // Tangerine
@@ -459,6 +607,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   SurgeonsOath: {
     primary: "#20B2AA", // Hospital Green
@@ -471,6 +623,10 @@ export const themes = {
     border: "#2A2A2A",
     inputBackground: "#2A2A2A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   // Additional anime-inspired themes
   DemonSlayer: {
@@ -484,6 +640,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   ThunderBreath: {
     primary: "#FFD700", // Gold
@@ -496,6 +656,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   WaterPillar: {
     primary: "#1E90FF", // Dodger Blue
@@ -508,6 +672,10 @@ export const themes = {
     border: "#1E1E42",
     inputBackground: "#1E1E42",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   SunBreather: {
     primary: "#FF4500", // Orange Red
@@ -520,6 +688,10 @@ export const themes = {
     border: "#421E00",
     inputBackground: "#421E00",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
   LavenderMist: { // Renamed from MistHashira
     primary: "#E6E6FA", // Lavender
@@ -532,6 +704,10 @@ export const themes = {
     border: "#3A3A3A",
     inputBackground: "#3A3A3A",
     error: "#FF4D4D",
+    switchTrackOff: "#3A3A3A",
+    switchThumb: "#FFFFFF",
+    dangerBackground: "rgba(255, 77, 77, 0.15)",
+    dangerText: "#FF4D4D"
   },
 };
 
