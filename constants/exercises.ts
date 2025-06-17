@@ -706,151 +706,24 @@ export const defaultExercises: Exercise[] = [
     description: "Stand holding medicine ball overhead, forcefully throw ball to floor using abs and arms, catch on bounce and repeat. Works entire core with explosive movement. The exercise that lets you legally throw things in the gym."
   },
   
-  // Cardio
+  // Cardio - Simplified treadmill exercises
   { 
-    id: "treadmill-walk-0", 
-    name: "Treadmill Walk (0% Incline)", 
+    id: "treadmill-walk", 
+    name: "Treadmill Walk", 
     category: "Cardio", 
     displacement: 0.0, 
     isCardio: true, 
     metValue: 3.5,
-    description: "Walk on treadmill at comfortable pace with no incline. Provides basic cardiovascular conditioning with minimal joint impact. For when you want to exercise but also want to scroll through your phone."
+    description: "Walk on treadmill at your chosen pace and incline. The app will automatically calculate energy expenditure based on your speed, incline, and body weight. Enter incline percentage (0-15%) for accurate calculations. For when you want to exercise but also want to scroll through your phone."
   },
   { 
-    id: "treadmill-walk-1", 
-    name: "Treadmill Walk (1% Incline)", 
-    category: "Cardio", 
-    displacement: 0.01, 
-    isCardio: true, 
-    metValue: 3.8,
-    description: "Walk on treadmill at comfortable pace with slight incline. Better simulates outdoor walking conditions. For when flat treadmill walking is too easy but you still want to text."
-  },
-  { 
-    id: "treadmill-walk-2", 
-    name: "Treadmill Walk (2% Incline)", 
-    category: "Cardio", 
-    displacement: 0.02, 
-    isCardio: true, 
-    metValue: 4.0,
-    description: "Walk on treadmill with moderate incline. Increases calorie burn and leg muscle engagement. Like walking up a slight hill while going absolutely nowhere."
-  },
-  { 
-    id: "treadmill-walk-3", 
-    name: "Treadmill Walk (3% Incline)", 
-    category: "Cardio", 
-    displacement: 0.03, 
-    isCardio: true, 
-    metValue: 4.3,
-    description: "Walk on treadmill with challenging incline. Significantly increases workout intensity without running. For when you want people to think you're working harder than you actually are."
-  },
-  { 
-    id: "treadmill-walk-5", 
-    name: "Treadmill Walk (5% Incline)", 
-    category: "Cardio", 
-    displacement: 0.05, 
-    isCardio: true, 
-    metValue: 5.0,
-    description: "Walk on treadmill with steep incline. Provides intense cardio workout while strengthening posterior chain. Like hiking uphill without the nice views or fresh air."
-  },
-  { 
-    id: "treadmill-walk-7", 
-    name: "Treadmill Walk (7% Incline)", 
-    category: "Cardio", 
-    displacement: 0.07, 
-    isCardio: true, 
-    metValue: 6.0,
-    description: "Walk on treadmill with very steep incline. Approaches intensity of running with lower impact. The point where you start questioning your life choices on a treadmill."
-  },
-  { 
-    id: "treadmill-walk-10", 
-    name: "Treadmill Walk (10% Incline)", 
-    category: "Cardio", 
-    displacement: 0.1, 
-    isCardio: true, 
-    metValue: 7.0,
-    description: "Walk on treadmill with extreme incline. Provides high-intensity workout with major glute activation. Like climbing a mountain while staring at a wall."
-  },
-  { 
-    id: "treadmill-walk-12", 
-    name: "Treadmill Walk (12% Incline)", 
-    category: "Cardio", 
-    displacement: 0.12, 
-    isCardio: true, 
-    metValue: 7.5,
-    description: "Walk on treadmill with severe incline. Extremely challenging cardio that builds serious leg strength. For when you want to experience mountain climbing without the risk of falling."
-  },
-  { 
-    id: "treadmill-walk-15", 
-    name: "Treadmill Walk (15% Incline)", 
-    category: "Cardio", 
-    displacement: 0.15, 
-    isCardio: true, 
-    metValue: 8.0,
-    description: "Walk on treadmill with maximum incline. Provides near-maximal cardio intensity without running. Like walking up a ladder but somehow less fun."
-  },
-  
-  { 
-    id: "treadmill-run-0", 
-    name: "Treadmill Run (0% Incline)", 
+    id: "treadmill-run", 
+    name: "Treadmill Run", 
     category: "Cardio", 
     displacement: 0.0, 
     isCardio: true, 
     metValue: 8.0,
-    description: "Run on treadmill at steady pace with no incline. Provides effective cardiovascular conditioning. Like running from your problems but never actually getting away from them."
-  },
-  { 
-    id: "treadmill-run-1", 
-    name: "Treadmill Run (1% Incline)", 
-    category: "Cardio", 
-    displacement: 0.01, 
-    isCardio: true, 
-    metValue: 8.5,
-    description: "Run on treadmill with slight incline. Better simulates outdoor running conditions. The minimum incline serious runners use to avoid treadmill shame."
-  },
-  { 
-    id: "treadmill-run-2", 
-    name: "Treadmill Run (2% Incline)", 
-    category: "Cardio", 
-    displacement: 0.02, 
-    isCardio: true, 
-    metValue: 9.0,
-    description: "Run on treadmill with moderate incline. Increases calorie burn and leg muscle engagement. For when flat running isn't making you breathe hard enough."
-  },
-  { 
-    id: "treadmill-run-3", 
-    name: "Treadmill Run (3% Incline)", 
-    category: "Cardio", 
-    displacement: 0.03, 
-    isCardio: true, 
-    metValue: 9.5,
-    description: "Run on treadmill with challenging incline. Significantly increases workout intensity. Like running uphill but with the added fear of flying off the back."
-  },
-  { 
-    id: "treadmill-run-5", 
-    name: "Treadmill Run (5% Incline)", 
-    category: "Cardio", 
-    displacement: 0.05, 
-    isCardio: true, 
-    metValue: 10.5,
-    description: "Run on treadmill with steep incline. Provides intense cardio workout while strengthening posterior chain. The point where casual conversation during your run becomes physically impossible."
-  },
-  { 
-    id: "treadmill-run-7", 
-    name: "Treadmill Run (7% Incline)", 
-    category: "Cardio", 
-    displacement: 0.07, 
-    isCardio: true, 
-    metValue: 11.5,
-    description: "Run on treadmill with very steep incline. Approaches high-intensity interval training. For when you want to know what running in San Francisco feels like."
-  },
-  { 
-    id: "treadmill-run-10", 
-    name: "Treadmill Run (10% Incline)", 
-    category: "Cardio", 
-    displacement: 0.1, 
-    isCardio: true, 
-    metValue: 13.0,
-    description: "Run on treadmill with extreme incline. Provides maximum cardio intensity and leg power development. Like trying to run up a wall, which is only slightly less reasonable."
+    description: "Run on treadmill at your chosen pace and incline. The app will automatically calculate energy expenditure based on your speed, incline, and body weight. Enter incline percentage (0-15%) for accurate calculations. Like running from your problems but never actually getting away from them."
   },
   
   { 
