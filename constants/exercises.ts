@@ -714,7 +714,7 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     isCardio: true, 
     metValue: 3.5,
-    description: "Walk on treadmill at your chosen pace and incline. The app will automatically calculate energy expenditure based on your speed, incline, and body weight. Enter incline percentage (0-15%) for accurate calculations. For when you want to exercise but also want to scroll through your phone."
+    description: "Walk on treadmill at your chosen pace and incline. Enter speed, distance, and incline % for accurate energy calculations. The app automatically adjusts based on your settings."
   },
   { 
     id: "treadmill-run", 
@@ -723,7 +723,7 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     isCardio: true, 
     metValue: 8.0,
-    description: "Run on treadmill at your chosen pace and incline. The app will automatically calculate energy expenditure based on your speed, incline, and body weight. Enter incline percentage (0-15%) for accurate calculations. Like running from your problems but never actually getting away from them."
+    description: "Run on treadmill at your chosen pace and incline. Enter speed, distance, and incline % for accurate energy calculations. The app automatically adjusts based on your settings."
   },
   
   { 
