@@ -4,11 +4,14 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect, useState } from "react";
 import { StatusBar } from "expo-status-bar";
-import { useColorScheme, View } from "react-native";
-import { ThemeProvider } from "@/hooks/use-theme";
+import { useColorScheme, View, Alert, Platform } from "react-native";
+import { ThemeProvider, useTheme } from "@/hooks/use-theme";
 import CustomSplashScreen from "@/components/CustomSplashScreen";
 import * as ScreenOrientation from 'expo-screen-orientation';
-import { Platform } from 'react-native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { clearAllAppData } from "@/hooks/use-exercise-store";
+import { useExerciseStore } from "@/hooks/use-exercise-store";
+import { useSettingsStore } from "@/hooks/use-settings-store";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -17,11 +20,16 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+// App version for data migration checks
+const APP_VERSION = "1.0.0";
+const APP_VERSION_KEY = "app-version";
+
 export default function RootLayout() {
   const [loaded, error] = useFonts({
     ...FontAwesome.font,
   });
   const [appIsReady, setAppIsReady] = useState(false);
+  const [isFirstLaunch, setIsFirstLaunch] = useState(false);
 
   useEffect(() => {
     if (error) {
@@ -42,6 +50,22 @@ export default function RootLayout() {
       try {
         // Keep the splash screen visible while we fetch resources
         await SplashScreen.preventAutoHideAsync();
+        
+        // Check if this is first launch or if app version has changed
+        const storedVersion = await AsyncStorage.getItem(APP_VERSION_KEY);
+        
+        // If no version stored or version changed, consider it a first launch
+        if (!storedVersion || storedVersion !== APP_VERSION) {
+          setIsFirstLaunch(true);
+          
+          // Store current version
+          await AsyncStorage.setItem(APP_VERSION_KEY, APP_VERSION);
+          
+          // For development: Uncomment to clear all data on version change
+          // if (storedVersion && storedVersion !== APP_VERSION) {
+          //   await clearAllAppData();
+          // }
+        }
         
         // Pre-load fonts, make any API calls you need to do here
         // Artificially delay for a smoother experience
@@ -66,11 +90,25 @@ export default function RootLayout() {
     return <CustomSplashScreen />;
   }
 
-  return <RootLayoutNav />;
+  return <RootLayoutNav isFirstLaunch={isFirstLaunch} />;
 }
 
-function RootLayoutNav() {
+function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
   const colorScheme = useColorScheme();
+  const exerciseStore = useExerciseStore();
+  const settingsStore = useSettingsStore();
+
+  // Reset stores to defaults on first launch
+  useEffect(() => {
+    if (isFirstLaunch) {
+      // Reset all stores to defaults
+      exerciseStore.resetToDefaults();
+      settingsStore.resetSettings();
+      
+      // You could show a welcome message or tutorial here
+      console.log("First launch detected - stores reset to defaults");
+    }
+  }, [isFirstLaunch]);
 
   return (
     <ThemeProvider>
@@ -121,4 +159,27 @@ function RootLayoutNav() {
       </Stack>
     </ThemeProvider>
   );
+}
+
+// Add a component to reset all app data (for development/testing)
+export function ResetAppDataButton() {
+  const handleReset = () => {
+    Alert.alert(
+      "Reset App Data",
+      "This will clear all app data and reset to defaults. This action cannot be undone.",
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Reset", 
+          style: "destructive",
+          onPress: async () => {
+            await clearAllAppData();
+            Alert.alert("Success", "App data has been reset. Please restart the app.");
+          }
+        }
+      ]
+    );
+  };
+  
+  return null; // Return null for now, implement UI if needed
 }

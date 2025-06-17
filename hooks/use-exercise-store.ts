@@ -20,13 +20,18 @@ interface ExerciseState {
   exercises: Exercise[];
   sets: Set[];
   isLoading: boolean;
+  version: number; // Add version tracking
   addExercise: (exercise: Exercise) => void;
   updateExercise: (id: string, exercise: Partial<Exercise>) => void;
   removeExercise: (id: string) => void;
   addSet: (set: Set) => void;
   removeSet: (id: string) => void;
   getTotalJoules: () => number;
+  resetToDefaults: () => void; // Add reset function
 }
+
+// Current version of the store schema
+const CURRENT_VERSION = 2;
 
 export const useExerciseStore = create<ExerciseState>()(
   persist(
@@ -34,6 +39,7 @@ export const useExerciseStore = create<ExerciseState>()(
       exercises: defaultExercises,
       sets: [],
       isLoading: true,
+      version: CURRENT_VERSION,
       
       addExercise: (exercise) => 
         set((state) => ({
@@ -67,15 +73,38 @@ export const useExerciseStore = create<ExerciseState>()(
         const { sets } = get();
         return sets.reduce((total, set) => total + set.joules, 0);
       },
+      
+      resetToDefaults: () => 
+        set({
+          exercises: defaultExercises,
+          sets: [],
+          version: CURRENT_VERSION,
+        }),
     }),
     {
       name: "power-level-data",
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
         if (state) {
+          // Check if we need to update from an older version
+          if (!state.version || state.version < CURRENT_VERSION) {
+            // Reset to defaults if version mismatch
+            state.exercises = defaultExercises;
+            state.version = CURRENT_VERSION;
+          }
           state.isLoading = false;
         }
       },
     }
   )
 );
+
+// Add a function to clear all app data (for development/testing)
+export const clearAllAppData = async () => {
+  try {
+    await AsyncStorage.clear();
+    console.log("All app data cleared successfully");
+  } catch (error) {
+    console.error("Error clearing app data:", error);
+  }
+};
