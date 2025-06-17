@@ -31,6 +31,7 @@ export default function ExerciseDetailScreen() {
   const [weight, setWeight] = useState("");
   const [distance, setDistance] = useState(""); // For cardio exercises
   const [speed, setSpeed] = useState(""); // For cardio exercises (mph or km/h)
+  const [incline, setIncline] = useState(""); // For treadmill exercises (percent)
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lastAddedSet, setLastAddedSet] = useState<any>(null);
   const [totalJoules, setTotalJoules] = useState(0);
@@ -39,6 +40,9 @@ export default function ExerciseDetailScreen() {
   const exercise = exercises.find(e => e.id === id);
   const exerciseSets = sets.filter(set => set.exerciseId === id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  
+  // Check if this is a treadmill exercise
+  const isTreadmill = exercise?.name?.toLowerCase().includes("treadmill");
   
   useEffect(() => {
     if (!exercise) {
@@ -87,6 +91,12 @@ export default function ExerciseDetailScreen() {
         Alert.alert("Missing Information", "Please enter speed.");
         return;
       }
+      
+      // For treadmill exercises, incline is required
+      if (isTreadmill && !incline) {
+        Alert.alert("Missing Information", "Please enter incline percentage.");
+        return;
+      }
     } else if (!exercise.isIsometric) {
       if (!reps || !weight) {
         Alert.alert("Missing Information", "Please enter both reps and weight.");
@@ -98,11 +108,17 @@ export default function ExerciseDetailScreen() {
     const weightNum = parseFloat(weight) || 0;
     const distanceNum = parseFloat(distance) || 0; // in meters/km
     const speedNum = parseFloat(speed) || 0; // in km/h or mph
+    const inclineNum = parseFloat(incline) || 0; // in percent
 
     // Validate numeric inputs
     if (exercise.isCardio) {
       if (distanceNum <= 0 || speedNum <= 0) {
         Alert.alert("Invalid Input", "Please enter valid numbers for distance and speed.");
+        return;
+      }
+      
+      if (isTreadmill && (inclineNum < 0 || inclineNum > 15)) {
+        Alert.alert("Invalid Input", "Incline should be between 0% and 15%.");
         return;
       }
     } else if (!exercise.isIsometric) {
@@ -121,7 +137,8 @@ export default function ExerciseDetailScreen() {
       exercise,
       bodyWeight,
       distance: distanceNum,
-      speed: speedNum
+      speed: speedNum,
+      incline: inclineNum
     });
 
     // Store the current total joules before adding the new set
@@ -136,7 +153,8 @@ export default function ExerciseDetailScreen() {
       weight: weightNum,
       joules,
       distance: distanceNum,
-      speed: speedNum
+      speed: speedNum,
+      incline: inclineNum
     };
 
     addSet(newSet);
@@ -282,28 +300,76 @@ export default function ExerciseDetailScreen() {
                 </View>
               </View>
               
-              <View style={styles.inputRow}>
-                <View style={styles.inputGroup}>
-                  <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                    Reps (optional)
-                  </Text>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      { 
-                        backgroundColor: theme.inputBackground,
-                        color: theme.text,
-                        borderColor: theme.border,
-                      }
-                    ]}
-                    value={reps}
-                    onChangeText={setReps}
-                    placeholder="0"
-                    placeholderTextColor={theme.textSecondary}
-                    keyboardType="number-pad"
-                  />
+              {isTreadmill && (
+                <View style={styles.inputRow}>
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Incline (%)
+                    </Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        { 
+                          backgroundColor: theme.inputBackground,
+                          color: theme.text,
+                          borderColor: theme.border,
+                        }
+                      ]}
+                      value={incline}
+                      onChangeText={setIncline}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="decimal-pad"
+                    />
+                  </View>
+                  
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Reps (optional)
+                    </Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        { 
+                          backgroundColor: theme.inputBackground,
+                          color: theme.text,
+                          borderColor: theme.border,
+                        }
+                      ]}
+                      value={reps}
+                      onChangeText={setReps}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="number-pad"
+                    />
+                  </View>
                 </View>
-              </View>
+              )}
+              
+              {!isTreadmill && (
+                <View style={styles.inputRow}>
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Reps (optional)
+                    </Text>
+                    <TextInput
+                      style={[
+                        styles.input,
+                        { 
+                          backgroundColor: theme.inputBackground,
+                          color: theme.text,
+                          borderColor: theme.border,
+                        }
+                      ]}
+                      value={reps}
+                      onChangeText={setReps}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="number-pad"
+                    />
+                  </View>
+                </View>
+              )}
               
               {exercise.requiresBodyWeight && (
                 <View style={styles.bodyWeightInfo}>
@@ -345,7 +411,12 @@ export default function ExerciseDetailScreen() {
             )}
             {exercise.isCardio && exercise.metValue && (
               <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                MET Value: {exercise.metValue} (intensity measure)
+                Base MET Value: {exercise.metValue} (intensity measure)
+              </Text>
+            )}
+            {isTreadmill && (
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                MET value adjusts dynamically based on speed and incline
               </Text>
             )}
             <Text style={[styles.infoText, { color: theme.textSecondary }]}>
@@ -374,6 +445,7 @@ export default function ExerciseDetailScreen() {
                 onDelete={() => handleDeleteSet(set.id)}
                 isCardio={exercise.isCardio}
                 isIsometric={exercise.isIsometric}
+                isTreadmill={isTreadmill}
               />
             ))
           ) : (

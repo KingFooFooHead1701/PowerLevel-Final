@@ -13,6 +13,92 @@ export interface JoulesCalculationParams {
   bodyWeight?: number;
   distance?: number; // in meters or km, for cardio exercises
   speed?: number; // in km/h or mph, for cardio exercises
+  incline?: number; // in percent, for treadmill exercises
+}
+
+/**
+ * Calculate MET value for walking based on speed and incline
+ * @param speedMph Speed in miles per hour
+ * @param inclinePercent Incline percentage (0-15)
+ * @returns MET value
+ */
+export function getWalkingMET(speedMph: number, inclinePercent: number): number {
+  // Clamp incline to 0-15 range
+  inclinePercent = Math.max(0, Math.min(15, inclinePercent));
+  
+  // Reference data for 2 mph walking
+  const reference2mph = {
+    base: 2.3, // 0% grade
+    mid: 3.0,  // 5% grade
+    top: 3.8   // 10% grade
+  };
+  
+  // If speed is close to 2 mph, use the reference data
+  if (Math.abs(speedMph - 2) < 0.2) {
+    if (inclinePercent <= 5) {
+      return reference2mph.base + (reference2mph.mid - reference2mph.base) * (inclinePercent / 5);
+    } else {
+      return reference2mph.mid + (reference2mph.top - reference2mph.mid) * ((inclinePercent - 5) / 5);
+    }
+  }
+  
+  // For other speeds, use a more general formula
+  // Base MET for walking on flat ground varies with speed
+  let baseMET: number;
+  
+  if (speedMph < 2) {
+    // Slow walking (< 2 mph)
+    baseMET = 2.0 + (speedMph / 2);
+  } else if (speedMph <= 3.5) {
+    // Normal walking (2-3.5 mph)
+    baseMET = 2.5 + (speedMph - 2) * 0.8;
+  } else if (speedMph <= 4.5) {
+    // Brisk walking (3.5-4.5 mph)
+    baseMET = 3.5 + (speedMph - 3.5) * 1.0;
+  } else {
+    // Very brisk walking / light jogging (> 4.5 mph)
+    baseMET = 4.5 + (speedMph - 4.5) * 1.5;
+  }
+  
+  // Incline factor increases with speed
+  const inclineFactor = 0.1 + (speedMph / 10);
+  
+  // Calculate MET with incline adjustment
+  return baseMET + (inclinePercent * inclineFactor);
+}
+
+/**
+ * Calculate MET value for running based on speed and incline
+ * @param speedMph Speed in miles per hour
+ * @param inclinePercent Incline percentage (0-15)
+ * @returns MET value
+ */
+export function getRunningMET(speedMph: number, inclinePercent: number): number {
+  // Clamp incline to 0-15 range
+  inclinePercent = Math.max(0, Math.min(15, inclinePercent));
+  
+  // Base MET for running on flat ground varies with speed
+  let baseMET: number;
+  
+  if (speedMph < 5) {
+    // Light jogging (< 5 mph)
+    baseMET = 6.0 + (speedMph - 4) * 1.0;
+  } else if (speedMph <= 7) {
+    // Moderate running (5-7 mph)
+    baseMET = 8.0 + (speedMph - 5) * 1.0;
+  } else if (speedMph <= 10) {
+    // Fast running (7-10 mph)
+    baseMET = 10.0 + (speedMph - 7) * 1.0;
+  } else {
+    // Very fast running (> 10 mph)
+    baseMET = 13.0 + (speedMph - 10) * 0.5;
+  }
+  
+  // Incline factor increases with speed
+  const inclineFactor = 0.2 + (speedMph / 20);
+  
+  // Calculate MET with incline adjustment
+  return baseMET + (inclinePercent * inclineFactor);
 }
 
 export function calculateJoules({
@@ -25,6 +111,7 @@ export function calculateJoules({
   bodyWeight = 0,
   distance = 0,
   speed = 0,
+  incline = 0,
 }: JoulesCalculationParams): number {
   // Convert weight to kg if needed
   const weightInKg = useMetricUnits ? weight : weight * 0.453592;
@@ -54,24 +141,47 @@ export function calculateJoules({
     // Convert distance to meters if needed (assuming distance is in km for metric, miles for imperial)
     const distanceInMeters = useMetricUnits ? distance * 1000 : distance * 1609.34;
     
-    // Convert speed to m/s
+    // Convert speed to m/s for duration calculation
     const speedInMps = useMetricUnits ? speed / 3.6 : speed * 0.44704;
     
     // Calculate duration in minutes
     const durationMinutes = distanceInMeters / (speedInMps * 60);
     
-    // Use MET value if available, or estimate based on speed and incline
-    let metValue = exercise.metValue || 3.5; // Default MET value if not specified
+    // Convert speed to mph for MET calculation
+    const speedInMph = useMetricUnits ? speed * 0.621371 : speed;
     
-    // Adjust MET value based on speed if not explicitly set
-    if (!exercise.metValue) {
-      // Walking
-      if (speedInMps < 2.2) { // ~5 mph or 8 km/h
-        metValue = 3.0 + (speedInMps * 0.8) + (displacement * 15);
-      } 
-      // Running
-      else {
-        metValue = 7.0 + (speedInMps * 0.8) + (displacement * 15);
+    // Determine MET value based on exercise type and parameters
+    let metValue: number;
+    
+    // Check if this is a treadmill exercise
+    const isTreadmill = exercise.name?.toLowerCase().includes("treadmill");
+    const isWalking = isTreadmill && exercise.name?.toLowerCase().includes("walk");
+    const isRunning = isTreadmill && exercise.name?.toLowerCase().includes("run");
+    
+    if (isTreadmill) {
+      // For treadmill exercises, calculate MET dynamically based on speed and incline
+      if (isWalking) {
+        metValue = getWalkingMET(speedInMph, incline);
+      } else if (isRunning) {
+        metValue = getRunningMET(speedInMph, incline);
+      } else {
+        // Fallback to provided MET value or estimate
+        metValue = exercise.metValue || 5.0;
+      }
+    } else {
+      // Use MET value if available, or estimate based on speed and incline
+      metValue = exercise.metValue || 3.5; // Default MET value if not specified
+      
+      // Adjust MET value based on speed if not explicitly set
+      if (!exercise.metValue) {
+        // Walking
+        if (speedInMps < 2.2) { // ~5 mph or 8 km/h
+          metValue = 3.0 + (speedInMps * 0.8) + (displacement * 15);
+        } 
+        // Running
+        else {
+          metValue = 7.0 + (speedInMps * 0.8) + (displacement * 15);
+        }
       }
     }
     

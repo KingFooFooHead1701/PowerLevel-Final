@@ -1,200 +1,28 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View, TouchableOpacity, Modal } from "react-native";
+import React from "react";
+import { Modal, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
-import { Exercise } from "@/constants/exercises";
-import { Set } from "@/hooks/use-exercise-store";
-import { Audio } from "expo-av";
-import { Platform } from "react-native";
+import { X } from "lucide-react-native";
 
 interface SetConfirmationDialogProps {
   visible: boolean;
   onClose: () => void;
-  set: Set | null;
-  exercise: Exercise | null;
+  set: {
+    reps: number;
+    weight: number;
+    joules: number;
+    distance?: number;
+    speed?: number;
+    incline?: number;
+  } | null;
+  exercise: {
+    name: string;
+    isCardio?: boolean;
+    isIsometric?: boolean;
+  };
   useMetricUnits: boolean;
   totalJoules: number;
 }
-
-// Array of confirmation messages
-const CONFIRMATION_MESSAGES = [
-  {
-    title: "💪 Set Logged!",
-    message: "You just crushed {reps} reps at {weight} {unit} of {exercise}—that's {energy} J added to your total!"
-  },
-  {
-    title: "High-Five! 🖐",
-    message: "{reps}×{weight} {unit} on {exercise} recorded. You've earned {energy} J—keep that power level rising!"
-  },
-  {
-    title: "Set Added",
-    message: "{exercise}: {reps} reps @ {weight} {unit} → +{energy} J"
-  },
-  {
-    title: "Nice Work!",
-    message: "+{energy} J to your Power Level. You're now at {total_energy} {best_unit} toward your next milestone!"
-  },
-  {
-    title: "Great job!",
-    message: "Great job on those {reps} reps at {weight} {unit}! I just tallied {energy} joules—you're one step closer to that next big milestone."
-  },
-  {
-    title: "+{energy} J",
-    message: "✓ {reps}×{weight} {unit} ({exercise})"
-  },
-  {
-    title: "+{energy} XP!",
-    message: "{exercise} set complete—level up your power bar!"
-  },
-  {
-    title: "You did it!",
-    message: "{reps} reps @ {weight} {unit} done. That's {energy} J more in the bank."
-  },
-  {
-    title: "Set Recorded",
-    message: "{exercise} – {reps}×{weight} → +{energy} J"
-  },
-  {
-    title: "Milestone Update",
-    message: "{exercise} set added! You're making great progress."
-  },
-  {
-    title: "Beast Mode Engaged!",
-    message: "You smashed {reps}×{weight} {unit} of {exercise}—that's {energy} J toward your next breakthrough!"
-  },
-  {
-    title: "Power Surge!",
-    message: "{energy} J added! Your current Power Level is {total_energy} J—keep charging!"
-  },
-  {
-    title: "That's How Champions Train!",
-    message: "{reps} reps at {weight} {unit} logged. You're forging strength and racking up {energy} J!"
-  },
-  {
-    title: "Crush It!",
-    message: "You just conquered {exercise} with {reps} reps @ {weight} {unit}—{energy} J earned. Onward!"
-  },
-  {
-    title: "Next-Level Strength!",
-    message: "Set recorded: {reps}×{weight} {unit} → +{energy} J. Your Power Level is unstoppable!"
-  },
-  {
-    title: "Feel the Burn, See the Growth!",
-    message: "{exercise} set done. {energy} J fuel for your warrior's journey."
-  },
-  {
-    title: "Strength Unleashed!",
-    message: "Logged {reps} reps @ {weight} {unit}—{energy} J more energy in the bank!"
-  },
-  {
-    title: "Unstoppable Force!",
-    message: "Boom—{energy} J added. Your Power Level now sits at {total_energy} J!"
-  },
-  {
-    title: "You're on Fire!",
-    message: "That's {reps}×{weight} {unit} in the books—{energy} J power-up complete!"
-  },
-  {
-    title: "Every Rep Counts!",
-    message: "{exercise}: {reps} reps @ {weight} {unit} → +{energy} J. Keep stacking wins!"
-  },
-  {
-    title: "Warrior's Progress!",
-    message: "You've fortified your Power Level with {energy} J—you're getting stronger every set."
-  },
-  {
-    title: "Power Up Achieved!",
-    message: "Set logged: {reps}×{weight} {unit}, earning {energy} J toward your next milestone."
-  },
-  {
-    title: "Victory in Motion!",
-    message: "{exercise} conquered—{reps} reps @ {weight} {unit}, that's {energy} J more!"
-  },
-  {
-    title: "Rise and Grind!",
-    message: "You logged {reps}×{weight} {unit}—{energy} J just added to your arsenal."
-  },
-  {
-    title: "Strength in Numbers!",
-    message: "{energy} J more on your Power Meter. {total_energy} J and counting!"
-  },
-  {
-    title: "Pure Power!",
-    message: "Logged {reps}×{weight} {unit} of {exercise}—you just banked {energy} J!"
-  },
-  {
-    title: "Be Unstoppable!",
-    message: "{exercise} set recorded: {reps} reps @ {weight} {unit} → +{energy} J."
-  },
-  {
-    title: "Next Rep, Next Reward!",
-    message: "You crushed {reps}×{weight} {unit}—that's {energy} J toward greatness!"
-  },
-  {
-    title: "Steel Resolve!",
-    message: "{reps} reps at {weight} {unit} locked in—{energy} J added to your arsenal."
-  },
-  {
-    title: "Power on Demand!",
-    message: "Just logged {exercise}: {reps}×{weight} {unit} → +{energy} J. Keep it coming!"
-  }
-];
-
-// Cardio-specific messages
-const CARDIO_MESSAGES = [
-  {
-    title: "Cardio Boost!",
-    message: "{distance} {dist_unit} at {speed} {speed_unit} complete! You've earned {energy} J."
-  },
-  {
-    title: "Endurance Champion!",
-    message: "You crushed {exercise} for {distance} {dist_unit} at {speed} {speed_unit}—that's {energy} J added to your power level!"
-  },
-  {
-    title: "Distance Crusher!",
-    message: "You covered {distance} {dist_unit} at {speed} {speed_unit}—adding {energy} J to your total!"
-  },
-  {
-    title: "Cardio Power!",
-    message: "{exercise} for {distance} {dist_unit} at {speed} {speed_unit} → +{energy} J. Your heart is getting stronger!"
-  },
-  {
-    title: "Endurance Builder!",
-    message: "Great cardio session! {distance} {dist_unit} at {speed} {speed_unit} = {energy} J earned."
-  },
-  {
-    title: "Cardio King!",
-    message: "You just dominated {exercise} for {distance} {dist_unit}. That's {energy} J in the bank!"
-  },
-  {
-    title: "Steady Progress!",
-    message: "{distance} {dist_unit} of {exercise} logged. You've earned {energy} J toward your next milestone!"
-  }
-];
-
-// Isometric-specific messages
-const ISOMETRIC_MESSAGES = [
-  {
-    title: "Hold Strong!",
-    message: "You completed {reps} sets of {exercise}! That's {energy} J added to your power level."
-  },
-  {
-    title: "Static Strength!",
-    message: "{reps} sets of {exercise} complete! You've earned {energy} J for your effort."
-  },
-  {
-    title: "Isometric Power!",
-    message: "Impressive {reps} sets of {exercise}! That's {energy} J added to your total."
-  },
-  {
-    title: "Core Stability!",
-    message: "You maintained {reps} sets of {exercise}—adding {energy} J to your power level!"
-  },
-  {
-    title: "Tension Builder!",
-    message: "Great isometric work! {reps} sets of {exercise} = {energy} J earned."
-  }
-];
 
 export default function SetConfirmationDialog({
   visible,
@@ -206,84 +34,14 @@ export default function SetConfirmationDialog({
 }: SetConfirmationDialogProps) {
   const { theme } = useTheme();
   
-  useEffect(() => {
-    // Play confirmation sound when dialog becomes visible
-    if (visible && set) {
-      playConfirmationSound();
-    }
-  }, [visible]);
+  if (!set) return null;
   
-  // Play confirmation sound - using hammertink.mp3 instead of beep.mp3
-  const playConfirmationSound = async () => {
-    if (Platform.OS !== "web") {
-      try {
-        try {
-          const { sound } = await Audio.Sound.createAsync(
-            require('@/assets/sounds/hammertink.mp3')
-          );
-          await sound.playAsync();
-          
-          // Unload sound when done
-          sound.setOnPlaybackStatusUpdate((status) => {
-            if (status.isLoaded && status.isPlaying === false && status.positionMillis > 0) {
-              sound.unloadAsync();
-            }
-          });
-        } catch (error) {
-          console.log("Error playing confirmation sound:", error);
-        }
-      } catch (error) {
-        console.log("Error playing confirmation sound:", error);
-      }
-    }
-  };
+  const { abbreviated: setEnergy, full: setEnergyFull } = formatEnergy(set.joules);
+  const { abbreviated: totalEnergy } = formatEnergy(totalJoules);
   
-  if (!set || !exercise) return null;
+  // Check if this is a treadmill exercise
+  const isTreadmill = exercise.name?.toLowerCase().includes("treadmill");
   
-  // Select appropriate message array based on exercise type
-  let messageArray = CONFIRMATION_MESSAGES;
-  if (exercise.isCardio) {
-    messageArray = CARDIO_MESSAGES;
-  } else if (exercise.isIsometric) {
-    messageArray = ISOMETRIC_MESSAGES;
-  }
-  
-  // Select a random message
-  const randomIndex = Math.floor(Math.random() * messageArray.length);
-  const selectedMessage = messageArray[randomIndex];
-  
-  // Format the energy values
-  const energyFormatted = formatEnergy(set.joules);
-  const totalEnergyFormatted = formatEnergy(totalJoules);
-  
-  // Replace placeholders in the message
-  const formatMessage = (text: string) => {
-    let formattedText = text
-      .replace("{exercise}", exercise.name)
-      .replace("{energy}", energyFormatted.abbreviated)
-      .replace("{total_energy}", totalEnergyFormatted.abbreviated)
-      .replace("{best_unit}", totalEnergyFormatted.abbreviated.split(" ")[1]);
-    
-    // Add exercise-specific replacements
-    if (exercise.isCardio) {
-      formattedText = formattedText
-        .replace("{distance}", set.distance?.toString() || "0")
-        .replace("{dist_unit}", useMetricUnits ? "km" : "miles")
-        .replace("{speed}", set.speed?.toString() || "0")
-        .replace("{speed_unit}", useMetricUnits ? "km/h" : "mph");
-    } else {
-      formattedText = formattedText
-        .replace("{reps}", set.reps.toString())
-        .replace("{weight}", set.weight.toString())
-        .replace("{unit}", useMetricUnits ? "kg" : "lbs");
-    }
-    
-    return formattedText;
-  };
-  
-  const title = formatMessage(selectedMessage.title);
-  const message = formatMessage(selectedMessage.message);
-
   return (
     <Modal
       visible={visible}
@@ -293,14 +51,78 @@ export default function SetConfirmationDialog({
     >
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: theme.cardBackground }]}>
-          <Text style={[styles.title, { color: theme.text }]}>{title}</Text>
-          <Text style={[styles.message, { color: theme.textSecondary }]}>{message}</Text>
+          <View style={styles.modalHeader}>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>Set Logged!</Text>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <X size={24} color={theme.textSecondary} />
+            </TouchableOpacity>
+          </View>
+          
+          <View style={styles.modalBody}>
+            <Text style={[styles.exerciseName, { color: theme.text }]}>
+              {exercise.name}
+            </Text>
+            
+            {exercise.isCardio ? (
+              <View style={styles.setDetails}>
+                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
+                  Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
+                </Text>
+                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
+                  Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
+                </Text>
+                {isTreadmill && set.incline !== undefined && (
+                  <Text style={[styles.detailText, { color: theme.textSecondary }]}>
+                    Incline: {set.incline}%
+                  </Text>
+                )}
+                {set.reps > 0 && (
+                  <Text style={[styles.detailText, { color: theme.textSecondary }]}>
+                    Reps: {set.reps}
+                  </Text>
+                )}
+              </View>
+            ) : exercise.isIsometric ? (
+              <View style={styles.setDetails}>
+                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
+                  Duration: {set.reps} seconds
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.setDetails}>
+                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
+                  {set.reps} reps × {set.weight} {useMetricUnits ? "kg" : "lbs"}
+                </Text>
+              </View>
+            )}
+            
+            <View style={styles.energyContainer}>
+              <Text style={[styles.energyLabel, { color: theme.textSecondary }]}>
+                Energy Generated:
+              </Text>
+              <Text style={[styles.energyValue, { color: theme.primary }]}>
+                {setEnergy}
+              </Text>
+              <Text style={[styles.energyFull, { color: theme.textSecondary }]}>
+                {setEnergyFull}
+              </Text>
+            </View>
+            
+            <View style={[styles.totalContainer, { backgroundColor: theme.backgroundSecondary }]}>
+              <Text style={[styles.totalLabel, { color: theme.textSecondary }]}>
+                Total Power Level:
+              </Text>
+              <Text style={[styles.totalValue, { color: theme.primary }]}>
+                {totalEnergy}
+              </Text>
+            </View>
+          </View>
           
           <TouchableOpacity
-            style={[styles.button, { backgroundColor: theme.primary }]}
+            style={[styles.closeFullButton, { backgroundColor: theme.primary }]}
             onPress={onClose}
           >
-            <Text style={styles.buttonText}>Continue</Text>
+            <Text style={styles.closeFullButtonText}>Continue</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -317,31 +139,84 @@ const styles = StyleSheet.create({
     padding: 20,
   },
   modalContent: {
-    width: "90%",
-    borderRadius: 16,
-    padding: 24,
+    width: "100%",
+    borderRadius: 12,
+    padding: 20,
     alignItems: "center",
   },
-  title: {
-    fontSize: 22,
-    fontWeight: "bold",
+  modalHeader: {
+    width: "100%",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  modalTitle: {
+    fontSize: 20,
+    fontWeight: "700",
+  },
+  closeButton: {
+    padding: 4,
+  },
+  modalBody: {
+    width: "100%",
+    alignItems: "center",
+  },
+  exerciseName: {
+    fontSize: 18,
+    fontWeight: "600",
     marginBottom: 12,
     textAlign: "center",
   },
-  message: {
-    fontSize: 16,
-    textAlign: "center",
-    marginBottom: 24,
-    lineHeight: 22,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    borderRadius: 8,
-    minWidth: 120,
+  setDetails: {
     alignItems: "center",
+    marginBottom: 16,
   },
-  buttonText: {
+  detailText: {
+    fontSize: 16,
+    marginBottom: 4,
+    textAlign: "center",
+  },
+  energyContainer: {
+    alignItems: "center",
+    marginVertical: 16,
+    width: "100%",
+  },
+  energyLabel: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  energyValue: {
+    fontSize: 32,
+    fontWeight: "700",
+    marginBottom: 4,
+  },
+  energyFull: {
+    fontSize: 12,
+  },
+  totalContainer: {
+    width: "100%",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginVertical: 16,
+  },
+  totalLabel: {
+    fontSize: 14,
+    marginBottom: 4,
+  },
+  totalValue: {
+    fontSize: 24,
+    fontWeight: "700",
+  },
+  closeFullButton: {
+    width: "100%",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    marginTop: 8,
+  },
+  closeFullButtonText: {
     color: "#fff",
     fontSize: 16,
     fontWeight: "600",

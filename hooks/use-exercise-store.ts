@@ -13,6 +13,7 @@ export interface Set {
   duration?: number; // in seconds, for isometric exercises
   distance?: number; // in km or miles, for cardio exercises
   speed?: number; // in km/h or mph, for cardio exercises
+  incline?: number; // in percent, for treadmill exercises
 }
 
 interface ExerciseState {
