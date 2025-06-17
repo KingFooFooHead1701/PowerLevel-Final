@@ -12,7 +12,7 @@ export interface JoulesCalculationParams {
   };
   bodyWeight?: number;
   duration?: number; // in seconds, for cardio and isometric exercises
-  distance?: number; // in meters, for cardio exercises
+  distance?: number; // in meters or km, for cardio exercises
   speed?: number; // in km/h or mph, for cardio exercises
 }
 
@@ -55,7 +55,9 @@ export function calculateJoules({
     
     // If distance is provided, add work done against gravity for incline
     if (distance > 0 && displacement > 0) {
-      const heightChange = distance * displacement; // Total vertical displacement
+      // Convert distance to meters if needed (assuming distance is in km for metric, miles for imperial)
+      const distanceInMeters = useMetricUnits ? distance * 1000 : distance * 1609.34;
+      const heightChange = distanceInMeters * displacement; // Total vertical displacement
       const additionalJoules = bodyWeightInKg * gravity * heightChange;
       joules += additionalJoules;
     }

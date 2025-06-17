@@ -29,7 +29,8 @@ export default function ExerciseDetailScreen() {
   const [activeTab, setActiveTab] = useState("log");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
-  const [duration, setDuration] = useState(""); // For cardio/isometric exercises
+  const [minutes, setMinutes] = useState(""); // For cardio/isometric exercises
+  const [seconds, setSeconds] = useState(""); // For cardio/isometric exercises
   const [distance, setDistance] = useState(""); // For cardio exercises
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lastAddedSet, setLastAddedSet] = useState<any>(null);
@@ -77,8 +78,10 @@ export default function ExerciseDetailScreen() {
 
     // Validate inputs based on exercise type
     if (exercise.isCardio || exercise.isIsometric) {
-      if (!duration) {
-        Alert.alert("Missing Information", "Please enter the duration.");
+      const totalSeconds = (parseInt(minutes, 10) || 0) * 60 + (parseInt(seconds, 10) || 0);
+      
+      if (totalSeconds <= 0) {
+        Alert.alert("Missing Information", "Please enter a valid duration.");
         return;
       }
       
@@ -95,7 +98,9 @@ export default function ExerciseDetailScreen() {
 
     const repsNum = parseInt(reps, 10) || 0;
     const weightNum = parseFloat(weight) || 0;
-    const durationNum = parseInt(duration, 10) || 0; // in seconds
+    const minutesNum = parseInt(minutes, 10) || 0;
+    const secondsNum = parseInt(seconds, 10) || 0;
+    const durationNum = minutesNum * 60 + secondsNum; // Convert to seconds
     const distanceNum = parseFloat(distance) || 0; // in meters/km
 
     // Validate numeric inputs
@@ -246,26 +251,57 @@ export default function ExerciseDetailScreen() {
               <View style={styles.inputRow}>
                 <View style={styles.inputGroup}>
                   <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                    Duration (min:sec)
+                    Duration
                   </Text>
                   <View style={styles.durationContainer}>
                     <Clock size={20} color={theme.textSecondary} style={styles.durationIcon} />
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { 
-                          backgroundColor: theme.inputBackground,
-                          color: theme.text,
-                          borderColor: theme.border,
-                        }
-                      ]}
-                      value={duration}
-                      onChangeText={setDuration}
-                      placeholder="0"
-                      placeholderTextColor={theme.textSecondary}
-                      keyboardType="number-pad"
-                    />
-                    <Text style={[styles.durationLabel, { color: theme.textSecondary }]}>seconds</Text>
+                    <View style={styles.timeInputContainer}>
+                      <TextInput
+                        style={[
+                          styles.timeInput,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={minutes}
+                        onChangeText={setMinutes}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="number-pad"
+                        maxLength={3}
+                      />
+                      <Text style={[styles.timeLabel, { color: theme.textSecondary }]}>min</Text>
+                    </View>
+                    <Text style={[styles.timeSeparator, { color: theme.textSecondary }]}>:</Text>
+                    <View style={styles.timeInputContainer}>
+                      <TextInput
+                        style={[
+                          styles.timeInput,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={seconds}
+                        onChangeText={(text) => {
+                          // Ensure seconds are between 0-59
+                          const sec = parseInt(text, 10);
+                          if (!isNaN(sec) && sec >= 0 && sec <= 59) {
+                            setSeconds(text);
+                          } else if (text === "") {
+                            setSeconds("");
+                          }
+                        }}
+                        placeholder="00"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="number-pad"
+                        maxLength={2}
+                      />
+                      <Text style={[styles.timeLabel, { color: theme.textSecondary }]}>sec</Text>
+                    </View>
                   </View>
                 </View>
               </View>
@@ -470,9 +506,28 @@ const styles = StyleSheet.create({
   durationIcon: {
     marginRight: 8,
   },
-  durationLabel: {
-    marginLeft: 8,
+  timeInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  timeInput: {
+    height: 48,
+    width: 60,
+    borderRadius: 8,
+    borderWidth: 1,
+    paddingHorizontal: 12,
+    fontSize: 16,
+    textAlign: "center",
+  },
+  timeLabel: {
+    marginLeft: 4,
     fontSize: 14,
+    width: 30,
+  },
+  timeSeparator: {
+    marginHorizontal: 8,
+    fontSize: 20,
+    fontWeight: "bold",
   },
   bodyWeightInfo: {
     marginBottom: 16,
