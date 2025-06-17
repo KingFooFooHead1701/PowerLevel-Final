@@ -501,8 +501,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   descriptionText: {
-    fontSize: 14,
-    lineHeight: 20,
+    fontSize: 16, // Increased from 14 to 16
+    lineHeight: 22, // Increased from 20 to 22
     marginTop: 12,
     fontStyle: "italic",
   },
