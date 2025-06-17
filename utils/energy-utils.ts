@@ -155,9 +155,10 @@ export function calculateJoules({
     let metValue: number;
     
     // Check if this is a treadmill exercise
-    const isTreadmill = exercise.name?.toLowerCase().includes("treadmill") || false;
-    const isWalking = isTreadmill && exercise.name?.toLowerCase().includes("walk") || false;
-    const isRunning = isTreadmill && exercise.name?.toLowerCase().includes("run") || false;
+    const exerciseName = exercise.name || "";
+    const isTreadmill = exerciseName.toLowerCase().includes("treadmill");
+    const isWalking = isTreadmill && exerciseName.toLowerCase().includes("walk");
+    const isRunning = isTreadmill && exerciseName.toLowerCase().includes("run");
     
     if (isTreadmill) {
       // For treadmill exercises, calculate MET dynamically based on speed and incline

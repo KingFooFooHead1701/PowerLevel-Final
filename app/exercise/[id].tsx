@@ -6,14 +6,14 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  TextInput
+  TextInput,
+  Platform
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { calculateJoules, formatEnergy } from "@/utils/energy-utils";
-import { Trash2 } from "lucide-react-native";
 import SetInput from "@/components/SetInput";
 import SetHistoryItem from "@/components/SetHistoryItem";
 import { checkMilestone } from "@/utils/milestone-utils";
@@ -249,7 +249,7 @@ export default function ExerciseDetailScreen() {
       </View>
 
       {activeTab === "log" ? (
-        <View style={styles.logContainer}>
+        <ScrollView style={styles.logContainer}>
           {exercise.isCardio ? (
             <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
               <Text style={[styles.title, { color: theme.text }]}>
@@ -428,12 +428,17 @@ export default function ExerciseDetailScreen() {
               </Text>
             )}
             {exercise.description && (
-              <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
-                {exercise.description}
-              </Text>
+              <ScrollView 
+                style={styles.descriptionScrollView}
+                showsVerticalScrollIndicator={Platform.OS !== 'web'}
+              >
+                <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
+                  {exercise.description}
+                </Text>
+              </ScrollView>
             )}
           </View>
-        </View>
+        </ScrollView>
       ) : (
         <ScrollView style={styles.historyContainer}>
           {exerciseSets.length > 0 ? (
@@ -548,6 +553,7 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     marginTop: 24,
+    marginBottom: 24,
   },
   infoTitle: {
     fontSize: 18,
@@ -558,10 +564,13 @@ const styles = StyleSheet.create({
     fontSize: 14,
     marginBottom: 8,
   },
-  descriptionText: {
-    fontSize: 18,
-    lineHeight: 24,
+  descriptionScrollView: {
+    maxHeight: 200,
     marginTop: 12,
+  },
+  descriptionText: {
+    fontSize: 16,
+    lineHeight: 24,
     fontStyle: "italic",
   },
   emptyHistory: {
