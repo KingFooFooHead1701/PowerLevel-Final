@@ -64,6 +64,17 @@ export function calculateJoules({
     // Convert calories to joules
     joules = caloriesBurned * 4.184;
     
+    // If distance and speed are provided, adjust MET value based on intensity
+    if (distance > 0 && speed > 0) {
+      // Convert speed to km/h if in mph
+      const speedInKmh = useMetricUnits ? speed : speed * 1.60934;
+      
+      // Adjust joules based on speed (higher speed = more energy)
+      // This is a simple linear adjustment, could be refined with more complex models
+      const speedFactor = Math.max(0.8, Math.min(2.0, speedInKmh / 5)); // 5 km/h is baseline walking speed
+      joules *= speedFactor;
+    }
+    
     // If distance is provided, add work done against gravity for incline
     if (distance > 0 && displacement > 0) {
       // Convert distance to meters if needed (assuming distance is in km for metric, miles for imperial)

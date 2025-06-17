@@ -13,6 +13,7 @@ interface SetHistoryItemProps {
     date: string;
     duration?: number;
     distance?: number;
+    speed?: number;
   };
   useMetricUnits: boolean;
   onDelete: () => void;
@@ -67,6 +68,14 @@ export default function SetHistoryItem({
               <View style={styles.dataRow}>
                 <Text style={[styles.dataText, { color: theme.text }]}>
                   Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
+                </Text>
+              </View>
+            )}
+            
+            {isCardio && set.speed && set.speed > 0 && (
+              <View style={styles.dataRow}>
+                <Text style={[styles.dataText, { color: theme.text }]}>
+                  Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
                 </Text>
               </View>
             )}

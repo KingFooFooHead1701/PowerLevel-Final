@@ -32,6 +32,7 @@ export default function ExerciseDetailScreen() {
   const [minutes, setMinutes] = useState(""); // For cardio/isometric exercises
   const [seconds, setSeconds] = useState(""); // For cardio/isometric exercises
   const [distance, setDistance] = useState(""); // For cardio exercises
+  const [speed, setSpeed] = useState(""); // For cardio exercises (mph or km/h)
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lastAddedSet, setLastAddedSet] = useState<any>(null);
   const [totalJoules, setTotalJoules] = useState(0);
@@ -102,6 +103,7 @@ export default function ExerciseDetailScreen() {
     const secondsNum = parseInt(seconds, 10) || 0;
     const durationNum = minutesNum * 60 + secondsNum; // Convert to seconds
     const distanceNum = parseFloat(distance) || 0; // in meters/km
+    const speedNum = parseFloat(speed) || 0; // in km/h or mph
 
     // Validate numeric inputs
     if (exercise.isCardio || exercise.isIsometric) {
@@ -125,7 +127,8 @@ export default function ExerciseDetailScreen() {
       exercise,
       bodyWeight,
       duration: durationNum,
-      distance: distanceNum
+      distance: distanceNum,
+      speed: speedNum
     });
 
     // Store the current total joules before adding the new set
@@ -140,7 +143,8 @@ export default function ExerciseDetailScreen() {
       weight: weightNum,
       joules,
       duration: durationNum,
-      distance: distanceNum
+      distance: distanceNum,
+      speed: speedNum
     };
 
     addSet(newSet);
@@ -307,49 +311,74 @@ export default function ExerciseDetailScreen() {
               </View>
               
               {exercise.isCardio && (
-                <View style={styles.inputRow}>
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                      Distance ({useMetricUnits ? "km" : "miles"})
-                    </Text>
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { 
-                          backgroundColor: theme.inputBackground,
-                          color: theme.text,
-                          borderColor: theme.border,
-                        }
-                      ]}
-                      value={distance}
-                      onChangeText={setDistance}
-                      placeholder="0"
-                      placeholderTextColor={theme.textSecondary}
-                      keyboardType="decimal-pad"
-                    />
+                <>
+                  <View style={styles.inputRow}>
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                        Distance ({useMetricUnits ? "km" : "miles"})
+                      </Text>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={distance}
+                        onChangeText={setDistance}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="decimal-pad"
+                      />
+                    </View>
+                    
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                        Speed ({useMetricUnits ? "km/h" : "mph"})
+                      </Text>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={speed}
+                        onChangeText={setSpeed}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="decimal-pad"
+                      />
+                    </View>
                   </View>
                   
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                      Reps (optional)
-                    </Text>
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { 
-                          backgroundColor: theme.inputBackground,
-                          color: theme.text,
-                          borderColor: theme.border,
-                        }
-                      ]}
-                      value={reps}
-                      onChangeText={setReps}
-                      placeholder="0"
-                      placeholderTextColor={theme.textSecondary}
-                      keyboardType="number-pad"
-                    />
+                  <View style={styles.inputRow}>
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                        Reps (optional)
+                      </Text>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={reps}
+                        onChangeText={setReps}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="number-pad"
+                      />
+                    </View>
                   </View>
-                </View>
+                </>
               )}
               
               {exercise.requiresBodyWeight && (
