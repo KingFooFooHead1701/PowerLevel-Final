@@ -160,7 +160,7 @@ export default function PowerLevelScreen() {
     const tierScaleDown = Animated.timing(tierScaleAnim, {
       toValue: 1,
       duration: 400,
-      easing: Easing.inOut(Easing.elastic(1)),
+      easing: Easing.elastic(1),
       useNativeDriver: true,
     });
 
