@@ -8,9 +8,11 @@ import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
 import { getPowerTierName } from "@/utils/milestone-utils";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { Stack } from "expo-router";
+import { Stack, useRouter } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
 
 export default function PowerLevelScreen() {
+  const router = useRouter();
   const { theme } = useTheme();
   const { getTotalJoules } = useExerciseStore();
   const [totalJoules, setTotalJoules] = useState(0);
@@ -239,20 +241,26 @@ export default function PowerLevelScreen() {
   const containerWidth = 220;
   const maxTranslation = (containerWidth - scannerWidth) / 2;
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top', 'bottom', 'left', 'right']}>
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
       <StatusBar barStyle="light-content" />
       
-      <Stack.Screen 
-        options={{ 
-          headerShown: true,
-          headerStyle: { backgroundColor: theme.background },
-          headerTintColor: theme.text,
-          headerTitle: "Power Level",
-          headerBackTitle: "Back",
-          headerShadowVisible: false,
-        }} 
-      />
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={handleGoBack} 
+            style={styles.backButton}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          >
+            <ChevronLeft size={24} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Power Level</Text>
+        </View>
+      </SafeAreaView>
       
       <View style={styles.contentContainer}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>
@@ -363,13 +371,30 @@ export default function PowerLevelScreen() {
           </Text>
         </Animated.View>
       </View>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  safeArea: {
+    width: '100%',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginLeft: 12,
   },
   contentContainer: {
     flex: 1,

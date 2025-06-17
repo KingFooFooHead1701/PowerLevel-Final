@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert, StatusBar } from "react-native";
-import { useRouter, Stack } from "expo-router";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { Exercise } from "@/constants/exercises";
-import { Dumbbell, Save } from "lucide-react-native";
+import { Dumbbell, Save, ChevronLeft } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CustomExerciseScreen() {
@@ -60,18 +60,24 @@ export default function CustomExerciseScreen() {
     );
   };
 
+  const handleGoBack = () => {
+    router.back();
+  };
+
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['top', 'bottom', 'left', 'right']}>
-      <StatusBar barStyle="light-content" />
-      
-      <Stack.Screen 
-        options={{ 
-          title: "Add Custom Exercise",
-          headerStyle: { backgroundColor: theme.background },
-          headerTintColor: theme.text,
-          headerShadowVisible: false,
-        }} 
-      />
+    <View style={[styles.container, { backgroundColor: theme.background }]}>
+      <SafeAreaView edges={['top']} style={styles.safeArea}>
+        <View style={styles.header}>
+          <TouchableOpacity 
+            onPress={handleGoBack} 
+            style={styles.backButton}
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
+          >
+            <ChevronLeft size={24} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Add Custom Exercise</Text>
+        </View>
+      </SafeAreaView>
       
       <ScrollView style={styles.scrollView}>
         <View style={[styles.formCard, { backgroundColor: theme.cardBackground }]}>
@@ -166,13 +172,30 @@ export default function CustomExerciseScreen() {
           <Text style={styles.buttonText}>Save Exercise</Text>
         </TouchableOpacity>
       </ScrollView>
-    </SafeAreaView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  safeArea: {
+    width: '100%',
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+  },
+  backButton: {
+    padding: 4,
+  },
+  headerTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginLeft: 12,
   },
   scrollView: {
     flex: 1,
