@@ -63,12 +63,14 @@ export default function SetHistoryItem({
               </View>
             )}
           </>
+        ) : isIsometric ? (
+          <Text style={[styles.dataText, { color: theme.text }]}>
+            {set.reps} {set.reps === 1 ? "set" : "sets"} × {set.weight} {useMetricUnits ? "kg" : "lbs"}
+          </Text>
         ) : (
-          <>
-            <Text style={[styles.dataText, { color: theme.text }]}>
-              {set.reps} reps × {set.weight} {useMetricUnits ? "kg" : "lbs"}
-            </Text>
-          </>
+          <Text style={[styles.dataText, { color: theme.text }]}>
+            {set.reps} reps × {set.weight} {useMetricUnits ? "kg" : "lbs"}
+          </Text>
         )}
         
         <Text style={[styles.energyText, { color: theme.primary }]}>

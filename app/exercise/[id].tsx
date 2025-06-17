@@ -43,6 +43,7 @@ export default function ExerciseDetailScreen() {
   useEffect(() => {
     if (!exercise) {
       router.back();
+      return;
     }
     setTotalJoules(getTotalJoules());
   }, [exercise, sets]);
