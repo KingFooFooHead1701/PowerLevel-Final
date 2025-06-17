@@ -706,7 +706,7 @@ export const defaultExercises: Exercise[] = [
     description: "Stand holding medicine ball overhead, forcefully throw ball to floor using abs and arms, catch on bounce and repeat. Works entire core with explosive movement. The exercise that lets you legally throw things in the gym."
   },
   
-  // Cardio - Simplified treadmill exercises
+  // Cardio - Simplified treadmill exercises (reduced to just two main types)
   { 
     id: "treadmill-walk", 
     name: "Treadmill Walk", 
