@@ -1,5 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, Animated, Easing, Platform, TouchableOpacity, Dimensions, StatusBar } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Easing,
+  Platform,
+  TouchableOpacity,
+  Dimensions,
+  StatusBar,
+} from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
@@ -16,353 +26,217 @@ export default function PowerLevelScreen() {
   const { theme } = useTheme();
   const { getTotalJoules } = useExerciseStore();
   const [totalJoules, setTotalJoules] = useState(0);
-  const [showValue, setShowValue] = useState(false);
   const [soundsLoaded, setSoundsLoaded] = useState(false);
-  
-  // Get screen dimensions for responsive sizing
-  const screenWidth = Dimensions.get('window').width;
-  
-  // Sound references
+
   const scannerSound = useRef<Audio.Sound | null>(null);
   const revealSound = useRef<Audio.Sound | null>(null);
-  
-  // Animation refs
+
   const scannerAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const valueOpacityAnim = useRef(new Animated.Value(0)).current;
   const fullJoulesOpacityAnim = useRef(new Animated.Value(0)).current;
   const tierOpacityAnim = useRef(new Animated.Value(0)).current;
-  
-  // Initialize data and load sounds
+
   useEffect(() => {
     setTotalJoules(getTotalJoules());
-    
-    // Load sound effects
     const loadSounds = async () => {
-      try {
-        if (Platform.OS !== "web") {
-          // Create and load the sounds
-          try {
-            const { sound: scanner } = await Audio.Sound.createAsync(
-              require('@/assets/sounds/beep.mp3')
-            );
-            scannerSound.current = scanner;
-          } catch (error) {
-            console.log("Error loading beep sound:", error);
-          }
-          
-          try {
-            const { sound: reveal } = await Audio.Sound.createAsync(
-              require('@/assets/sounds/chirp.mp3')
-            );
-            revealSound.current = reveal;
-          } catch (error) {
-            console.log("Error loading chirp sound:", error);
-          }
-          
-          setSoundsLoaded(true);
-        } else {
-          // On web, we don't need to wait for sounds to load
-          setSoundsLoaded(true);
-        }
-      } catch (error) {
-        console.log("Error loading sounds:", error);
-        // Even if sounds fail to load, we should still allow the animation to run
-        setSoundsLoaded(true);
-      }
-    };
-    
-    loadSounds();
-    
-    // Cleanup sounds on unmount
-    return () => {
-      const unloadSounds = async () => {
+      if (Platform.OS !== "web") {
         try {
-          if (Platform.OS !== "web") {
-            if (scannerSound.current) {
-              await scannerSound.current.unloadAsync();
-            }
-            if (revealSound.current) {
-              await revealSound.current.unloadAsync();
-            }
-          }
-        } catch (error) {
-          console.log("Error unloading sounds:", error);
-        }
-      };
-      
-      unloadSounds();
+          const { sound: scanner } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/beep.mp3")
+          );
+          scannerSound.current = scanner;
+        } catch {}
+        try {
+          const { sound: reveal } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/chirp.mp3")
+          );
+          revealSound.current = reveal;
+        } catch {}
+      }
+      setSoundsLoaded(true);
+    };
+    loadSounds();
+    return () => {
+      (async () => {
+        if (scannerSound.current) await scannerSound.current.unloadAsync();
+        if (revealSound.current) await revealSound.current.unloadAsync();
+      })();
     };
   }, []);
-  
-  // Start animation when sounds are loaded
+
   useEffect(() => {
     if (soundsLoaded) {
-      // Start with a slight delay to ensure sounds are ready
-      setTimeout(() => {
-        startScannerAnimation();
-      }, 1000); // Increased delay to ensure sounds are fully loaded
+      setTimeout(startScannerAnimation, 1000);
     }
   }, [soundsLoaded]);
-  
-  // Play scanner sound
+
   const playScanner = async () => {
-    if (Platform.OS !== "web" && soundsLoaded && scannerSound.current) {
-      try {
-        // Make sure the sound is reset to the beginning
-        await scannerSound.current.setPositionAsync(0);
-        // Set volume to ensure it's audible
-        await scannerSound.current.setVolumeAsync(1.0);
-        // Play the sound
-        await scannerSound.current.playAsync();
-      } catch (error) {
-        console.log("Error playing scanner sound:", error);
-      }
+    if (scannerSound.current) {
+      await scannerSound.current.setPositionAsync(0);
+      await scannerSound.current.playAsync();
     }
   };
-  
-  // Play reveal sound
   const playReveal = async () => {
-    if (Platform.OS !== "web" && soundsLoaded && revealSound.current) {
-      try {
-        await revealSound.current.setPositionAsync(0);
-        await revealSound.current.setVolumeAsync(1.0);
-        await revealSound.current.playAsync();
-      } catch (error) {
-        console.log("Error playing reveal sound:", error);
-      }
+    if (revealSound.current) {
+      await revealSound.current.setPositionAsync(0);
+      await revealSound.current.playAsync();
     }
   };
-  
-  // Knight Rider style scanner animation
+
   const startScannerAnimation = () => {
-    // Reset animations
     scannerAnim.setValue(0);
     opacityAnim.setValue(0);
     valueOpacityAnim.setValue(0);
     fullJoulesOpacityAnim.setValue(0);
     tierOpacityAnim.setValue(0);
-    
-    // Fade in the scanner
+
     Animated.timing(opacityAnim, {
       toValue: 1,
       duration: 300,
       useNativeDriver: true,
     }).start();
-    
-    // Play scanner sound at the start with a slight delay to ensure it's ready
-    setTimeout(() => {
-      playScanner();
-    }, 300);
-    
-    // First pass (right to left) - normal speed
+
+    setTimeout(playScanner, 300);
+
     const firstPass = Animated.timing(scannerAnim, {
       toValue: 1,
       duration: 800,
-      useNativeDriver: Platform.OS !== 'web',
       easing: Easing.inOut(Easing.ease),
+      useNativeDriver: Platform.OS !== "web",
     });
-    
-    // Second pass (left to right) - slower
     const secondPass = Animated.timing(scannerAnim, {
       toValue: 0,
       duration: 1000,
-      useNativeDriver: Platform.OS !== 'web',
       easing: Easing.inOut(Easing.ease),
+      useNativeDriver: Platform.OS !== "web",
     });
-    
-    // Third pass (right to left) - even slower
     const thirdPass = Animated.timing(scannerAnim, {
       toValue: 1,
       duration: 1200,
-      useNativeDriver: Platform.OS !== 'web',
       easing: Easing.inOut(Easing.ease),
+      useNativeDriver: Platform.OS !== "web",
     });
-    
-    // Final reveal
     const reveal = Animated.timing(valueOpacityAnim, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: true,
       easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
     });
-    
-    // Full joules text fade in
     const fullJoulesReveal = Animated.timing(fullJoulesOpacityAnim, {
       toValue: 1,
       duration: 500,
-      useNativeDriver: true,
       easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
     });
-    
-    // Tier text fade in
     const tierReveal = Animated.timing(tierOpacityAnim, {
       toValue: 1,
       duration: 300,
-      useNativeDriver: true,
       easing: Easing.out(Easing.cubic),
+      useNativeDriver: true,
     });
-    
-    // Run the sequence
-    Animated.sequence([
-      firstPass,
-      secondPass,
-      thirdPass,
-    ]).start(() => {
-      // Play reveal sound and trigger haptic feedback on completion
+
+    Animated.sequence([firstPass, secondPass, thirdPass]).start(() => {
       playReveal();
-      
-      if (Platform.OS !== "web") {
-        Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-      }
-      
-      // Start the reveal animation
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       reveal.start(() => {
-        setShowValue(true);
-        
-        // After the value is shown, fade in the full joules text
-        setTimeout(() => {
-          fullJoulesReveal.start();
-          
-          // After full joules is shown, fade in the tier text
-          setTimeout(() => {
-            tierReveal.start();
-          }, 300);
-        }, 200);
+        setTimeout(() => fullJoulesReveal.start(), 200);
+        setTimeout(() => tierReveal.start(), 500);
       });
     });
   };
 
-  // Get the power tier name
   const powerTierName = getPowerTierName(totalJoules);
-
-  // Calculate the scanner width and animation range based on container size
-  const scannerWidth = 40;
   const containerWidth = 220;
+  const scannerWidth = 40;
   const maxTranslation = (containerWidth - scannerWidth) / 2;
 
-  const handleGoBack = () => {
-    router.back();
-  };
+  const handleGoBack = () => router.back();
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <>
+      {/* ✨ Disable Expo Router’s default header */}
+      <Stack.Screen options={{ headerShown: false }} />
+
+      {/* 🌟 Your custom SafeAreaView header */}
       <StatusBar barStyle="light-content" />
-      
-      <SafeAreaView edges={['top']} style={styles.safeArea}>
+      <SafeAreaView edges={["top"]} style={styles.safeArea}>
         <View style={styles.header}>
-          <TouchableOpacity 
-            onPress={handleGoBack} 
-            style={styles.backButton}
+          <TouchableOpacity
+            onPress={handleGoBack}
             hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
             <ChevronLeft size={24} color={theme.text} />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>Power Level</Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>
+            Power Level
+          </Text>
         </View>
       </SafeAreaView>
-      
-      <View style={styles.contentContainer}>
+
+      {/* 🎬 Main Content */}
+      <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>
           Your Power Level
         </Text>
-        
-        {/* Animation container */}
+
         <View style={styles.animationContainer}>
-          {/* Scanner background */}
-          <Animated.View 
+          <Animated.View
             style={[
               styles.scannerBackground,
-              { 
+              {
                 backgroundColor: theme.cardBackground,
-                opacity: opacityAnim 
-              }
+                opacity: opacityAnim,
+              },
             ]}
           />
-          
-          {/* Knight Rider scanner */}
-          {Platform.OS === 'web' ? (
+
+          <View style={styles.scannerContainer}>
             <Animated.View
               style={[
                 styles.scanner,
                 {
-                  backgroundColor: theme.primary,
-                  left: scannerAnim.interpolate({
-                    inputRange: [0, 1],
-                    outputRange: [(containerWidth - scannerWidth) / 2 - maxTranslation, (containerWidth - scannerWidth) / 2 + maxTranslation]
-                  }),
+                  transform: [
+                    {
+                      translateX: scannerAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [-maxTranslation, maxTranslation],
+                      }),
+                    },
+                  ],
                   opacity: opacityAnim,
+                  backgroundColor: theme.primary,
                 },
               ]}
             >
               <LinearGradient
-                colors={['transparent', theme.primary, 'transparent']}
+                colors={["transparent", theme.primary, "transparent"]}
                 start={{ x: 0, y: 0.5 }}
                 end={{ x: 1, y: 0.5 }}
                 style={styles.scannerGlow}
               />
             </Animated.View>
-          ) : (
-            <View style={styles.scannerContainer}>
-              <Animated.View
-                style={[
-                  styles.scanner,
-                  {
-                    backgroundColor: theme.primary,
-                    transform: [{
-                      translateX: scannerAnim.interpolate({
-                        inputRange: [0, 1],
-                        outputRange: [-maxTranslation, maxTranslation],
-                      }),
-                    }],
-                    opacity: opacityAnim,
-                  },
-                ]}
-              >
-                <LinearGradient
-                  colors={['transparent', theme.primary, 'transparent']}
-                  start={{ x: 0, y: 0.5 }}
-                  end={{ x: 1, y: 0.5 }}
-                  style={styles.scannerGlow}
-                />
-              </Animated.View>
-            </View>
-          )}
-          
-          {/* Power value display */}
-          <Animated.Text 
+          </View>
+
+          <Animated.Text
             style={[
-              styles.powerValue, 
-              { 
-                color: theme.text,
-                opacity: valueOpacityAnim,
-              }
+              styles.powerValue,
+              { color: theme.text, opacity: valueOpacityAnim },
             ]}
           >
             {formatEnergy(totalJoules).abbreviated}
           </Animated.Text>
-          
-          {/* Full joules display - Always visible but with opacity animation */}
-          <Animated.Text 
+          <Animated.Text
             style={[
-              styles.fullJoulesValue, 
-              { 
-                color: theme.textSecondary,
-                opacity: fullJoulesOpacityAnim,
-              }
+              styles.fullJoulesValue,
+              { color: theme.textSecondary, opacity: fullJoulesOpacityAnim },
             ]}
           >
             {formatEnergy(totalJoules).full}
           </Animated.Text>
         </View>
-        
-        {/* Show the power tier after animation completes */}
-        <Animated.View 
-          style={[
-            styles.tierContainer,
-            { opacity: tierOpacityAnim }
-          ]}
-        >
+
+        <Animated.View style={[styles.tierContainer, { opacity: tierOpacityAnim }]}>
           <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
             Power Tier:
           </Text>
@@ -371,95 +245,45 @@ export default function PowerLevelScreen() {
           </Text>
         </Animated.View>
       </View>
-    </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  safeArea: {
-    width: '100%',
-  },
+  safeArea: { width: "100%", backgroundColor: "#fff" },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
+    backgroundColor: "#fff",
   },
-  backButton: {
-    padding: 4,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    marginLeft: 12,
-  },
-  contentContainer: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-    padding: 20,
-  },
-  label: {
-    fontSize: 20,
-    marginBottom: 16,
-  },
+  headerTitle: { fontSize: 18, fontWeight: "600", marginLeft: 12 },
+  contentContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
+  label: { fontSize: 20, marginBottom: 16 },
   animationContainer: {
     width: 250,
     height: 250,
     justifyContent: "center",
     alignItems: "center",
-    position: "relative",
   },
-  scannerBackground: {
-    position: "absolute",
-    width: 220,
-    height: 120,
-    borderRadius: 12,
-  },
+  scannerBackground: { position: "absolute", width: 220, height: 120, borderRadius: 12 },
   scannerContainer: {
     position: "absolute",
     width: 220,
     height: 120,
-    overflow: "hidden", // This ensures the scanner stays within the container
+    overflow: "hidden",
     borderRadius: 12,
   },
-  scanner: {
-    position: "absolute",
-    width: 40,
-    height: 120,
-    borderRadius: 8,
-    left: 90, // Center position (220/2 - 40/2)
-  },
-  scannerGlow: {
-    position: "absolute",
-    width: 80,
-    height: 120,
-    left: -20,
-  },
-  powerValue: {
-    fontSize: 64,
-    fontWeight: "bold",
-    zIndex: 10,
-  },
-  fullJoulesValue: {
-    fontSize: 16,
-    marginTop: 8,
-    zIndex: 10,
-  },
+  scanner: { position: "absolute", width: 40, height: 120, borderRadius: 8, left: 90 },
+  scannerGlow: { position: "absolute", width: 80, height: 120, left: -20 },
+  powerValue: { fontSize: 64, fontWeight: "bold", zIndex: 10 },
+  fullJoulesValue: { fontSize: 16, marginTop: 8, zIndex: 10 },
   tierContainer: {
     marginTop: 32,
     alignItems: "center",
     width: "100%",
   },
-  tierLabel: {
-    fontSize: 16,
-    marginBottom: 8,
-  },
-  tierValue: {
-    fontSize: 24,
-    fontWeight: "bold",
-  },
+  tierLabel: { fontSize: 16, marginBottom: 8 },
+  tierValue: { fontSize: 24, fontWeight: "bold" },
 });
