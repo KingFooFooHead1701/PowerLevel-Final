@@ -1,6 +1,6 @@
 import { Tabs } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
-import { Dumbbell, BarChart2, Settings } from "lucide-react-native";
+import { Dumbbell, BarChart2, Settings, Calendar } from "lucide-react-native";
 
 export default function TabLayout() {
   const { theme } = useTheme();
@@ -34,6 +34,14 @@ export default function TabLayout() {
         options={{
           title: "Exercises",
           tabBarIcon: ({ color }) => <Dumbbell size={24} color={color} />,
+          headerShown: false,
+        }}
+      />
+      <Tabs.Screen
+        name="summary"
+        options={{
+          title: "Summary",
+          tabBarIcon: ({ color }) => <Calendar size={24} color={color} />,
           headerShown: false,
         }}
       />
