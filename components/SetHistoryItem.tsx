@@ -2,7 +2,7 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
-import { Trash2, Clock } from "lucide-react-native";
+import { Trash2 } from "lucide-react-native";
 
 interface SetHistoryItemProps {
   set: {
@@ -11,7 +11,6 @@ interface SetHistoryItemProps {
     weight: number;
     joules: number;
     date: string;
-    duration?: number;
     distance?: number;
     speed?: number;
   };
@@ -34,12 +33,6 @@ export default function SetHistoryItem({
   const date = new Date(set.date);
   const formattedDate = date.toLocaleDateString();
   const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.cardBackground }]}>
@@ -53,32 +46,14 @@ export default function SetHistoryItem({
       </View>
       
       <View style={styles.content}>
-        {isCardio || isIsometric ? (
+        {isCardio ? (
           <>
-            {set.duration && (
-              <View style={styles.dataRow}>
-                <Clock size={16} color={theme.textSecondary} style={styles.icon} />
-                <Text style={[styles.dataText, { color: theme.text }]}>
-                  Duration: {formatDuration(set.duration)}
-                </Text>
-              </View>
-            )}
-            
-            {isCardio && set.distance && (
-              <View style={styles.dataRow}>
-                <Text style={[styles.dataText, { color: theme.text }]}>
-                  Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
-                </Text>
-              </View>
-            )}
-            
-            {isCardio && set.speed && set.speed > 0 && (
-              <View style={styles.dataRow}>
-                <Text style={[styles.dataText, { color: theme.text }]}>
-                  Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
-                </Text>
-              </View>
-            )}
+            <View style={styles.dataRow}>
+              <Text style={[styles.dataText, { color: theme.text }]}>
+                Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
+                {set.speed ? ` at ${set.speed} ${useMetricUnits ? "km/h" : "mph"}` : ""}
+              </Text>
+            </View>
             
             {set.reps > 0 && (
               <View style={styles.dataRow}>
@@ -128,9 +103,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 4,
-  },
-  icon: {
-    marginRight: 6,
   },
   dataText: {
     fontSize: 16,

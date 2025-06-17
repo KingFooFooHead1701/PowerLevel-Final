@@ -13,7 +13,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { calculateJoules, formatEnergy } from "@/utils/energy-utils";
-import { Trash2, Clock } from "lucide-react-native";
+import { Trash2 } from "lucide-react-native";
 import SetInput from "@/components/SetInput";
 import SetHistoryItem from "@/components/SetHistoryItem";
 import { checkMilestone } from "@/utils/milestone-utils";
@@ -29,8 +29,6 @@ export default function ExerciseDetailScreen() {
   const [activeTab, setActiveTab] = useState("log");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
-  const [minutes, setMinutes] = useState(""); // For cardio/isometric exercises
-  const [seconds, setSeconds] = useState(""); // For cardio/isometric exercises
   const [distance, setDistance] = useState(""); // For cardio exercises
   const [speed, setSpeed] = useState(""); // For cardio exercises (mph or km/h)
   const [showConfirmation, setShowConfirmation] = useState(false);
@@ -78,19 +76,17 @@ export default function ExerciseDetailScreen() {
     }
 
     // Validate inputs based on exercise type
-    if (exercise.isCardio || exercise.isIsometric) {
-      const totalSeconds = (parseInt(minutes, 10) || 0) * 60 + (parseInt(seconds, 10) || 0);
-      
-      if (totalSeconds <= 0) {
-        Alert.alert("Missing Information", "Please enter a valid duration.");
-        return;
-      }
-      
-      if (exercise.isCardio && !distance && !reps) {
+    if (exercise.isCardio) {
+      if (!distance && !reps) {
         Alert.alert("Missing Information", "Please enter either distance or repetitions.");
         return;
       }
-    } else {
+      
+      if (!speed) {
+        Alert.alert("Missing Information", "Please enter speed.");
+        return;
+      }
+    } else if (!exercise.isIsometric) {
       if (!reps || !weight) {
         Alert.alert("Missing Information", "Please enter both reps and weight.");
         return;
@@ -99,19 +95,16 @@ export default function ExerciseDetailScreen() {
 
     const repsNum = parseInt(reps, 10) || 0;
     const weightNum = parseFloat(weight) || 0;
-    const minutesNum = parseInt(minutes, 10) || 0;
-    const secondsNum = parseInt(seconds, 10) || 0;
-    const durationNum = minutesNum * 60 + secondsNum; // Convert to seconds
     const distanceNum = parseFloat(distance) || 0; // in meters/km
     const speedNum = parseFloat(speed) || 0; // in km/h or mph
 
     // Validate numeric inputs
-    if (exercise.isCardio || exercise.isIsometric) {
-      if (durationNum <= 0) {
-        Alert.alert("Invalid Input", "Please enter a valid duration.");
+    if (exercise.isCardio) {
+      if ((distanceNum <= 0 && repsNum <= 0) || speedNum <= 0) {
+        Alert.alert("Invalid Input", "Please enter valid numbers for distance/reps and speed.");
         return;
       }
-    } else {
+    } else if (!exercise.isIsometric) {
       if (repsNum <= 0 || weightNum < 0) {
         Alert.alert("Invalid Input", "Please enter valid numbers for reps and weight.");
         return;
@@ -126,7 +119,6 @@ export default function ExerciseDetailScreen() {
       usePseudoJoules,
       exercise,
       bodyWeight,
-      duration: durationNum,
       distance: distanceNum,
       speed: speedNum
     });
@@ -142,7 +134,6 @@ export default function ExerciseDetailScreen() {
       reps: repsNum,
       weight: weightNum,
       joules,
-      duration: durationNum,
       distance: distanceNum,
       speed: speedNum
     };
@@ -198,12 +189,6 @@ export default function ExerciseDetailScreen() {
     setShowConfirmation(false);
   };
 
-  const formatDuration = (seconds: number) => {
-    const minutes = Math.floor(seconds / 60);
-    const remainingSeconds = seconds % 60;
-    return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
-  };
-
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ title: exercise.name }} />
@@ -246,140 +231,78 @@ export default function ExerciseDetailScreen() {
 
       {activeTab === "log" ? (
         <View style={styles.logContainer}>
-          {exercise.isCardio || exercise.isIsometric ? (
+          {exercise.isCardio ? (
             <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
               <Text style={[styles.title, { color: theme.text }]}>
-                Log {exercise.isCardio ? "Cardio" : "Isometric"} Exercise
+                Log Cardio Exercise
               </Text>
               
               <View style={styles.inputRow}>
                 <View style={styles.inputGroup}>
                   <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                    Duration
+                    Distance ({useMetricUnits ? "km" : "miles"})
                   </Text>
-                  <View style={styles.durationContainer}>
-                    <Clock size={20} color={theme.textSecondary} style={styles.durationIcon} />
-                    <View style={styles.timeInputContainer}>
-                      <TextInput
-                        style={[
-                          styles.timeInput,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={minutes}
-                        onChangeText={setMinutes}
-                        placeholder="0"
-                        placeholderTextColor={theme.textSecondary}
-                        keyboardType="number-pad"
-                        maxLength={3}
-                      />
-                      <Text style={[styles.timeLabel, { color: theme.textSecondary }]}>min</Text>
-                    </View>
-                    <Text style={[styles.timeSeparator, { color: theme.textSecondary }]}>:</Text>
-                    <View style={styles.timeInputContainer}>
-                      <TextInput
-                        style={[
-                          styles.timeInput,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={seconds}
-                        onChangeText={(text) => {
-                          // Ensure seconds are between 0-59
-                          const sec = parseInt(text, 10);
-                          if (!isNaN(sec) && sec >= 0 && sec <= 59) {
-                            setSeconds(text);
-                          } else if (text === "") {
-                            setSeconds("");
-                          }
-                        }}
-                        placeholder="00"
-                        placeholderTextColor={theme.textSecondary}
-                        keyboardType="number-pad"
-                        maxLength={2}
-                      />
-                      <Text style={[styles.timeLabel, { color: theme.textSecondary }]}>sec</Text>
-                    </View>
-                  </View>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { 
+                        backgroundColor: theme.inputBackground,
+                        color: theme.text,
+                        borderColor: theme.border,
+                      }
+                    ]}
+                    value={distance}
+                    onChangeText={setDistance}
+                    placeholder="0"
+                    placeholderTextColor={theme.textSecondary}
+                    keyboardType="decimal-pad"
+                  />
+                </View>
+                
+                <View style={styles.inputGroup}>
+                  <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                    Speed ({useMetricUnits ? "km/h" : "mph"})
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { 
+                        backgroundColor: theme.inputBackground,
+                        color: theme.text,
+                        borderColor: theme.border,
+                      }
+                    ]}
+                    value={speed}
+                    onChangeText={setSpeed}
+                    placeholder="0"
+                    placeholderTextColor={theme.textSecondary}
+                    keyboardType="decimal-pad"
+                  />
                 </View>
               </View>
               
-              {exercise.isCardio && (
-                <>
-                  <View style={styles.inputRow}>
-                    <View style={styles.inputGroup}>
-                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                        Distance ({useMetricUnits ? "km" : "miles"})
-                      </Text>
-                      <TextInput
-                        style={[
-                          styles.input,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={distance}
-                        onChangeText={setDistance}
-                        placeholder="0"
-                        placeholderTextColor={theme.textSecondary}
-                        keyboardType="decimal-pad"
-                      />
-                    </View>
-                    
-                    <View style={styles.inputGroup}>
-                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                        Speed ({useMetricUnits ? "km/h" : "mph"})
-                      </Text>
-                      <TextInput
-                        style={[
-                          styles.input,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={speed}
-                        onChangeText={setSpeed}
-                        placeholder="0"
-                        placeholderTextColor={theme.textSecondary}
-                        keyboardType="decimal-pad"
-                      />
-                    </View>
-                  </View>
-                  
-                  <View style={styles.inputRow}>
-                    <View style={styles.inputGroup}>
-                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                        Reps (optional)
-                      </Text>
-                      <TextInput
-                        style={[
-                          styles.input,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={reps}
-                        onChangeText={setReps}
-                        placeholder="0"
-                        placeholderTextColor={theme.textSecondary}
-                        keyboardType="number-pad"
-                      />
-                    </View>
-                  </View>
-                </>
-              )}
+              <View style={styles.inputRow}>
+                <View style={styles.inputGroup}>
+                  <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                    Reps (optional)
+                  </Text>
+                  <TextInput
+                    style={[
+                      styles.input,
+                      { 
+                        backgroundColor: theme.inputBackground,
+                        color: theme.text,
+                        borderColor: theme.border,
+                      }
+                    ]}
+                    value={reps}
+                    onChangeText={setReps}
+                    placeholder="0"
+                    placeholderTextColor={theme.textSecondary}
+                    keyboardType="number-pad"
+                  />
+                </View>
+              </View>
               
               {exercise.requiresBodyWeight && (
                 <View style={styles.bodyWeightInfo}>
@@ -528,36 +451,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     fontSize: 16,
   },
-  durationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  durationIcon: {
-    marginRight: 8,
-  },
-  timeInputContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  timeInput: {
-    height: 48,
-    width: 60,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    textAlign: "center",
-  },
-  timeLabel: {
-    marginLeft: 4,
-    fontSize: 14,
-    width: 30,
-  },
-  timeSeparator: {
-    marginHorizontal: 8,
-    fontSize: 20,
-    fontWeight: "bold",
-  },
   bodyWeightInfo: {
     marginBottom: 16,
   },
@@ -593,8 +486,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   descriptionText: {
-    fontSize: 18, // Increased from 16 to 18 as requested
-    lineHeight: 24, // Increased from 22 to 24
+    fontSize: 18,
+    lineHeight: 24,
     marginTop: 12,
     fontStyle: "italic",
   },

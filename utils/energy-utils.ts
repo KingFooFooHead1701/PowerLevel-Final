@@ -11,7 +11,6 @@ export interface JoulesCalculationParams {
     metValue?: number;
   };
   bodyWeight?: number;
-  duration?: number; // in seconds, for cardio and isometric exercises
   distance?: number; // in meters or km, for cardio exercises
   speed?: number; // in km/h or mph, for cardio exercises
 }
@@ -24,7 +23,6 @@ export function calculateJoules({
   usePseudoJoules,
   exercise,
   bodyWeight = 0,
-  duration = 0,
   distance = 0,
   speed = 0,
 }: JoulesCalculationParams): number {
@@ -40,7 +38,7 @@ export function calculateJoules({
   // Calculate joules based on exercise type
   let joules: number;
   
-  // For cardio exercises, use MET-based calculation
+  // For cardio exercises, use distance and speed-based calculation
   if (exercise?.isCardio) {
     // Ensure we have valid inputs for calculation
     if (bodyWeightInKg <= 0) {
@@ -48,53 +46,48 @@ export function calculateJoules({
       return 0;
     }
     
-    if (duration <= 0) {
-      console.warn("Duration is required for cardio calculations");
+    if (distance <= 0 || speed <= 0) {
+      console.warn("Distance and speed are required for cardio calculations");
       return 0;
     }
     
-    // MET-based calculation (calories = MET × weight in kg × duration in hours)
-    // 1 calorie = 4.184 joules
-    const metValue = exercise.metValue || 5.0; // Default MET value if not specified
-    const durationHours = duration / 3600; // Convert seconds to hours
+    // Convert distance to meters if needed (assuming distance is in km for metric, miles for imperial)
+    const distanceInMeters = useMetricUnits ? distance * 1000 : distance * 1609.34;
     
-    // Calculate calories burned
-    const caloriesBurned = metValue * bodyWeightInKg * durationHours;
+    // Convert speed to m/s
+    const speedInMps = useMetricUnits ? speed / 3.6 : speed * 0.44704;
     
-    // Convert calories to joules
-    joules = caloriesBurned * 4.184;
+    // Calculate work done = force * distance
+    // Force = mass * acceleration
+    // For horizontal movement: force = mass * gravity * coefficient of friction (approx 0.1)
+    const horizontalForce = bodyWeightInKg * gravity * 0.1;
     
-    // If distance and speed are provided, adjust MET value based on intensity
-    if (distance > 0 && speed > 0) {
-      // Convert speed to km/h if in mph
-      const speedInKmh = useMetricUnits ? speed : speed * 1.60934;
-      
-      // Adjust joules based on speed (higher speed = more energy)
-      // This is a simple linear adjustment, could be refined with more complex models
-      const speedFactor = Math.max(0.8, Math.min(2.0, speedInKmh / 5)); // 5 km/h is baseline walking speed
-      joules *= speedFactor;
-    }
+    // Work done horizontally
+    let workDone = horizontalForce * distanceInMeters;
     
-    // If distance is provided, add work done against gravity for incline
-    if (distance > 0 && displacement > 0) {
-      // Convert distance to meters if needed (assuming distance is in km for metric, miles for imperial)
-      const distanceInMeters = useMetricUnits ? distance * 1000 : distance * 1609.34;
+    // Add work done against gravity for incline (if displacement is provided)
+    if (displacement > 0) {
       const heightChange = distanceInMeters * displacement; // Total vertical displacement
-      const additionalJoules = bodyWeightInKg * gravity * heightChange;
-      joules += additionalJoules;
+      const verticalWork = bodyWeightInKg * gravity * heightChange;
+      workDone += verticalWork;
     }
     
-    // Ensure we return at least some joules for valid inputs
-    if (joules <= 0 && bodyWeightInKg > 0 && duration > 0) {
-      // Fallback calculation if something went wrong
-      joules = bodyWeightInKg * duration * 0.1;
+    // Adjust for intensity based on speed
+    // Higher speeds require more energy per distance
+    const speedFactor = Math.max(1.0, speedInMps / 1.4); // 1.4 m/s is average walking speed
+    workDone *= speedFactor;
+    
+    joules = workDone;
+    
+    // If reps are provided (e.g., for interval training), multiply by reps
+    if (reps > 0) {
+      joules *= reps;
     }
   }
   // For isometric exercises (like planks)
   else if (exercise?.isIsometric) {
-    // For isometric exercises, use a time-based calculation
-    // Approximate energy expenditure based on body weight and time
-    // This is a simplified model: joules = bodyWeight * gravity * 0.1 * duration
+    // For isometric exercises, use a simplified model based on body weight
+    // This is a simplified model: joules = bodyWeight * gravity * 0.1 * 60 (standard duration)
     
     // Ensure we have valid inputs
     if (bodyWeightInKg <= 0) {
@@ -102,12 +95,15 @@ export function calculateJoules({
       return 0;
     }
     
-    if (duration <= 0) {
-      console.warn("Duration is required for isometric calculations");
-      return 0;
-    }
+    // Use a standard duration of 60 seconds if not provided
+    const standardDuration = 60;
     
-    joules = bodyWeightInKg * gravity * 0.1 * duration;
+    joules = bodyWeightInKg * gravity * 0.1 * standardDuration;
+    
+    // If reps are provided (e.g., for multiple sets), multiply by reps
+    if (reps > 0) {
+      joules *= reps;
+    }
   }
   // For body weight exercises
   else if (exercise?.requiresBodyWeight) {
