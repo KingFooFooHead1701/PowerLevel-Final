@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert, Switch } from "react-native";
+import { StyleSheet, Text, View, TextInput, TouchableOpacity, ScrollView, Alert, StatusBar } from "react-native";
 import { useRouter, Stack } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { Exercise } from "@/constants/exercises";
 import { Dumbbell, Save } from "lucide-react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 
 export default function CustomExerciseScreen() {
   const router = useRouter();
@@ -60,7 +61,7 @@ export default function CustomExerciseScreen() {
   };
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen 
         options={{ 
           title: "Add Custom Exercise",
@@ -162,7 +163,7 @@ export default function CustomExerciseScreen() {
           <Text style={styles.buttonText}>Save Exercise</Text>
         </TouchableOpacity>
       </ScrollView>
-    </View>
+    </SafeAreaView>
   );
 }
 

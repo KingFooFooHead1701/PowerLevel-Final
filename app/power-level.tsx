@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { StyleSheet, Text, View, Animated, Easing, Platform, TouchableOpacity, Dimensions } from "react-native";
+import { StyleSheet, Text, View, Animated, Easing, Platform, TouchableOpacity, Dimensions, StatusBar } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
@@ -7,6 +7,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
 import { Audio } from "expo-av";
 import { getPowerTierName } from "@/utils/milestone-utils";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
 
 export default function PowerLevelScreen() {
   const { theme } = useTheme();
@@ -238,7 +240,16 @@ export default function PowerLevelScreen() {
   const maxTranslation = (containerWidth - scannerWidth) / 2;
 
   return (
-    <View style={[styles.container, { backgroundColor: theme.background }]}>
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <Stack.Screen 
+        options={{ 
+          headerShown: true,
+          headerStyle: { backgroundColor: theme.background },
+          headerTintColor: theme.text,
+          headerTitle: "Power Level",
+          headerBackTitle: "Back",
+        }} 
+      />
       <View style={styles.contentContainer}>
         <Text style={[styles.label, { color: theme.textSecondary }]}>
           Your Power Level
@@ -348,15 +359,13 @@ export default function PowerLevelScreen() {
           </Text>
         </Animated.View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
   },
   contentContainer: {
     alignItems: "center",
