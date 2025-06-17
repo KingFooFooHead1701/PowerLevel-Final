@@ -42,6 +42,17 @@ export function calculateJoules({
   
   // For cardio exercises, use MET-based calculation
   if (exercise?.isCardio) {
+    // Ensure we have valid inputs for calculation
+    if (bodyWeightInKg <= 0) {
+      console.warn("Body weight is required for cardio calculations");
+      return 0;
+    }
+    
+    if (duration <= 0) {
+      console.warn("Duration is required for cardio calculations");
+      return 0;
+    }
+    
     // MET-based calculation (calories = MET × weight in kg × duration in hours)
     // 1 calorie = 4.184 joules
     const metValue = exercise.metValue || 5.0; // Default MET value if not specified
@@ -61,18 +72,43 @@ export function calculateJoules({
       const additionalJoules = bodyWeightInKg * gravity * heightChange;
       joules += additionalJoules;
     }
+    
+    // Ensure we return at least some joules for valid inputs
+    if (joules <= 0 && bodyWeightInKg > 0 && duration > 0) {
+      // Fallback calculation if something went wrong
+      joules = bodyWeightInKg * duration * 0.1;
+    }
   }
   // For isometric exercises (like planks)
   else if (exercise?.isIsometric) {
     // For isometric exercises, use a time-based calculation
     // Approximate energy expenditure based on body weight and time
     // This is a simplified model: joules = bodyWeight * gravity * 0.1 * duration
+    
+    // Ensure we have valid inputs
+    if (bodyWeightInKg <= 0) {
+      console.warn("Body weight is required for isometric calculations");
+      return 0;
+    }
+    
+    if (duration <= 0) {
+      console.warn("Duration is required for isometric calculations");
+      return 0;
+    }
+    
     joules = bodyWeightInKg * gravity * 0.1 * duration;
   }
   // For body weight exercises
   else if (exercise?.requiresBodyWeight) {
     // For body weight exercises, use body weight as the resistance
     // Often only a percentage of body weight is actually moved
+    
+    // Ensure we have valid body weight
+    if (bodyWeightInKg <= 0) {
+      console.warn("Body weight is required for body weight exercises");
+      return 0;
+    }
+    
     let effectiveWeight: number;
     
     // Different percentages of body weight for different exercises

@@ -144,31 +144,31 @@ const CONFIRMATION_MESSAGES = [
 const CARDIO_MESSAGES = [
   {
     title: "Cardio Boost!",
-    message: "{duration} seconds of {exercise} complete! You've earned {energy} J."
+    message: "{duration} of {exercise} complete! You've earned {energy} J."
   },
   {
     title: "Endurance Champion!",
-    message: "You crushed {exercise} for {duration} seconds—that's {energy} J added to your power level!"
+    message: "You crushed {exercise} for {duration}—that's {energy} J added to your power level!"
   },
   {
     title: "Distance Crusher!",
-    message: "You covered {distance} {dist_unit} in {duration} seconds—adding {energy} J to your total!"
+    message: "You covered {distance} {dist_unit} in {duration}—adding {energy} J to your total!"
   },
   {
     title: "Cardio Power!",
-    message: "{exercise} for {duration} seconds → +{energy} J. Your heart is getting stronger!"
+    message: "{exercise} for {duration} → +{energy} J. Your heart is getting stronger!"
   },
   {
     title: "Endurance Builder!",
-    message: "Great cardio session! {duration} seconds of {exercise} = {energy} J earned."
+    message: "Great cardio session! {duration} of {exercise} = {energy} J earned."
   },
   {
     title: "Cardio King!",
-    message: "You just dominated {exercise} for {duration} seconds. That's {energy} J in the bank!"
+    message: "You just dominated {exercise} for {duration}. That's {energy} J in the bank!"
   },
   {
     title: "Steady Progress!",
-    message: "{duration} seconds of {exercise} logged. You've earned {energy} J toward your next milestone!"
+    message: "{duration} of {exercise} logged. You've earned {energy} J toward your next milestone!"
   }
 ];
 
@@ -176,23 +176,23 @@ const CARDIO_MESSAGES = [
 const ISOMETRIC_MESSAGES = [
   {
     title: "Hold Strong!",
-    message: "You held {exercise} for {duration} seconds! That's {energy} J added to your power level."
+    message: "You held {exercise} for {duration}! That's {energy} J added to your power level."
   },
   {
     title: "Static Strength!",
-    message: "{duration}-second {exercise} complete! You've earned {energy} J for your effort."
+    message: "{duration} {exercise} complete! You've earned {energy} J for your effort."
   },
   {
     title: "Isometric Power!",
-    message: "Impressive {duration}-second hold on {exercise}! That's {energy} J added to your total."
+    message: "Impressive {duration} hold on {exercise}! That's {energy} J added to your total."
   },
   {
     title: "Core Stability!",
-    message: "You maintained {exercise} for {duration} seconds—adding {energy} J to your power level!"
+    message: "You maintained {exercise} for {duration}—adding {energy} J to your power level!"
   },
   {
     title: "Tension Builder!",
-    message: "Great isometric work! {duration} seconds of {exercise} = {energy} J earned."
+    message: "Great isometric work! {duration} of {exercise} = {energy} J earned."
   }
 ];
 
