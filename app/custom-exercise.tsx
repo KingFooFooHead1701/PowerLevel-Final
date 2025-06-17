@@ -13,7 +13,7 @@ import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { Exercise } from "@/constants/exercises";
-import { Dumbbell, Save, ChevronLeft } from "lucide-react-native";
+import { Dumbbell, Save, ChevronLeft, Clock, MapPin } from "lucide-react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
 
