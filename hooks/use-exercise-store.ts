@@ -30,8 +30,8 @@ interface ExerciseState {
   resetToDefaults: () => void; // Add reset function
 }
 
-// Current version of the store schema
-const CURRENT_VERSION = 2;
+// Current version of the store schema - increment this when making changes to force a reset
+const CURRENT_VERSION = 3;
 
 export const useExerciseStore = create<ExerciseState>()(
   persist(
@@ -89,7 +89,9 @@ export const useExerciseStore = create<ExerciseState>()(
           // Check if we need to update from an older version
           if (!state.version || state.version < CURRENT_VERSION) {
             // Reset to defaults if version mismatch
+            console.log("Version mismatch, resetting to defaults");
             state.exercises = defaultExercises;
+            state.sets = [];
             state.version = CURRENT_VERSION;
           }
           state.isLoading = false;

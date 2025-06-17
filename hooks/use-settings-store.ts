@@ -13,8 +13,8 @@ interface SettingsState {
   resetSettings: () => void; // Add reset function
 }
 
-// Current version of the store schema
-const CURRENT_VERSION = 1;
+// Current version of the store schema - increment this when making changes to force a reset
+const CURRENT_VERSION = 2;
 
 // Default settings
 const DEFAULT_SETTINGS = {
@@ -41,6 +41,7 @@ export const useSettingsStore = create<SettingsState>()(
       onRehydrateStorage: () => (state) => {
         if (state && (!state.version || state.version < CURRENT_VERSION)) {
           // Reset to defaults if version mismatch
+          console.log("Settings version mismatch, resetting to defaults");
           Object.assign(state, DEFAULT_SETTINGS);
         }
       },

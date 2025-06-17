@@ -17,7 +17,7 @@ const defaultTheme = themes.WarriorsAura;
 const DEFAULT_THEME_NAME = "WarriorsAura";
 const THEME_STORAGE_KEY = "app-theme-name";
 const THEME_VERSION_KEY = "app-theme-version";
-const CURRENT_THEME_VERSION = 1;
+const CURRENT_THEME_VERSION = 2; // Increment this to force a theme reset
 
 const ThemeContext = createContext<ThemeContextType>({
   theme: defaultTheme,
@@ -40,6 +40,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         
         // If version mismatch or no version, reset to default
         if (!themeVersion || parseInt(themeVersion) < CURRENT_THEME_VERSION) {
+          console.log("Theme version mismatch, resetting to default");
           await resetThemeStorage();
         } 
         // Otherwise load saved theme if valid
