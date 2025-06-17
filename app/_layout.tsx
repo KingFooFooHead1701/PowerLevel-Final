@@ -7,6 +7,8 @@ import { StatusBar } from "expo-status-bar";
 import { useColorScheme, View } from "react-native";
 import { ThemeProvider } from "@/hooks/use-theme";
 import CustomSplashScreen from "@/components/CustomSplashScreen";
+import * as ScreenOrientation from 'expo-screen-orientation';
+import { Platform } from 'react-native';
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -27,6 +29,13 @@ export default function RootLayout() {
       throw error;
     }
   }, [error]);
+
+  useEffect(() => {
+    // Enable screen rotation on mobile devices
+    if (Platform.OS !== 'web') {
+      ScreenOrientation.unlockAsync();
+    }
+  }, []);
 
   useEffect(() => {
     async function prepare() {

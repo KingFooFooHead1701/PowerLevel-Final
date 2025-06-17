@@ -7,7 +7,9 @@ import {
   ScrollView,
   Alert,
   TextInput,
-  Platform
+  Platform,
+  Dimensions,
+  useWindowDimensions
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
@@ -25,6 +27,7 @@ export default function ExerciseDetailScreen() {
   const { theme } = useTheme();
   const { exercises, sets, addSet, removeSet, getTotalJoules } = useExerciseStore();
   const { useMetricUnits, usePseudoJoules, bodyWeight } = useSettingsStore();
+  const { width, height } = useWindowDimensions();
   
   const [activeTab, setActiveTab] = useState("log");
   const [reps, setReps] = useState("");
@@ -43,6 +46,9 @@ export default function ExerciseDetailScreen() {
   
   // Check if this is a treadmill exercise
   const isTreadmill = exercise?.name?.toLowerCase().includes("treadmill");
+  
+  // Determine if we're in landscape mode
+  const isLandscape = width > height;
   
   useEffect(() => {
     if (!exercise) {
@@ -208,6 +214,454 @@ export default function ExerciseDetailScreen() {
     setShowConfirmation(false);
   };
 
+  // Adjust layout for landscape mode
+  const renderContent = () => {
+    if (isLandscape) {
+      return (
+        <View style={styles.landscapeContainer}>
+          <View style={styles.landscapeLeftPanel}>
+            {activeTab === "log" ? (
+              <ScrollView style={styles.logContainer}>
+                {exercise.isCardio ? (
+                  <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
+                    <Text style={[styles.title, { color: theme.text }]}>
+                      Log Cardio Exercise
+                    </Text>
+                    
+                    <View style={styles.inputRow}>
+                      <View style={styles.inputGroup}>
+                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                          Distance ({useMetricUnits ? "km" : "miles"})
+                        </Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            { 
+                              backgroundColor: theme.inputBackground,
+                              color: theme.text,
+                              borderColor: theme.border,
+                            }
+                          ]}
+                          value={distance}
+                          onChangeText={setDistance}
+                          placeholder="0"
+                          placeholderTextColor={theme.textSecondary}
+                          keyboardType="decimal-pad"
+                        />
+                      </View>
+                      
+                      <View style={styles.inputGroup}>
+                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                          Speed ({useMetricUnits ? "km/h" : "mph"})
+                        </Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            { 
+                              backgroundColor: theme.inputBackground,
+                              color: theme.text,
+                              borderColor: theme.border,
+                            }
+                          ]}
+                          value={speed}
+                          onChangeText={setSpeed}
+                          placeholder="0"
+                          placeholderTextColor={theme.textSecondary}
+                          keyboardType="decimal-pad"
+                        />
+                      </View>
+                    </View>
+                    
+                    {isTreadmill && (
+                      <View style={styles.inputRow}>
+                        <View style={styles.inputGroup}>
+                          <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                            Incline (%)
+                          </Text>
+                          <TextInput
+                            style={[
+                              styles.input,
+                              { 
+                                backgroundColor: theme.inputBackground,
+                                color: theme.text,
+                                borderColor: theme.border,
+                              }
+                            ]}
+                            value={incline}
+                            onChangeText={setIncline}
+                            placeholder="0"
+                            placeholderTextColor={theme.textSecondary}
+                            keyboardType="decimal-pad"
+                          />
+                        </View>
+                        
+                        <View style={styles.inputGroup}>
+                          <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                            Reps (optional)
+                          </Text>
+                          <TextInput
+                            style={[
+                              styles.input,
+                              { 
+                                backgroundColor: theme.inputBackground,
+                                color: theme.text,
+                                borderColor: theme.border,
+                              }
+                            ]}
+                            value={reps}
+                            onChangeText={setReps}
+                            placeholder="0"
+                            placeholderTextColor={theme.textSecondary}
+                            keyboardType="number-pad"
+                          />
+                        </View>
+                      </View>
+                    )}
+                    
+                    {!isTreadmill && (
+                      <View style={styles.inputRow}>
+                        <View style={styles.inputGroup}>
+                          <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                            Reps (optional)
+                          </Text>
+                          <TextInput
+                            style={[
+                              styles.input,
+                              { 
+                                backgroundColor: theme.inputBackground,
+                                color: theme.text,
+                                borderColor: theme.border,
+                              }
+                            ]}
+                            value={reps}
+                            onChangeText={setReps}
+                            placeholder="0"
+                            placeholderTextColor={theme.textSecondary}
+                            keyboardType="number-pad"
+                          />
+                        </View>
+                      </View>
+                    )}
+                    
+                    {exercise.requiresBodyWeight && (
+                      <View style={styles.bodyWeightInfo}>
+                        <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
+                          Using body weight: {bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
+                        </Text>
+                      </View>
+                    )}
+                    
+                    <TouchableOpacity
+                      style={[styles.addButton, { backgroundColor: theme.primary }]}
+                      onPress={handleAddSet}
+                    >
+                      <Text style={styles.buttonText}>Log Activity</Text>
+                    </TouchableOpacity>
+                  </View>
+                ) : (
+                  <SetInput
+                    reps={reps}
+                    weight={weight}
+                    onRepsChange={setReps}
+                    onWeightChange={setWeight}
+                    useMetricUnits={useMetricUnits}
+                    onAddSet={handleAddSet}
+                    requiresBodyWeight={exercise.requiresBodyWeight}
+                    bodyWeight={bodyWeight}
+                  />
+                )}
+              </ScrollView>
+            ) : (
+              <ScrollView style={styles.historyContainer}>
+                {exerciseSets.length > 0 ? (
+                  exerciseSets.map(set => (
+                    <SetHistoryItem
+                      key={set.id}
+                      set={set}
+                      useMetricUnits={useMetricUnits}
+                      onDelete={() => handleDeleteSet(set.id)}
+                      isCardio={exercise.isCardio}
+                      isIsometric={exercise.isIsometric}
+                      isTreadmill={isTreadmill}
+                    />
+                  ))
+                ) : (
+                  <View style={styles.emptyHistory}>
+                    <Text style={[styles.emptyHistoryText, { color: theme.textSecondary }]}>
+                      No sets logged for this exercise yet.
+                    </Text>
+                  </View>
+                )}
+              </ScrollView>
+            )}
+          </View>
+          
+          <View style={styles.landscapeRightPanel}>
+            <View style={[styles.infoCard, { backgroundColor: theme.cardBackground, height: '100%' }]}>
+              <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                Category: {exercise.category}
+              </Text>
+              {!exercise.isIsometric && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  Displacement: {exercise.displacement} meters
+                </Text>
+              )}
+              {exercise.isCardio && exercise.metValue && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  Base MET Value: {exercise.metValue} (intensity measure)
+                </Text>
+              )}
+              {isTreadmill && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  MET value adjusts dynamically based on speed and incline
+                </Text>
+              )}
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                Energy calculation: {usePseudoJoules ? "Simplified" : "Standard"} joules
+              </Text>
+              {exercise.requiresBodyWeight && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  This exercise uses your body weight in calculations
+                </Text>
+              )}
+              {exercise.description && (
+                <ScrollView 
+                  style={styles.landscapeDescriptionScrollView}
+                  showsVerticalScrollIndicator={Platform.OS !== 'web'}
+                >
+                  <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
+                    {exercise.description}
+                  </Text>
+                </ScrollView>
+              )}
+            </View>
+          </View>
+        </View>
+      );
+    } else {
+      // Portrait mode - original layout
+      return (
+        <>
+          {activeTab === "log" ? (
+            <ScrollView style={styles.logContainer}>
+              {exercise.isCardio ? (
+                <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
+                  <Text style={[styles.title, { color: theme.text }]}>
+                    Log Cardio Exercise
+                  </Text>
+                  
+                  <View style={styles.inputRow}>
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                        Distance ({useMetricUnits ? "km" : "miles"})
+                      </Text>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={distance}
+                        onChangeText={setDistance}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="decimal-pad"
+                      />
+                    </View>
+                    
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                        Speed ({useMetricUnits ? "km/h" : "mph"})
+                      </Text>
+                      <TextInput
+                        style={[
+                          styles.input,
+                          { 
+                            backgroundColor: theme.inputBackground,
+                            color: theme.text,
+                            borderColor: theme.border,
+                          }
+                        ]}
+                        value={speed}
+                        onChangeText={setSpeed}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="decimal-pad"
+                      />
+                    </View>
+                  </View>
+                  
+                  {isTreadmill && (
+                    <View style={styles.inputRow}>
+                      <View style={styles.inputGroup}>
+                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                          Incline (%)
+                        </Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            { 
+                              backgroundColor: theme.inputBackground,
+                              color: theme.text,
+                              borderColor: theme.border,
+                            }
+                          ]}
+                          value={incline}
+                          onChangeText={setIncline}
+                          placeholder="0"
+                          placeholderTextColor={theme.textSecondary}
+                          keyboardType="decimal-pad"
+                        />
+                      </View>
+                      
+                      <View style={styles.inputGroup}>
+                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                          Reps (optional)
+                        </Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            { 
+                              backgroundColor: theme.inputBackground,
+                              color: theme.text,
+                              borderColor: theme.border,
+                            }
+                          ]}
+                          value={reps}
+                          onChangeText={setReps}
+                          placeholder="0"
+                          placeholderTextColor={theme.textSecondary}
+                          keyboardType="number-pad"
+                        />
+                      </View>
+                    </View>
+                  )}
+                  
+                  {!isTreadmill && (
+                    <View style={styles.inputRow}>
+                      <View style={styles.inputGroup}>
+                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                          Reps (optional)
+                        </Text>
+                        <TextInput
+                          style={[
+                            styles.input,
+                            { 
+                              backgroundColor: theme.inputBackground,
+                              color: theme.text,
+                              borderColor: theme.border,
+                            }
+                          ]}
+                          value={reps}
+                          onChangeText={setReps}
+                          placeholder="0"
+                          placeholderTextColor={theme.textSecondary}
+                          keyboardType="number-pad"
+                        />
+                      </View>
+                    </View>
+                  )}
+                  
+                  {exercise.requiresBodyWeight && (
+                    <View style={styles.bodyWeightInfo}>
+                      <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
+                        Using body weight: {bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
+                      </Text>
+                    </View>
+                  )}
+                  
+                  <TouchableOpacity
+                    style={[styles.addButton, { backgroundColor: theme.primary }]}
+                    onPress={handleAddSet}
+                  >
+                    <Text style={styles.buttonText}>Log Activity</Text>
+                  </TouchableOpacity>
+                </View>
+              ) : (
+                <SetInput
+                  reps={reps}
+                  weight={weight}
+                  onRepsChange={setReps}
+                  onWeightChange={setWeight}
+                  useMetricUnits={useMetricUnits}
+                  onAddSet={handleAddSet}
+                  requiresBodyWeight={exercise.requiresBodyWeight}
+                  bodyWeight={bodyWeight}
+                />
+              )}
+              
+              <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
+                <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  Category: {exercise.category}
+                </Text>
+                {!exercise.isIsometric && (
+                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                    Displacement: {exercise.displacement} meters
+                  </Text>
+                )}
+                {exercise.isCardio && exercise.metValue && (
+                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                    Base MET Value: {exercise.metValue} (intensity measure)
+                  </Text>
+                )}
+                {isTreadmill && (
+                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                    MET value adjusts dynamically based on speed and incline
+                  </Text>
+                )}
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  Energy calculation: {usePseudoJoules ? "Simplified" : "Standard"} joules
+                </Text>
+                {exercise.requiresBodyWeight && (
+                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                    This exercise uses your body weight in calculations
+                  </Text>
+                )}
+                {exercise.description && (
+                  <ScrollView 
+                    style={styles.descriptionScrollView}
+                    showsVerticalScrollIndicator={Platform.OS !== 'web'}
+                  >
+                    <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
+                      {exercise.description}
+                    </Text>
+                  </ScrollView>
+                )}
+              </View>
+            </ScrollView>
+          ) : (
+            <ScrollView style={styles.historyContainer}>
+              {exerciseSets.length > 0 ? (
+                exerciseSets.map(set => (
+                  <SetHistoryItem
+                    key={set.id}
+                    set={set}
+                    useMetricUnits={useMetricUnits}
+                    onDelete={() => handleDeleteSet(set.id)}
+                    isCardio={exercise.isCardio}
+                    isIsometric={exercise.isIsometric}
+                    isTreadmill={isTreadmill}
+                  />
+                ))
+              ) : (
+                <View style={styles.emptyHistory}>
+                  <Text style={[styles.emptyHistoryText, { color: theme.textSecondary }]}>
+                    No sets logged for this exercise yet.
+                  </Text>
+                </View>
+              )}
+            </ScrollView>
+          )}
+        </>
+      );
+    }
+  };
+
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ title: exercise.name }} />
@@ -248,220 +702,7 @@ export default function ExerciseDetailScreen() {
         </TouchableOpacity>
       </View>
 
-      {activeTab === "log" ? (
-        <ScrollView style={styles.logContainer}>
-          {exercise.isCardio ? (
-            <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
-              <Text style={[styles.title, { color: theme.text }]}>
-                Log Cardio Exercise
-              </Text>
-              
-              <View style={styles.inputRow}>
-                <View style={styles.inputGroup}>
-                  <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                    Distance ({useMetricUnits ? "km" : "miles"})
-                  </Text>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      { 
-                        backgroundColor: theme.inputBackground,
-                        color: theme.text,
-                        borderColor: theme.border,
-                      }
-                    ]}
-                    value={distance}
-                    onChangeText={setDistance}
-                    placeholder="0"
-                    placeholderTextColor={theme.textSecondary}
-                    keyboardType="decimal-pad"
-                  />
-                </View>
-                
-                <View style={styles.inputGroup}>
-                  <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                    Speed ({useMetricUnits ? "km/h" : "mph"})
-                  </Text>
-                  <TextInput
-                    style={[
-                      styles.input,
-                      { 
-                        backgroundColor: theme.inputBackground,
-                        color: theme.text,
-                        borderColor: theme.border,
-                      }
-                    ]}
-                    value={speed}
-                    onChangeText={setSpeed}
-                    placeholder="0"
-                    placeholderTextColor={theme.textSecondary}
-                    keyboardType="decimal-pad"
-                  />
-                </View>
-              </View>
-              
-              {isTreadmill && (
-                <View style={styles.inputRow}>
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                      Incline (%)
-                    </Text>
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { 
-                          backgroundColor: theme.inputBackground,
-                          color: theme.text,
-                          borderColor: theme.border,
-                        }
-                      ]}
-                      value={incline}
-                      onChangeText={setIncline}
-                      placeholder="0"
-                      placeholderTextColor={theme.textSecondary}
-                      keyboardType="decimal-pad"
-                    />
-                  </View>
-                  
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                      Reps (optional)
-                    </Text>
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { 
-                          backgroundColor: theme.inputBackground,
-                          color: theme.text,
-                          borderColor: theme.border,
-                        }
-                      ]}
-                      value={reps}
-                      onChangeText={setReps}
-                      placeholder="0"
-                      placeholderTextColor={theme.textSecondary}
-                      keyboardType="number-pad"
-                    />
-                  </View>
-                </View>
-              )}
-              
-              {!isTreadmill && (
-                <View style={styles.inputRow}>
-                  <View style={styles.inputGroup}>
-                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                      Reps (optional)
-                    </Text>
-                    <TextInput
-                      style={[
-                        styles.input,
-                        { 
-                          backgroundColor: theme.inputBackground,
-                          color: theme.text,
-                          borderColor: theme.border,
-                        }
-                      ]}
-                      value={reps}
-                      onChangeText={setReps}
-                      placeholder="0"
-                      placeholderTextColor={theme.textSecondary}
-                      keyboardType="number-pad"
-                    />
-                  </View>
-                </View>
-              )}
-              
-              {exercise.requiresBodyWeight && (
-                <View style={styles.bodyWeightInfo}>
-                  <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
-                    Using body weight: {bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
-                  </Text>
-                </View>
-              )}
-              
-              <TouchableOpacity
-                style={[styles.addButton, { backgroundColor: theme.primary }]}
-                onPress={handleAddSet}
-              >
-                <Text style={styles.buttonText}>Log Activity</Text>
-              </TouchableOpacity>
-            </View>
-          ) : (
-            <SetInput
-              reps={reps}
-              weight={weight}
-              onRepsChange={setReps}
-              onWeightChange={setWeight}
-              useMetricUnits={useMetricUnits}
-              onAddSet={handleAddSet}
-              requiresBodyWeight={exercise.requiresBodyWeight}
-              bodyWeight={bodyWeight}
-            />
-          )}
-          
-          <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
-            <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
-            <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-              Category: {exercise.category}
-            </Text>
-            {!exercise.isIsometric && (
-              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                Displacement: {exercise.displacement} meters
-              </Text>
-            )}
-            {exercise.isCardio && exercise.metValue && (
-              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                Base MET Value: {exercise.metValue} (intensity measure)
-              </Text>
-            )}
-            {isTreadmill && (
-              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                MET value adjusts dynamically based on speed and incline
-              </Text>
-            )}
-            <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-              Energy calculation: {usePseudoJoules ? "Simplified" : "Standard"} joules
-            </Text>
-            {exercise.requiresBodyWeight && (
-              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                This exercise uses your body weight in calculations
-              </Text>
-            )}
-            {exercise.description && (
-              <ScrollView 
-                style={styles.descriptionScrollView}
-                showsVerticalScrollIndicator={Platform.OS !== 'web'}
-              >
-                <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
-                  {exercise.description}
-                </Text>
-              </ScrollView>
-            )}
-          </View>
-        </ScrollView>
-      ) : (
-        <ScrollView style={styles.historyContainer}>
-          {exerciseSets.length > 0 ? (
-            exerciseSets.map(set => (
-              <SetHistoryItem
-                key={set.id}
-                set={set}
-                useMetricUnits={useMetricUnits}
-                onDelete={() => handleDeleteSet(set.id)}
-                isCardio={exercise.isCardio}
-                isIsometric={exercise.isIsometric}
-                isTreadmill={isTreadmill}
-              />
-            ))
-          ) : (
-            <View style={styles.emptyHistory}>
-              <Text style={[styles.emptyHistoryText, { color: theme.textSecondary }]}>
-                No sets logged for this exercise yet.
-              </Text>
-            </View>
-          )}
-        </ScrollView>
-      )}
+      {renderContent()}
       
       {/* Confirmation Dialog */}
       <SetConfirmationDialog
@@ -581,5 +822,23 @@ const styles = StyleSheet.create({
   emptyHistoryText: {
     fontSize: 16,
     textAlign: "center",
+  },
+  // Landscape specific styles
+  landscapeContainer: {
+    flex: 1,
+    flexDirection: 'row',
+  },
+  landscapeLeftPanel: {
+    flex: 1,
+    borderRightWidth: 1,
+    borderRightColor: '#333',
+  },
+  landscapeRightPanel: {
+    flex: 1,
+    padding: 16,
+  },
+  landscapeDescriptionScrollView: {
+    flex: 1,
+    marginTop: 12,
   },
 });
