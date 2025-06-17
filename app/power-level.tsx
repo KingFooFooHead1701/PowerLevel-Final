@@ -222,6 +222,13 @@ export default function PowerLevelScreen() {
           <Text style={[styles.tierValue, { color: theme.primary }]}>{powerTierName}</Text>
         </Animated.View>
       </View>
+
+      {/* Tier/Rank footer */}
+      <View style={styles.footerContainer}>
+        <Text style={[styles.footerText, { color: theme.textSecondary }]}>
+          Keep training to unlock higher power tiers!
+        </Text>
+      </View>
     </>
   );
 }
@@ -252,4 +259,16 @@ const styles = StyleSheet.create({
   tierContainer: { marginTop: 32, alignItems: "center", width: "100%" },
   tierLabel: { fontSize: 16, marginBottom: 8 },
   tierValue: { fontSize: 24, fontWeight: "bold" },
+  footerContainer: {
+    position: "absolute",
+    bottom: 32,
+    left: 0,
+    right: 0,
+    alignItems: "center",
+    paddingHorizontal: 20,
+  },
+  footerText: {
+    fontSize: 16,
+    textAlign: "center",
+  },
 });

@@ -359,6 +359,11 @@ export default function ExerciseDetailScreen() {
                 This exercise uses your body weight in calculations
               </Text>
             )}
+            {exercise.description && (
+              <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
+                {exercise.description}
+              </Text>
+            )}
           </View>
         </View>
       ) : (
@@ -494,6 +499,12 @@ const styles = StyleSheet.create({
   infoText: {
     fontSize: 14,
     marginBottom: 8,
+  },
+  descriptionText: {
+    fontSize: 14,
+    lineHeight: 20,
+    marginTop: 12,
+    fontStyle: "italic",
   },
   emptyHistory: {
     padding: 24,
