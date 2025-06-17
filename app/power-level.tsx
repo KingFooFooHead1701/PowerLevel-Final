@@ -66,9 +66,7 @@ export default function PowerLevelScreen() {
   }, []);
 
   useEffect(() => {
-    if (soundsLoaded) {
-      setTimeout(startScannerAnimation, 1000);
-    }
+    if (soundsLoaded) setTimeout(startScannerAnimation, 1000);
   }, [soundsLoaded]);
 
   const playScanner = async () => {
@@ -96,7 +94,6 @@ export default function PowerLevelScreen() {
       duration: 300,
       useNativeDriver: true,
     }).start();
-
     setTimeout(playScanner, 300);
 
     const firstPass = Animated.timing(scannerAnim, {
@@ -155,42 +152,33 @@ export default function PowerLevelScreen() {
 
   return (
     <>
-      {/* ✨ Disable Expo Router’s default header */}
+      {/* hide expo-router header */}
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* 🌟 Your custom SafeAreaView header */}
-      <StatusBar barStyle="light-content" />
-      <SafeAreaView edges={["top"]} style={styles.safeArea}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={handleGoBack}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
+      {/* status bar & custom header */}
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <SafeAreaView
+        edges={["top"]}
+        style={[styles.safeArea, { backgroundColor: theme.background }]}
+      >
+        <View style={[styles.header, { backgroundColor: theme.background }]}>
+          <TouchableOpacity onPress={handleGoBack} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
             <ChevronLeft size={24} color={theme.text} />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>
-            Power Level
-          </Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Power Level</Text>
         </View>
       </SafeAreaView>
 
-      {/* 🎬 Main Content */}
+      {/* main content */}
       <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
-        <Text style={[styles.label, { color: theme.textSecondary }]}>
-          Your Power Level
-        </Text>
-
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Your Power Level</Text>
         <View style={styles.animationContainer}>
           <Animated.View
             style={[
               styles.scannerBackground,
-              {
-                backgroundColor: theme.cardBackground,
-                opacity: opacityAnim,
-              },
+              { backgroundColor: theme.cardBackground, opacity: opacityAnim },
             ]}
           />
-
           <View style={styles.scannerContainer}>
             <Animated.View
               style={[
@@ -217,32 +205,16 @@ export default function PowerLevelScreen() {
               />
             </Animated.View>
           </View>
-
-          <Animated.Text
-            style={[
-              styles.powerValue,
-              { color: theme.text, opacity: valueOpacityAnim },
-            ]}
-          >
+          <Animated.Text style={[styles.powerValue, { color: theme.text, opacity: valueOpacityAnim }]}>
             {formatEnergy(totalJoules).abbreviated}
           </Animated.Text>
-          <Animated.Text
-            style={[
-              styles.fullJoulesValue,
-              { color: theme.textSecondary, opacity: fullJoulesOpacityAnim },
-            ]}
-          >
+          <Animated.Text style={[styles.fullJoulesValue, { color: theme.textSecondary, opacity: fullJoulesOpacityAnim }]}>
             {formatEnergy(totalJoules).full}
           </Animated.Text>
         </View>
-
         <Animated.View style={[styles.tierContainer, { opacity: tierOpacityAnim }]}>
-          <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
-            Power Tier:
-          </Text>
-          <Text style={[styles.tierValue, { color: theme.primary }]}>
-            {powerTierName}
-          </Text>
+          <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>Power Tier:</Text>
+          <Text style={[styles.tierValue, { color: theme.primary }]}>{powerTierName}</Text>
         </Animated.View>
       </View>
     </>
@@ -250,13 +222,12 @@ export default function PowerLevelScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { width: "100%", backgroundColor: "#fff" },
+  safeArea: { width: "100%" },
   header: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
+    paddingVertical: 8,
   },
   headerTitle: { fontSize: 18, fontWeight: "600", marginLeft: 12 },
   contentContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
@@ -268,22 +239,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   scannerBackground: { position: "absolute", width: 220, height: 120, borderRadius: 12 },
-  scannerContainer: {
-    position: "absolute",
-    width: 220,
-    height: 120,
-    overflow: "hidden",
-    borderRadius: 12,
-  },
+  scannerContainer: { position: "absolute", width: 220, height: 120, overflow: "hidden", borderRadius: 12 },
   scanner: { position: "absolute", width: 40, height: 120, borderRadius: 8, left: 90 },
   scannerGlow: { position: "absolute", width: 80, height: 120, left: -20 },
   powerValue: { fontSize: 64, fontWeight: "bold", zIndex: 10 },
   fullJoulesValue: { fontSize: 16, marginTop: 8, zIndex: 10 },
-  tierContainer: {
-    marginTop: 32,
-    alignItems: "center",
-    width: "100%",
-  },
+  tierContainer: { marginTop: 32, alignItems: "center", width: "100%" },
   tierLabel: { fontSize: 16, marginBottom: 8 },
   tierValue: { fontSize: 24, fontWeight: "bold" },
 });

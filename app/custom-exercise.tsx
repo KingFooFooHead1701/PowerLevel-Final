@@ -46,10 +46,7 @@ export default function CustomExerciseScreen() {
     }
     const displacementValue = parseFloat(displacement);
     if (isNaN(displacementValue) || displacementValue < 0) {
-      Alert.alert(
-        "Invalid Input",
-        "Please enter a valid displacement value (0 or greater)."
-      );
+      Alert.alert("Invalid Input", "Please enter a valid displacement value (0 or greater).");
       return;
     }
     const id = `custom-${name.toLowerCase().replace(/\s+/g, "-")}-${Date.now()}`;
@@ -70,26 +67,20 @@ export default function CustomExerciseScreen() {
 
   return (
     <>
-      {/* 1️⃣ Disable expo-router’s default header */}
+      {/* hide default header */}
       <Stack.Screen options={{ headerShown: false }} />
 
-      {/* 2️⃣ Your SafeAreaView header */}
-      <SafeAreaView edges={["top"]} style={styles.safeArea}>
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={handleGoBack}
-            style={styles.backButton}
-            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
-          >
+      {/* custom header */}
+      <SafeAreaView edges={["top"]} style={[styles.safeArea, { backgroundColor: theme.background }]}>
+        <View style={[styles.header, { backgroundColor: theme.background }]}>
+          <TouchableOpacity onPress={handleGoBack} hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}>
             <ChevronLeft size={24} color={theme.text} />
           </TouchableOpacity>
-          <Text style={[styles.headerTitle, { color: theme.text }]}>
-            Add Custom Exercise
-          </Text>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Add Custom Exercise</Text>
         </View>
       </SafeAreaView>
 
-      {/* 3️⃣ Rest of your form */}
+      {/* form */}
       <ScrollView style={[styles.scrollView, { backgroundColor: theme.background }]}>
         <View style={[styles.formCard, { backgroundColor: theme.cardBackground }]}>
           <View style={styles.iconContainer}>
@@ -102,11 +93,7 @@ export default function CustomExerciseScreen() {
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
+              { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
             ]}
             placeholder="Enter exercise name"
             placeholderTextColor={theme.textSecondary}
@@ -116,53 +103,34 @@ export default function CustomExerciseScreen() {
 
           <Text style={[styles.label, { color: theme.text }]}>Category</Text>
           <TouchableOpacity
-            style={[
-              styles.categorySelector,
-              { backgroundColor: theme.inputBackground, borderColor: theme.border },
-            ]}
+            style={[styles.categorySelector, { backgroundColor: theme.inputBackground, borderColor: theme.border }]}
             onPress={() => setShowCategoryPicker(!showCategoryPicker)}
           >
             <Text style={{ color: theme.text }}>{category}</Text>
           </TouchableOpacity>
 
           {showCategoryPicker && (
-            <View
-              style={[
-                styles.categoryList,
-                { backgroundColor: theme.cardBackground, borderColor: theme.border },
-              ]}
-            >
+            <View style={[styles.categoryList, { backgroundColor: theme.cardBackground, borderColor: theme.border }]}>
               {categories.map((cat) => (
                 <TouchableOpacity
                   key={cat}
-                  style={[
-                    styles.categoryItem,
-                    cat === category && { backgroundColor: theme.primary + "20" },
-                  ]}
+                  style={[styles.categoryItem, cat === category && { backgroundColor: theme.primary + "20" }]}
                   onPress={() => {
                     setCategory(cat);
                     setShowCategoryPicker(false);
                   }}
                 >
-                  <Text style={{ color: cat === category ? theme.primary : theme.text }}>
-                    {cat}
-                  </Text>
+                  <Text style={{ color: cat === category ? theme.primary : theme.text }}>{cat}</Text>
                 </TouchableOpacity>
               ))}
             </View>
           )}
 
-          <Text style={[styles.label, { color: theme.text }]}>
-            Displacement (meters)
-          </Text>
+          <Text style={[styles.label, { color: theme.text }]}>Displacement (meters)</Text>
           <TextInput
             style={[
               styles.input,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
+              { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
             ]}
             placeholder="Enter displacement in meters"
             placeholderTextColor={theme.textSecondary}
@@ -178,11 +146,7 @@ export default function CustomExerciseScreen() {
           <TextInput
             style={[
               styles.textArea,
-              {
-                backgroundColor: theme.inputBackground,
-                color: theme.text,
-                borderColor: theme.border,
-              },
+              { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border },
             ]}
             placeholder="Enter exercise description"
             placeholderTextColor={theme.textSecondary}
@@ -194,10 +158,7 @@ export default function CustomExerciseScreen() {
           />
         </View>
 
-        <TouchableOpacity
-          style={[styles.saveButton, { backgroundColor: theme.primary }]}
-          onPress={handleSave}
-        >
+        <TouchableOpacity style={[styles.saveButton, { backgroundColor: theme.primary }]} onPress={handleSave}>
           <Save size={20} color="#fff" style={styles.buttonIcon} />
           <Text style={styles.buttonText}>Save Exercise</Text>
         </TouchableOpacity>
@@ -207,73 +168,27 @@ export default function CustomExerciseScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { width: "100%", backgroundColor: "#fff" },
+  safeArea: { width: "100%" },
   header: {
     flexDirection: "row",
     alignItems: "center",
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    backgroundColor: "#fff",
+    paddingVertical: 8,
   },
-  backButton: { padding: 4 },
   headerTitle: { fontSize: 18, fontWeight: "600", marginLeft: 12 },
 
   scrollView: { flex: 1 },
   formCard: { borderRadius: 12, padding: 16, margin: 16 },
   iconContainer: { alignItems: "center", marginBottom: 24 },
-  iconCircle: {
-    width: 80,
-    height: 80,
-    borderRadius: 40,
-    justifyContent: "center",
-    alignItems: "center",
-  },
+  iconCircle: { width: 80, height: 80, borderRadius: 40, justifyContent: "center", alignItems: "center" },
   label: { fontSize: 16, fontWeight: "500", marginBottom: 8 },
-  input: {
-    height: 48,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    fontSize: 16,
-    marginBottom: 16,
-  },
-  textArea: {
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    fontSize: 16,
-    marginBottom: 16,
-    minHeight: 100,
-  },
+  input: { height: 48, borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, fontSize: 16, marginBottom: 16 },
+  textArea: { borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, paddingVertical: 8, fontSize: 16, marginBottom: 16, minHeight: 100 },
   helperText: { fontSize: 12, marginBottom: 16 },
-  categorySelector: {
-    height: 48,
-    borderRadius: 8,
-    borderWidth: 1,
-    paddingHorizontal: 12,
-    justifyContent: "center",
-    marginBottom: 16,
-  },
-  categoryList: {
-    borderRadius: 8,
-    borderWidth: 1,
-    marginBottom: 16,
-    maxHeight: 200,
-  },
-  categoryItem: {
-    padding: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: "rgba(0,0,0,0.1)",
-  },
-  saveButton: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    height: 56,
-    borderRadius: 8,
-    margin: 16,
-  },
+  categorySelector: { height: 48, borderRadius: 8, borderWidth: 1, paddingHorizontal: 12, justifyContent: "center", marginBottom: 16 },
+  categoryList: { borderRadius: 8, borderWidth: 1, marginBottom: 16, maxHeight: 200 },
+  categoryItem: { padding: 12, borderBottomWidth: 1, borderBottomColor: "rgba(0,0,0,0.1)" },
+  saveButton: { flexDirection: "row", alignItems: "center", justifyContent: "center", height: 56, borderRadius: 8, margin: 16 },
   buttonIcon: { marginRight: 8 },
   buttonText: { color: "#fff", fontSize: 18, fontWeight: "600" },
 });
