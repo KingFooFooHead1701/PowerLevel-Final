@@ -712,3 +712,21 @@ export const themes = {
 };
 
 export type ThemeName = keyof typeof themes;
+
+// Update the Theme type to include all properties used in the theme objects
+export type Theme = {
+  primary: string;
+  secondary: string;
+  background: string;
+  backgroundSecondary: string;
+  cardBackground: string;
+  text: string;
+  textSecondary: string;
+  border: string;
+  inputBackground: string;
+  error: string;
+  switchTrackOff: string;
+  switchThumb: string;
+  dangerBackground: string;
+  dangerText: string;
+};
