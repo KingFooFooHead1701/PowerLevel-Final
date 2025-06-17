@@ -17,28 +17,28 @@ export const defaultExercises: Exercise[] = [
     name: "Bench Press", 
     category: "Chest", 
     displacement: 0.4,
-    description: "Lie on a flat bench, grip the barbell with hands wider than shoulder-width, then press up until arms extend and lower to chest level. Your pecs are about to get more attention than your dating profile picture."
+    description: "Lie back on a flat bench, grip the barbell just outside shoulder-width, then press it up until arms lock out. Lower under control to your chest and repeat. Because nothing says \"I'm king of the gym\" like hoisting steel over your face."
   },
   { 
     id: "incline-press", 
     name: "Incline Press", 
     category: "Chest", 
     displacement: 0.4,
-    description: "Position yourself on an inclined bench (15-30°), grip the bar slightly wider than shoulders, press up and lower to upper chest. Upper chest development: because looking good in V-necks is a human right."
+    description: "Set the bench to 15–30°, lie back, grip the bar wider than shoulders, and press upward. Lower to your upper chest, repeat. Emphasizes the part of your pecs that people can actually see in a tank top."
   },
   { 
     id: "decline-press", 
     name: "Decline Press", 
     category: "Chest", 
     displacement: 0.4,
-    description: "Lie on a decline bench with feet secured, grip barbell wider than shoulders, press up from lower chest, then lower with control. The only decline you should be accepting in your fitness journey."
+    description: "Lie on a bench angled downward, grip the barbell wide, lower to lower chest, then press back up. Targets the chest area that most folks think only bodybuilders possess."
   },
   { 
     id: "chest-fly", 
     name: "Chest Fly", 
     category: "Chest", 
     displacement: 0.5,
-    description: "Lie on bench holding dumbbells above chest with slight elbow bend, lower weights in arc motion to sides, then squeeze back together. Like hugging the world's most awkward invisible tree."
+    description: "On a flat bench hold dumbbells overhead with elbows slightly bent, open arms wide in an arc, then squeeze them back together. Like giving yourself the world's most awkward hug."
   },
   { 
     id: "push-up", 
@@ -46,7 +46,7 @@ export const defaultExercises: Exercise[] = [
     category: "Chest", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Start in plank position with hands shoulder-width apart, lower chest to floor by bending elbows, then push back up. If you can still update your Instagram story after set three, you're doing it wrong."
+    description: "Start in plank, hands under shoulders, lower chest to floor by bending elbows, then push up. The move everyone swears they can do—until I ask you to pause at the bottom."
   },
   { 
     id: "dips-chest", 
@@ -54,49 +54,49 @@ export const defaultExercises: Exercise[] = [
     category: "Chest", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Support yourself between parallel bars, lower body until shoulders are below elbows, then push back up. Gravity is about to become your personal nemesis for the next 60 seconds."
+    description: "Support yourself on parallel bars, lean slightly forward, lower until shoulders dip below elbows, then press up. Gravity's cruelest reminder that your chest called \"dibs\" first."
   },
   { 
     id: "cable-crossover", 
     name: "Cable Crossover", 
     category: "Chest", 
     displacement: 0.5,
-    description: "Stand between cable stations with arms extended to sides, pull handles forward and down in arcing motion until they cross. Perfect for practicing your superhero landing pose without the knee damage."
+    description: "Stand between two high pulleys, grab handles, pull them down and together in front of you in a wide arc. Like drawing swords against each pectoral—constant tension guaranteed."
   },
   { 
     id: "pec-deck", 
     name: "Pec Deck", 
     category: "Chest", 
     displacement: 0.4,
-    description: "Sit at machine with forearms on pads, press arms together in front of chest, then control the return. Like trying to clap with resistance that fights back harder than your ex."
+    description: "Sit with elbows on pads, press arms together in front of chest, then slowly let them open back out. For when you want a machine to teach your chest manners."
   },
   { 
     id: "smith-machine-bench", 
     name: "Smith Machine Bench Press", 
     category: "Chest", 
     displacement: 0.4,
-    description: "Perform bench press on Smith machine with fixed barbell path, pressing up and lowering with control. For when you want to bench press but also want training wheels and a safety net."
+    description: "Flat-bench press on a guided bar path so you can focus on brute pressing without worrying about balance. Bench press on training wheels."
   },
   { 
     id: "chest-press-machine", 
     name: "Chest Press Machine", 
     category: "Chest", 
     displacement: 0.4,
-    description: "Sit at machine with hands on handles at chest level, press forward until arms extend, then return. The bench press for people who value their spine more than their ego."
+    description: "Sit, grip handles at chest level, push forward until arms extend, then return. The bench press for people who hate loading plates."
   },
   { 
     id: "landmine-press-chest", 
     name: "Landmine Press", 
     category: "Chest", 
     displacement: 0.5,
-    description: "With barbell secured in landmine, hold end with one or both hands at shoulder, press up and away at angle. Like jousting with a barbell while your dignity watches from the sidelines."
+    description: "Wedge one end of a barbell in a corner, hold the free end at shoulder, press up and diagonally away, then lower. Asymmetrical pressing that feels like jousting—minus the horse."
   },
   { 
     id: "svend-press", 
     name: "Svend Press", 
     category: "Chest", 
     displacement: 0.3,
-    description: "Press plate or dumbbells together between palms at chest level, extend arms forward while maintaining pressure, then return. Named after a Viking, feels like torture designed by one too."
+    description: "Hold two weight plates together in front of your chest and press arms straight out, maintaining inward squeeze. Isometric torture named after a Viking."
   },
   
   // Back
