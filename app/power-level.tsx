@@ -30,12 +30,14 @@ export default function PowerLevelScreen() {
 
   const scannerSound = useRef<Audio.Sound | null>(null);
   const revealSound = useRef<Audio.Sound | null>(null);
+  const thumpSound = useRef<Audio.Sound | null>(null);
 
   const scannerAnim = useRef(new Animated.Value(0)).current;
   const opacityAnim = useRef(new Animated.Value(0)).current;
   const valueOpacityAnim = useRef(new Animated.Value(0)).current;
   const fullJoulesOpacityAnim = useRef(new Animated.Value(0)).current;
   const tierOpacityAnim = useRef(new Animated.Value(0)).current;
+  const tierScaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     setTotalJoules(getTotalJoules());
@@ -53,6 +55,12 @@ export default function PowerLevelScreen() {
           );
           revealSound.current = reveal;
         } catch {}
+        try {
+          const { sound: thump } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/thump.mp3")
+          );
+          thumpSound.current = thump;
+        } catch {}
       }
       setSoundsLoaded(true);
     };
@@ -61,6 +69,7 @@ export default function PowerLevelScreen() {
       (async () => {
         if (scannerSound.current) await scannerSound.current.unloadAsync();
         if (revealSound.current) await revealSound.current.unloadAsync();
+        if (thumpSound.current) await thumpSound.current.unloadAsync();
       })();
     };
   }, []);
@@ -81,6 +90,12 @@ export default function PowerLevelScreen() {
       await revealSound.current.playAsync();
     }
   };
+  const playThump = async () => {
+    if (thumpSound.current) {
+      await thumpSound.current.setPositionAsync(0);
+      await thumpSound.current.playAsync();
+    }
+  };
 
   const startScannerAnimation = () => {
     scannerAnim.setValue(0);
@@ -88,6 +103,7 @@ export default function PowerLevelScreen() {
     valueOpacityAnim.setValue(0);
     fullJoulesOpacityAnim.setValue(0);
     tierOpacityAnim.setValue(0);
+    tierScaleAnim.setValue(1);
 
     Animated.timing(opacityAnim, {
       toValue: 1,
@@ -132,13 +148,36 @@ export default function PowerLevelScreen() {
       easing: Easing.out(Easing.cubic),
       useNativeDriver: true,
     });
+    
+    // New tier scale animations
+    const tierScaleUp = Animated.timing(tierScaleAnim, {
+      toValue: 1.3,
+      duration: 300,
+      easing: Easing.out(Easing.back),
+      useNativeDriver: true,
+    });
+    
+    const tierScaleDown = Animated.timing(tierScaleAnim, {
+      toValue: 1,
+      duration: 400,
+      easing: Easing.inOut(Easing.elastic(1)),
+      useNativeDriver: true,
+    });
 
     Animated.sequence([firstPass, secondPass, thirdPass]).start(() => {
       playReveal();
       Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
       reveal.start(() => {
         setTimeout(() => fullJoulesReveal.start(), 200);
-        setTimeout(() => tierReveal.start(), 500);
+        setTimeout(() => {
+          tierReveal.start();
+          // Wait a moment after tier starts to appear before playing thump and scaling
+          setTimeout(() => {
+            playThump();
+            Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+            Animated.sequence([tierScaleUp, tierScaleDown]).start();
+          }, 300);
+        }, 500);
       });
     });
   };
@@ -219,7 +258,17 @@ export default function PowerLevelScreen() {
           <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
             Power Tier:
           </Text>
-          <Text style={[styles.tierValue, { color: theme.primary }]}>{powerTierName}</Text>
+          <Animated.Text 
+            style={[
+              styles.tierValue, 
+              { 
+                color: theme.primary,
+                transform: [{ scale: tierScaleAnim }]
+              }
+            ]}
+          >
+            {powerTierName}
+          </Animated.Text>
         </Animated.View>
       </View>
 
