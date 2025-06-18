@@ -29,7 +29,7 @@ export default function RootLayout() {
       <CustomSplashScreen>
         <Stack>
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="achievements" options={{ presentation: "card" }} />
+          {/* Removed duplicate achievements screen */}
           <Stack.Screen name="achievement/[id]" options={{ presentation: "card" }} />
           <Stack.Screen name="hidden-achievement" options={{ presentation: "card" }} />
         </Stack>

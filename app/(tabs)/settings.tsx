@@ -61,6 +61,7 @@ export default function SettingsScreen() {
 
   // Format theme name with spaces
   const formatThemeName = (name: string) => {
+    // Insert a space before each capital letter
     return name.replace(/([A-Z])/g, ' $1').trim();
   };
 
@@ -69,34 +70,56 @@ export default function SettingsScreen() {
     
     return (
       <View style={styles.themeContainer}>
-        {themeNames.map((name) => (
-          <TouchableOpacity
-            key={name}
-            style={[
-              styles.themeOption,
-              {
-                backgroundColor: themes[name].cardBackground,
-                borderColor: themeName === name ? theme.primary : theme.border,
-                borderWidth: themeName === name ? 3 : 1,
-              },
-            ]}
-            onPress={() => setThemeName(name)}
-          >
-            <View style={[styles.themeColorCircle, { backgroundColor: themes[name].primary }]} />
-            <View style={[styles.themeColorCircle, { backgroundColor: themes[name].secondary, marginTop: 4 }]} />
-            <Text style={[
-              styles.themeText, 
-              { 
-                color: themes[name].text,
-                textShadowColor: 'rgba(0,0,0,0.5)',
-                textShadowOffset: { width: 1, height: 1 },
-                textShadowRadius: 2,
-              }
-            ]}>
-              {formatThemeName(name)}
-            </Text>
-          </TouchableOpacity>
-        ))}
+        {themeNames.map((name) => {
+          // Get the actual theme colors for accurate representation
+          const themeColors = themes[name];
+          
+          return (
+            <TouchableOpacity
+              key={name}
+              style={[
+                styles.themeOption,
+                {
+                  backgroundColor: themeColors.cardBackground,
+                  borderColor: themeName === name ? themeColors.primary : theme.border,
+                  borderWidth: themeName === name ? 3 : 1,
+                },
+              ]}
+              onPress={() => setThemeName(name)}
+            >
+              {/* Primary color circle */}
+              <View style={[
+                styles.themeColorCircle, 
+                { 
+                  backgroundColor: themeColors.primary,
+                  borderColor: "rgba(255,255,255,0.3)" 
+                }
+              ]} />
+              
+              {/* Secondary color circle */}
+              <View style={[
+                styles.themeColorCircle, 
+                { 
+                  backgroundColor: themeColors.secondary, 
+                  marginTop: 4,
+                  borderColor: "rgba(255,255,255,0.3)" 
+                }
+              ]} />
+              
+              <Text style={[
+                styles.themeText, 
+                { 
+                  color: themeColors.text,
+                  textShadowColor: 'rgba(0,0,0,0.5)',
+                  textShadowOffset: { width: 1, height: 1 },
+                  textShadowRadius: 2,
+                }
+              ]}>
+                {formatThemeName(name)}
+              </Text>
+            </TouchableOpacity>
+          );
+        })}
       </View>
     );
   };
@@ -284,12 +307,13 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // Center the theme boxes
+    justifyContent: "space-evenly", // Better spacing between theme boxes
     marginBottom: 16,
+    paddingHorizontal: 8, // Add padding to center the grid better
   },
   themeOption: {
-    width: 90, // Slightly wider to accommodate spaced names
-    height: 100, // Taller to fit two color circles
+    width: 95, // Slightly wider to accommodate spaced names
+    height: 105, // Taller to fit two color circles
     margin: 8,
     borderRadius: 8,
     justifyContent: "center",
@@ -297,11 +321,15 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   themeColorCircle: {
-    width: 30,
-    height: 30,
-    borderRadius: 15,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1,
+    elevation: 2,
   },
   themeText: {
     color: "#fff",
