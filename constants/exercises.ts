@@ -589,7 +589,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Lie on back with knees bent, curl upper body toward knees by contracting abs, then lower with control. The exercise everyone does for beach abs and then wonders why their fridge still defeats them."
+    description: "Lie on your back with knees bent, curl upper body toward knees by contracting abs, then lower. Ab day: where breathing becomes optional."
   },
   { 
     id: "plank", 
@@ -598,7 +598,7 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     requiresBodyWeight: true, 
     isIsometric: true,
-    description: "Support body on forearms and toes with body in straight line from head to heels, hold position. The exercise where time mysteriously slows to half speed and seconds become eternal torment."
+    description: "Hold a straight line from head to heels on forearms and toes. The exercise where time stops for everyone but you."
   },
   { 
     id: "russian-twist", 
@@ -606,7 +606,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Sit with knees bent and feet elevated, twist torso to touch weight to floor on each side. Named after Russians, who clearly enjoy core pain and watching foreigners struggle with simple movements."
+    description: "Sit with feet elevated, twist torso side to side, tapping weight on the floor. Turns your core into a spin class—without the lycra."
   },
   { 
     id: "leg-raise", 
@@ -614,7 +614,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.5, 
     requiresBodyWeight: true,
-    description: "Lie on back with hands under glutes, raise straight legs until perpendicular to floor, then lower. Like trying to kick the ceiling while lying down and questioning your life choices simultaneously."
+    description: "Lie back, lift straight legs perpendicular to floor, then lower. Because kicking the ceiling from the ground is peak fun."
   },
   { 
     id: "ab-wheel", 
@@ -622,14 +622,14 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.5, 
     requiresBodyWeight: true,
-    description: "Kneel holding ab wheel, roll forward extending body in straight line, then use abs to pull back. The $10 device that delivers $1000 worth of humility and next-day regret."
+    description: "Kneel, roll wheel forward until body extends, then pull back. The $10 gadget that delivers $1,000 of regret."
   },
   { 
     id: "side-bend", 
     name: "Side Bend", 
     category: "Core", 
     displacement: 0.3,
-    description: "Stand holding weight at side, bend sideways by lowering weight toward floor, then return to upright. The exercise that makes you look like you're dramatically picking up a quarter in slow motion."
+    description: "Stand holding weight, bend sideways, then return. The exercise that makes you look like you're picking up change."
   },
   { 
     id: "hanging-leg-raise", 
@@ -637,7 +637,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.5, 
     requiresBodyWeight: true,
-    description: "Hang from bar, raise legs until parallel with floor or higher, then lower with control. Like regular leg raises but with added fear of falling and public embarrassment as motivation."
+    description: "Hang from a bar, lift legs to hip or higher, then lower. Where gravity and your will to live collide."
   },
   { 
     id: "mountain-climber-core", 
@@ -645,7 +645,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Start in push-up position, rapidly alternate bringing knees toward chest in running motion. Like running in place while in a push-up position, because regular cardio wasn't punishing enough."
+    description: "From plank, drive knees toward chest in quick alternation. Like sprinting on a skateboard—indoors."
   },
   { 
     id: "bicycle-crunch", 
@@ -653,7 +653,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Lie on back, alternate touching elbow to opposite knee while extending other leg. The only acceptable form of cycling to do indoors without getting strange looks from your cat."
+    description: "Alternate elbow-to-opposite-knee in a pedaling motion lying down. Cycling without the Lycra—and without leaving the floor."
   },
   { 
     id: "dead-bug", 
@@ -661,7 +661,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Lie on back with arms and legs raised, alternate extending opposite arm and leg. Named after a dead bug, which is both accurate and slightly disturbing for your exercise motivation."
+    description: "On your back, extend opposite arm and leg, then switch. Feel like a bug—without the wings."
   },
   { 
     id: "hollow-hold", 
@@ -670,7 +670,7 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     requiresBodyWeight: true, 
     isIsometric: true,
-    description: "Lie on back, raise shoulders and legs off floor while pressing lower back down, hold position. Like a plank but for people who prefer to see the ceiling while questioning their fitness journey."
+    description: "Lie back, lift shoulders and legs off the floor, hold. A plank's evil twin."
   },
   { 
     id: "v-up", 
@@ -678,7 +678,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Lie on back, simultaneously raise legs and upper body to form V-shape, then lower with control. For when regular crunches aren't making you question your life choices with sufficient intensity."
+    description: "Lie flat, simultaneously lift legs and torso to form a \"V,\" then lower. Core fireworks, minus the showmanship."
   },
   { 
     id: "dragon-flag", 
@@ -686,21 +686,21 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.5, 
     requiresBodyWeight: true,
-    description: "Lie on bench holding behind head, raise entire body as straight line pivoting on shoulders, then lower. Named by Bruce Lee, who apparently hated everyone's abs and wanted them to suffer creatively."
+    description: "Lie on bench, pivot on shoulders to lift entire body straight, then lower. Bruce Lee didn't make it easy for us."
   },
   { 
     id: "ab-crunch-machine", 
     name: "Ab Crunch Machine", 
     category: "Core", 
     displacement: 0.3,
-    description: "Sit in machine with pads on chest, crunch forward against resistance, then return with control. For when you want to work your abs but also want to sit down and read emails between sets."
+    description: "Sit in machine, crunch forward against pads, then release. For people who insist on sitting while abs-ing."
   },
   { 
     id: "cable-crunch", 
     name: "Cable Crunch", 
     category: "Core", 
     displacement: 0.4,
-    description: "Kneel facing cable machine, hold rope behind head, crunch toward floor by contracting abs. Like regular crunches but with a robot offering resistance and awkward kneeling positions."
+    description: "Kneel at cable, crunch down by flexing abs, then rise. Abs meet robot resistance."
   },
   { 
     id: "oblique-crunch", 
@@ -708,7 +708,7 @@ export const defaultExercises: Exercise[] = [
     category: "Core", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Lie on back with knees bent to one side, curl upper body toward knees, then lower with control. The exercise that makes you look like you're constantly falling to one side with great purpose."
+    description: "Lie on back, crunch up toward one side, then the other. Feel the burn... on both sides of your attitude."
   },
   { 
     id: "side-plank", 
@@ -717,14 +717,14 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     requiresBodyWeight: true, 
     isIsometric: true,
-    description: "Support body on one forearm and side of foot with body in straight line, hold position. Like a regular plank but with a twist—literally—and twice the opportunity to shake uncontrollably."
+    description: "Support on one forearm and foot, hold a straight line. Your obliques will write you a strongly worded letter."
   },
   { 
     id: "medicine-ball-slam", 
     name: "Medicine Ball Slam", 
     category: "Core", 
     displacement: 0.6,
-    description: "Stand holding medicine ball overhead, forcefully throw ball to floor using abs and arms. The exercise that lets you legally throw things in the gym while pretending it's for fitness, not frustration."
+    description: "Raise ball overhead, slam to floor, catch on rebound. Therapy disguised as a workout—throw your feelings out."
   },
   
   // Cardio - Updated descriptions
@@ -735,7 +735,7 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     isCardio: true, 
     metValue: 3.5,
-    description: "Set your desired pace and incline, then walk with an upright posture, arms swinging naturally at your sides. The only time walking in place actually gets you somewhere in life—metaphorically speaking."
+    description: "Walk at your chosen speed and incline—enter speed, distance, and incline % for spot-on energy math. It's basically strolling through a digital park…minus the ducks."
   },
   { 
     id: "treadmill-run", 
@@ -744,7 +744,160 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     isCardio: true, 
     metValue: 8.0,
-    description: "Set your pace and incline, then run with a mid-foot strike and controlled breathing, maintaining good posture throughout. Like running from your problems, except you stay in exactly the same place and pay for the privilege."
+    description: "Break into a run on the treadmill with your chosen speed and incline—input the numbers, watch the joules rack up. It's like outrunning your problems in place."
+  },
+  { 
+    id: "elliptical-low", 
+    name: "Elliptical (Low Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 4.5,
+    description: "Glide on the elliptical at easy resistance. Low impact, steady burn—perfect for pretending you're gracefully cross-country skiing instead of, you know, standing still."
+  },
+  { 
+    id: "elliptical-medium", 
+    name: "Elliptical (Medium Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 6.0,
+    description: "Ramp up to moderate resistance. Get a little more burn while still feeling fancy—like running through shallow mud without the mud part."
+  },
+  { 
+    id: "elliptical-high", 
+    name: "Elliptical (High Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 8.0,
+    description: "Crank the resistance high for an intense leg-and-cardio blast. It's \"run without running\" theater…you just might leave looking like you did actual running."
+  },
+  { 
+    id: "stair-stepper-low", 
+    name: "Stair Stepper (Low Intensity)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 4.0,
+    description: "Step slowly on the stair-stepper. Tone legs, raise heart rate gently—like climbing infinite stairs in a very boring building."
+  },
+  { 
+    id: "stair-stepper-medium", 
+    name: "Stair Stepper (Medium Intensity)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 6.0,
+    description: "Pick up the pace for a stronger burn. Simulates hustling up a five-story walkup…only here you never reach the top."
+  },
+  { 
+    id: "stair-stepper-high", 
+    name: "Stair Stepper (High Intensity)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 9.0,
+    description: "Hammer the pedal at full speed for maximum leg scorch. It's cardio with leg day's worst nightmare—endless \"stairs.\""
+  },
+  { 
+    id: "stationary-bike-low", 
+    name: "Stationary Bike (Low Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 3.5,
+    description: "Pedal at easy resistance. Gentle cardio—great if you need to catch up on your podcast and still pretend you exercised."
+  },
+  { 
+    id: "stationary-bike-medium", 
+    name: "Stationary Bike (Medium Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 6.0,
+    description: "Turn up to moderate resistance. Burns more calories, builds leg strength—like biking into a slight headwind, indoors and without the wind."
+  },
+  { 
+    id: "stationary-bike-high", 
+    name: "Stationary Bike (High Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 8.5,
+    description: "Crank the dial to hard. Builds serious leg power and torching cardio—like climbing an endless hill, but at least your hair stays perfect."
+  },
+  { 
+    id: "rowing-machine-low", 
+    name: "Rowing Machine (Low Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 4.5,
+    description: "Row at light resistance. Full-body cardio that feels like paddling a calm lake—indoors, so you can't get wet or lost."
+  },
+  { 
+    id: "rowing-machine-medium", 
+    name: "Rowing Machine (Medium Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 7.0,
+    description: "Row at moderate resistance. Engage more muscle groups—as close as you'll get to escaping Alcatraz by oar without the chill."
+  },
+  { 
+    id: "rowing-machine-high", 
+    name: "Rowing Machine (High Resistance)", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 9.5,
+    description: "Row against heavy resistance. Intense full-body burn—like trying to row through molasses while someone shouts, \"Faster!\""
+  },
+  { 
+    id: "jump-rope", 
+    name: "Jump Rope", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 10.0,
+    description: "Skip rope at a steady pace. High-intensity, coordi­na­tion-challenging cardio—easy to start, impossible to master past 30 seconds."
+  },
+  { 
+    id: "battle-ropes", 
+    name: "Battle Ropes", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 9.0,
+    description: "Slam heavy ropes with rapid arm waves. Upper-body and cardio in one—like wrestling two angry snakes without the hiss."
+  },
+  { 
+    id: "sled-push", 
+    name: "Sled Push", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 10.0,
+    description: "Push a weighted sled across the floor using legs and arms. All-out full-body power—think \"pushing a broken-down car for fun.\""
+  },
+  { 
+    id: "assault-bike", 
+    name: "Assault Bike", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 10.5,
+    description: "Turn pedals and handles together on the fan bike. Full-body, all-out cardio—named \"assault\" because it will totally assault you."
+  },
+  { 
+    id: "jacobs-ladder", 
+    name: "Jacob's Ladder", 
+    category: "Cardio", 
+    displacement: 0.0, 
+    isCardio: true, 
+    metValue: 11.0,
+    description: "Climb the self-powered rotating ladder. Full-body cardio that makes you feel like you're climbing to the heavens…never quite making it."
   },
   
   // Full Body - Updated descriptions
@@ -753,21 +906,21 @@ export const defaultExercises: Exercise[] = [
     name: "Clean and Jerk", 
     category: "Full Body", 
     displacement: 1.5,
-    description: "Pull barbell explosively from floor to shoulders, then drive it overhead with a split stance, finally standing tall with weight overhead. The Olympic lift that makes you feel like an athlete until you try to walk normally the next day."
+    description: "Explosively pull a barbell from floor to shoulders, then split-drive it overhead. Develops total-body power. Makes you feel Olympic-worthy—until you try to walk the next day."
   },
   { 
     id: "snatch", 
     name: "Snatch", 
     category: "Full Body", 
     displacement: 1.8,
-    description: "Pull barbell from floor to overhead in one fluid motion, catching in a squat position before standing. The lift with the unfortunate name and even more unfortunate learning curve for gym newbies."
+    description: "Lift a barbell from floor to overhead in one continuous motion. Trains speed, power, and coordination. The lift with the unfortunate name and an even more brutal learning curve."
   },
   { 
     id: "kettlebell-swing", 
     name: "Kettlebell Swing", 
     category: "Full Body", 
     displacement: 1.0,
-    description: "Hinge at hips to swing kettlebell between legs, then explosively drive hips forward to swing weight to chest height. Like trying to launch a cannonball using only your hips while your hamstrings file a formal complaint."
+    description: "Hinge at hips and swing a kettlebell between your legs, then thrust hips to bring it chest-height. Builds posterior chain and cardio. Like launching a cannonball with only your hips—and hoping it lands softly."
   },
   { 
     id: "burpee", 
@@ -775,77 +928,77 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 1.0, 
     requiresBodyWeight: true,
-    description: "From standing, drop to a squat, kick feet back to plank, perform a push-up, jump feet forward, then leap up with hands overhead. The exercise trainers prescribe when they secretly hate you but legally can't say it out loud."
+    description: "Drop to a push-up, pop feet forward, then leap up with arms overhead. A full-body, heart-pounding challenge. The exercise trainers prescribe when they secretly hate you."
   },
   { 
     id: "thruster", 
     name: "Thruster", 
     category: "Full Body", 
     displacement: 1.2,
-    description: "Hold weights at shoulders, squat deeply, then explosively stand while pressing weights overhead in one fluid motion. Named after what it does to your will to live and any plans you had for the next day."
+    description: "Hold weight at shoulders, squat deeply, then drive up and press overhead in one fluid motion. Squat + press = maximum chaos. Combines two exercises into one torture device."
   },
   { 
     id: "turkish-get-up", 
     name: "Turkish Get-Up", 
     category: "Full Body", 
     displacement: 1.5,
-    description: "Lie down holding weight overhead, then methodically rise to standing while keeping weight extended, reverse to return. The exercise that makes getting out of bed look like an Olympic event requiring medals and sponsorships."
+    description: "Lie supine holding weight overhead, then methodically rise to standing and reverse. Trains stability, core, and mobility. Turns getting out of bed into an Olympic sport."
   },
   { 
     id: "clean", 
     name: "Clean", 
     category: "Full Body", 
     displacement: 1.2,
-    description: "Pull barbell from floor to shoulders in one explosive motion, catching in a partial squat before standing. Like deadlifting but with more opportunities to hit yourself in the face with a heavy metal object."
+    description: "Pull a barbell from floor to shoulders explosively, but stop short of the jerk. Develops power and positioning. Deadlift meets speed lesson—just don't drop it on your toes."
   },
   { 
     id: "power-clean", 
     name: "Power Clean", 
     category: "Full Body", 
     displacement: 1.2,
-    description: "Explosively pull barbell from floor to shoulders without dropping into a full squat, catching with minimal knee bend. The clean for people who don't like squatting all the way down but still enjoy complex movements."
+    description: "Like the clean, but you don't drop into a full squat. Emphasizes rapid hip extension and pulling power. For people who want Olympic flair without the deep knee bend."
   },
   { 
     id: "hang-clean", 
     name: "Hang Clean", 
     category: "Full Body", 
     displacement: 0.9,
-    description: "Start with barbell at knee height, explosively pull to shoulders, catching in a partial squat before standing. The clean for people who don't like picking things up from the floor but still want technical challenges."
+    description: "Start the pull from knee height rather than floor. Focuses on the \"second pull\" of the clean. Perfect for when picking things up from the floor feels too much like laundry."
   },
   { 
     id: "push-press-full", 
-    name: "Push Press", 
+    name: "Push Press (Full Body)", 
     category: "Full Body", 
     displacement: 0.8,
-    description: "Dip slightly at knees, then explosively drive weight overhead using leg momentum, lowering with control. Like cheating at overhead press, but with official permission and a fancy name to justify it."
+    description: "Slight knee bend, then use leg drive to assist an overhead press. Allows heavier loads and full-body engagement. Cheating never felt so powerful—or so officially sanctioned."
   },
   { 
     id: "medicine-ball-throw", 
     name: "Medicine Ball Throw", 
     category: "Full Body", 
     displacement: 1.0,
-    description: "Hold weighted ball with both hands, then throw with explosive full-body movement, focusing on power and coordination. The exercise that lets you legally throw things in the gym without getting banned or judged harshly."
+    description: "Explosively hurl a weighted ball to the floor (or wall), catch it on rebound, and repeat. Builds power and coordination. The only time it's socially acceptable to throw things inside a gym."
   },
   { 
     id: "battle-rope-slams", 
     name: "Battle Rope Slams", 
     category: "Full Body", 
     displacement: 0.8,
-    description: "Grip heavy ropes, raise arms overhead, then forcefully slam ropes to ground using your entire body. For when you need to physically manifest your feelings about work meetings in a socially acceptable way."
+    description: "Lift both ends of heavy ropes overhead, then slam them to the floor. Hits arms, core, and cardio in one angry motion. Like wrestling two angry snakes—while they win."
   },
   { 
     id: "tire-flip", 
     name: "Tire Flip", 
     category: "Full Body", 
     displacement: 1.0,
-    description: "Squat to grip under a large tire, explosively stand while flipping it over using legs, hips and arms. The exercise that makes you feel like a strongman competitor until your back reminds you that you're just a regular person."
+    description: "Grip the edge of a large tire, lift and push to flip it over. Tests total-body strength and technique. Makes you feel like a strongman—until your back files a formal complaint."
   },
   { 
     id: "farmers-walk", 
     name: "Farmer's Walk", 
     category: "Full Body", 
     displacement: 0.0,
-    description: "Pick up heavy weights, hold them at your sides, and walk with upright posture and engaged core. Like grocery shopping but with weights that cost more than the food and significantly less nutritional value."
+    description: "Carry heavy weights in each hand and walk. Builds grip, core stability, and endurance. Like grocery shopping…if your groceries cost more than your rent."
   },
   { 
     id: "bear-crawl", 
@@ -853,15 +1006,15 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Position on hands and feet with knees hovering just above ground, then move forward maintaining neutral spine. The exercise that makes adults move like babies but with more sweating and existential questioning."
+    description: "Move forward on hands and feet with knees hovering. Develops coordination, strength, and a sense of embarrassment. Turns adults into sweaty babies—crawling never felt so primal."
   },
   { 
     id: "mountain-climber-full", 
-    name: "Mountain Climber", 
+    name: "Mountain Climber (Full Body)", 
     category: "Full Body", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Start in push-up position, rapidly alternate bringing knees toward chest in a running motion. Like running in place while in a push-up position, because regular running wasn't humbling enough already."
+    description: "From push-up position, drive knees alternately toward chest at speed. Blends core work with cardio. Because running in place wasn't painful enough."
   },
   { 
     id: "jumping-jack", 
@@ -869,6 +1022,6 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Jump while spreading legs and raising arms overhead, then return to standing position with arms at sides. The exercise everyone remembers from elementary school PE class and still somehow gets winded doing as an adult."
+    description: "Jump while spreading legs and raising arms overhead, then return. A classic full-body cardio move. The exercise everyone remembers from kindergarten PE—just more painful now."
   },
 ];
