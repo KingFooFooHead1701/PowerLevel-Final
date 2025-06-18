@@ -1,12 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { View, StyleSheet, Image, Animated } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 
-export default function CustomSplashScreen() {
-  const { theme } = useTheme();
-  const fadeAnim = useState(new Animated.Value(1))[0];
+interface CustomSplashScreenProps {
+  children?: React.ReactNode;
+}
 
-  useEffect(() => {
+export default function CustomSplashScreen({ children }: CustomSplashScreenProps) {
+  const { theme } = useTheme();
+  const fadeAnim = React.useState(new Animated.Value(1))[0];
+
+  React.useEffect(() => {
     // Simulate loading time (you can replace this with actual loading logic)
     const timer = setTimeout(() => {
       Animated.timing(fadeAnim, {
@@ -28,6 +32,7 @@ export default function CustomSplashScreen() {
           resizeMode="contain"
         />
       </Animated.View>
+      {children}
     </View>
   );
 }

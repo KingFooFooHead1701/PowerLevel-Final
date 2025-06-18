@@ -434,6 +434,3 @@ export const defaultExercises: Exercise[] = [
     equipment: ["Dumbbells or Kettlebells"]
   }
 ];
-
-// Export the exercises array for use in the app
-export const exercises = defaultExercises;

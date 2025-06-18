@@ -2,7 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultExercises } from "@/constants/exercises";
-import { checkMilestones } from "@/utils/milestone-utils";
+import { checkMilestone } from "@/utils/milestone-utils";
 import { calculateTotalEnergy } from "@/utils/energy-utils";
 import { checkAchievements } from "@/hooks/use-achievement-store";
 
@@ -112,7 +112,7 @@ export const useExerciseStore = create<ExerciseState>()(
         
         // Check for milestones and achievements after adding a set
         setTimeout(() => {
-          checkMilestones();
+          checkMilestone(id);
           checkAchievements();
         }, 100);
         
@@ -128,7 +128,7 @@ export const useExerciseStore = create<ExerciseState>()(
         
         // Check for milestones and achievements after updating a set
         setTimeout(() => {
-          checkMilestones();
+          checkMilestone(id);
           checkAchievements();
         }, 100);
       },
@@ -140,7 +140,7 @@ export const useExerciseStore = create<ExerciseState>()(
         
         // Check for milestones and achievements after deleting a set
         setTimeout(() => {
-          checkMilestones();
+          checkMilestone(id);
           checkAchievements();
         }, 100);
       },
@@ -190,7 +190,10 @@ export const useExerciseStore = create<ExerciseState>()(
       
       // Energy calculations
       getTotalJoules: () => {
-        return calculateTotalEnergy();
+        const { sets } = get();
+        return sets.reduce((total, set) => {
+          return total + calculateTotalEnergy([{ weight: set.weight, reps: set.reps }]);
+        }, 0);
       },
       
       // Data management

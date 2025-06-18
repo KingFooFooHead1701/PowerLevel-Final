@@ -5,8 +5,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useAchievementStore } from "@/hooks/use-achievement-store";
 import { formatEnergy } from "@/utils/energy-utils";
-import { getPowerTierName, getNextPowerTier } from "@/utils/milestone-utils";
-import { checkAchievements } from "@/hooks/use-achievement-store";
+import { getPowerTierName, getNextPowerTier, checkMilestones } from "@/utils/milestone-utils";
 import { Award, Dumbbell, Zap, ChevronRight } from "lucide-react-native";
 import RecentDaysStrip from "@/components/RecentDaysStrip";
 
@@ -16,13 +15,26 @@ export default function DashboardScreen() {
   const { exercises, sets, getTotalJoules } = useExerciseStore();
   const { unlockedAchievements, getTotalPoints } = useAchievementStore();
   const [totalJoules, setTotalJoules] = useState(0);
+  const [selectedDate, setSelectedDate] = useState("");
 
   useEffect(() => {
-    setTotalJoules(getTotalJoules());
+    // Get the total joules
+    const joules = getTotalJoules();
+    setTotalJoules(joules);
     
     // Check achievements on dashboard load
-    checkAchievements();
+    checkMilestones();
   }, [sets.length]);
+
+  // Get unique dates with workout data
+  const datesWithData = useExerciseStore().getUniqueDates();
+  
+  // Set the selected date to the most recent date if not already set
+  useEffect(() => {
+    if (datesWithData.length > 0 && !selectedDate) {
+      setSelectedDate(datesWithData[0]);
+    }
+  }, [datesWithData, selectedDate]);
 
   const powerTierName = getPowerTierName(totalJoules);
   const nextTier = getNextPowerTier(totalJoules);
@@ -32,6 +44,10 @@ export default function DashboardScreen() {
 
   const navigateToPowerLevel = () => {
     router.push("/power-level");
+  };
+
+  const handleSelectDate = (date: string) => {
+    setSelectedDate(date);
   };
 
   return (
@@ -91,7 +107,11 @@ export default function DashboardScreen() {
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Activity</Text>
       </View>
       
-      <RecentDaysStrip />
+      <RecentDaysStrip 
+        selectedDate={selectedDate}
+        datesWithData={datesWithData}
+        onSelectDate={handleSelectDate}
+      />
 
       {/* Stats Overview */}
       <View style={styles.statsContainer}>
