@@ -91,7 +91,7 @@ export default function ResetDataButton() {
   return (
     <View style={styles.container}>
       <TouchableOpacity
-        style={[styles.resetButton, { backgroundColor: theme.danger }]}
+        style={[styles.resetButton, { backgroundColor: theme.error }]}
         onPress={handleResetData}
       >
         <Trash2 size={20} color="#fff" style={styles.icon} />
@@ -103,21 +103,21 @@ export default function ResetDataButton() {
           style={[styles.optionButton, { borderColor: theme.border }]}
           onPress={handleResetExercises}
         >
-          <Text style={[styles.optionButtonText, { color: theme.danger }]}>Reset Exercises</Text>
+          <Text style={[styles.optionButtonText, { color: theme.error }]}>Reset Exercises</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
           style={[styles.optionButton, { borderColor: theme.border }]}
           onPress={handleResetAchievements}
         >
-          <Text style={[styles.optionButtonText, { color: theme.danger }]}>Reset Achievements</Text>
+          <Text style={[styles.optionButtonText, { color: theme.error }]}>Reset Achievements</Text>
         </TouchableOpacity>
         
         <TouchableOpacity
           style={[styles.optionButton, { borderColor: theme.border }]}
           onPress={handleResetSettings}
         >
-          <Text style={[styles.optionButtonText, { color: theme.danger }]}>Reset Settings</Text>
+          <Text style={[styles.optionButtonText, { color: theme.error }]}>Reset Settings</Text>
         </TouchableOpacity>
       </View>
       
@@ -146,7 +146,7 @@ export default function ResetDataButton() {
               </TouchableOpacity>
               
               <TouchableOpacity
-                style={[styles.modalButton, { backgroundColor: theme.danger }]}
+                style={[styles.modalButton, { backgroundColor: theme.error }]}
                 onPress={confirmReset}
               >
                 <Text style={styles.modalButtonText}>Reset</Text>
