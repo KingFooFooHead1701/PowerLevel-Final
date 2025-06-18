@@ -727,7 +727,7 @@ export const defaultExercises: Exercise[] = [
     description: "Stand holding medicine ball overhead, forcefully throw ball to floor using abs and arms. The exercise that lets you legally throw things in the gym while pretending it's for fitness, not frustration."
   },
   
-  // Cardio - Simplified to just two main treadmill types
+  // Cardio - Updated descriptions
   { 
     id: "treadmill-walk", 
     name: "Treadmill Walk", 
@@ -735,7 +735,7 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     isCardio: true, 
     metValue: 3.5,
-    description: "Walk on treadmill at your chosen pace and incline, maintaining good posture throughout. Enter your settings for accurate tracking. The only time walking in place actually gets you somewhere in life."
+    description: "Set your desired pace and incline, then walk with an upright posture, arms swinging naturally at your sides. The only time walking in place actually gets you somewhere in life—metaphorically speaking."
   },
   { 
     id: "treadmill-run", 
@@ -744,30 +744,30 @@ export const defaultExercises: Exercise[] = [
     displacement: 0.0, 
     isCardio: true, 
     metValue: 8.0,
-    description: "Run on treadmill at your chosen pace and incline, maintaining consistent stride and breathing. Like running from your problems, except you stay in exactly the same place and pay for the privilege."
+    description: "Set your pace and incline, then run with a mid-foot strike and controlled breathing, maintaining good posture throughout. Like running from your problems, except you stay in exactly the same place and pay for the privilege."
   },
   
-  // Full Body
+  // Full Body - Updated descriptions
   { 
     id: "clean-and-jerk", 
     name: "Clean and Jerk", 
     category: "Full Body", 
     displacement: 1.5,
-    description: "Explosively pull barbell from floor to shoulders, then drive it overhead with split stance. The Olympic lift that makes you feel like an athlete until you try to walk normally the next day."
+    description: "Pull barbell explosively from floor to shoulders, then drive it overhead with a split stance, finally standing tall with weight overhead. The Olympic lift that makes you feel like an athlete until you try to walk normally the next day."
   },
   { 
     id: "snatch", 
     name: "Snatch", 
     category: "Full Body", 
     displacement: 1.8,
-    description: "Explosively pull barbell from floor to overhead in one continuous motion, catching in squat position. The lift with the unfortunate name and even more unfortunate learning curve for gym newbies."
+    description: "Pull barbell from floor to overhead in one fluid motion, catching in a squat position before standing. The lift with the unfortunate name and even more unfortunate learning curve for gym newbies."
   },
   { 
     id: "kettlebell-swing", 
     name: "Kettlebell Swing", 
     category: "Full Body", 
     displacement: 1.0,
-    description: "Swing kettlebell between legs, then explosively drive hips forward to swing weight to chest height. Like trying to launch a cannonball using only your hips while your hamstrings file a formal complaint."
+    description: "Hinge at hips to swing kettlebell between legs, then explosively drive hips forward to swing weight to chest height. Like trying to launch a cannonball using only your hips while your hamstrings file a formal complaint."
   },
   { 
     id: "burpee", 
@@ -775,42 +775,42 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 1.0, 
     requiresBodyWeight: true,
-    description: "Drop to floor, perform push-up, jump feet toward hands, then leap upward with hands overhead. The exercise trainers prescribe when they secretly hate you but legally can't say it out loud."
+    description: "From standing, drop to a squat, kick feet back to plank, perform a push-up, jump feet forward, then leap up with hands overhead. The exercise trainers prescribe when they secretly hate you but legally can't say it out loud."
   },
   { 
     id: "thruster", 
     name: "Thruster", 
     category: "Full Body", 
     displacement: 1.2,
-    description: "Hold weight at shoulders, squat deeply, then drive upward and press weight overhead in one fluid motion. Named after what it does to your will to live and any plans you had for the next day."
+    description: "Hold weights at shoulders, squat deeply, then explosively stand while pressing weights overhead in one fluid motion. Named after what it does to your will to live and any plans you had for the next day."
   },
   { 
     id: "turkish-get-up", 
     name: "Turkish Get-Up", 
     category: "Full Body", 
     displacement: 1.5,
-    description: "Lie on back holding weight overhead, methodically rise to standing while keeping weight extended. The exercise that makes getting out of bed look like an Olympic event requiring medals and sponsorships."
+    description: "Lie down holding weight overhead, then methodically rise to standing while keeping weight extended, reverse to return. The exercise that makes getting out of bed look like an Olympic event requiring medals and sponsorships."
   },
   { 
     id: "clean", 
     name: "Clean", 
     category: "Full Body", 
     displacement: 1.2,
-    description: "Explosively pull barbell from floor to shoulders in one motion, catching in partial squat. Like deadlifting but with more opportunities to hit yourself in the face with a heavy metal object."
+    description: "Pull barbell from floor to shoulders in one explosive motion, catching in a partial squat before standing. Like deadlifting but with more opportunities to hit yourself in the face with a heavy metal object."
   },
   { 
     id: "power-clean", 
     name: "Power Clean", 
     category: "Full Body", 
     displacement: 1.2,
-    description: "Perform clean without dropping into full squat position, catching weight at shoulders with minimal bend. The clean for people who don't like squatting all the way down but still enjoy complex movements."
+    description: "Explosively pull barbell from floor to shoulders without dropping into a full squat, catching with minimal knee bend. The clean for people who don't like squatting all the way down but still enjoy complex movements."
   },
   { 
     id: "hang-clean", 
     name: "Hang Clean", 
     category: "Full Body", 
     displacement: 0.9,
-    description: "Perform clean starting with barbell at knee height rather than floor, explosively pulling to shoulders. The clean for people who don't like picking things up from the floor but still want technical challenges."
+    description: "Start with barbell at knee height, explosively pull to shoulders, catching in a partial squat before standing. The clean for people who don't like picking things up from the floor but still want technical challenges."
   },
   { 
     id: "push-press-full", 
@@ -824,28 +824,28 @@ export const defaultExercises: Exercise[] = [
     name: "Medicine Ball Throw", 
     category: "Full Body", 
     displacement: 1.0,
-    description: "Throw weighted ball with explosive movement pattern, focusing on power and full-body coordination. The exercise that lets you legally throw things in the gym without getting banned or judged harshly."
+    description: "Hold weighted ball with both hands, then throw with explosive full-body movement, focusing on power and coordination. The exercise that lets you legally throw things in the gym without getting banned or judged harshly."
   },
   { 
     id: "battle-rope-slams", 
     name: "Battle Rope Slams", 
     category: "Full Body", 
     displacement: 0.8,
-    description: "Raise both arms overhead holding ropes, then forcefully slam ropes to ground with full-body power. For when you need to physically manifest your feelings about work meetings in a socially acceptable way."
+    description: "Grip heavy ropes, raise arms overhead, then forcefully slam ropes to ground using your entire body. For when you need to physically manifest your feelings about work meetings in a socially acceptable way."
   },
   { 
     id: "tire-flip", 
     name: "Tire Flip", 
     category: "Full Body", 
     displacement: 1.0,
-    description: "Lift one side of large tire from ground, then explosively flip it over using legs, hips and arms. The exercise that makes you feel like a strongman competitor until your back reminds you that you're just a regular person."
+    description: "Squat to grip under a large tire, explosively stand while flipping it over using legs, hips and arms. The exercise that makes you feel like a strongman competitor until your back reminds you that you're just a regular person."
   },
   { 
     id: "farmers-walk", 
     name: "Farmer's Walk", 
     category: "Full Body", 
     displacement: 0.0,
-    description: "Carry heavy weights at sides while walking with upright posture and engaged core. Like grocery shopping but with weights that cost more than the food and significantly less nutritional value."
+    description: "Pick up heavy weights, hold them at your sides, and walk with upright posture and engaged core. Like grocery shopping but with weights that cost more than the food and significantly less nutritional value."
   },
   { 
     id: "bear-crawl", 
@@ -853,7 +853,7 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Move forward on hands and feet with knees hovering just above ground, maintaining neutral spine. The exercise that makes adults move like babies but with more sweating and existential questioning."
+    description: "Position on hands and feet with knees hovering just above ground, then move forward maintaining neutral spine. The exercise that makes adults move like babies but with more sweating and existential questioning."
   },
   { 
     id: "mountain-climber-full", 
@@ -861,7 +861,7 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 0.4, 
     requiresBodyWeight: true,
-    description: "Start in push-up position, rapidly alternate bringing knees toward chest in running motion. Like running in place while in a push-up position, because regular running wasn't humbling enough already."
+    description: "Start in push-up position, rapidly alternate bringing knees toward chest in a running motion. Like running in place while in a push-up position, because regular running wasn't humbling enough already."
   },
   { 
     id: "jumping-jack", 
@@ -869,6 +869,6 @@ export const defaultExercises: Exercise[] = [
     category: "Full Body", 
     displacement: 0.3, 
     requiresBodyWeight: true,
-    description: "Jump while spreading legs and raising arms overhead, then return to standing position with arms at sides. The exercise everyone remembers from elementary school PE class and still somehow gets winded doing."
+    description: "Jump while spreading legs and raising arms overhead, then return to standing position with arms at sides. The exercise everyone remembers from elementary school PE class and still somehow gets winded doing as an adult."
   },
 ];
