@@ -25,13 +25,13 @@ export default function TabLayout() {
           paddingTop: 6, // Add padding at the top
         },
         tabBarItemStyle: {
-          paddingHorizontal: 2, // Reduce horizontal padding to fit all tabs
+          paddingHorizontal: 0, // Reduce horizontal padding to fit all tabs
         },
         tabBarIconStyle: {
           marginBottom: 2, // Adjust icon position
         },
         tabBarLabelStyle: {
-          fontSize: 12, // Slightly larger font for better readability
+          fontSize: 10, // Smaller font for better fit
           fontWeight: '500', // Make the font a bit bolder
           marginBottom: 4, // Add some bottom margin to labels
         },
