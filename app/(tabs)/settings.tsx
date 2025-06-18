@@ -59,6 +59,11 @@ export default function SettingsScreen() {
     checkAchievements();
   };
 
+  // Format theme name with spaces
+  const formatThemeName = (name: string) => {
+    return name.replace(/([A-Z])/g, ' $1').trim();
+  };
+
   const renderThemeOptions = () => {
     const themeNames = Object.keys(themes) as ThemeName[];
     
@@ -70,7 +75,7 @@ export default function SettingsScreen() {
             style={[
               styles.themeOption,
               {
-                backgroundColor: themes[name].secondary,
+                backgroundColor: themes[name].cardBackground,
                 borderColor: themeName === name ? theme.primary : theme.border,
                 borderWidth: themeName === name ? 3 : 1,
               },
@@ -78,7 +83,18 @@ export default function SettingsScreen() {
             onPress={() => setThemeName(name)}
           >
             <View style={[styles.themeColorCircle, { backgroundColor: themes[name].primary }]} />
-            <Text style={styles.themeText}>{name}</Text>
+            <View style={[styles.themeColorCircle, { backgroundColor: themes[name].secondary, marginTop: 4 }]} />
+            <Text style={[
+              styles.themeText, 
+              { 
+                color: themes[name].text,
+                textShadowColor: 'rgba(0,0,0,0.5)',
+                textShadowOffset: { width: 1, height: 1 },
+                textShadowRadius: 2,
+              }
+            ]}>
+              {formatThemeName(name)}
+            </Text>
           </TouchableOpacity>
         ))}
       </View>
@@ -268,29 +284,31 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
+    justifyContent: "center", // Center the theme boxes
     marginBottom: 16,
   },
   themeOption: {
-    width: 80,
-    height: 80,
+    width: 90, // Slightly wider to accommodate spaced names
+    height: 100, // Taller to fit two color circles
     margin: 8,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+    padding: 6,
   },
   themeColorCircle: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    marginBottom: 8,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.2)",
   },
   themeText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
-    textShadowColor: "rgba(0, 0, 0, 0.75)",
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 2,
+    textAlign: "center",
+    marginTop: 8,
   },
   aboutText: {
     fontSize: 14,
