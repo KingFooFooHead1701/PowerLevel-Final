@@ -39,7 +39,7 @@ export interface ExerciseState {
   getExercisesByCategory: (category: string) => Exercise[];
   
   // Set actions
-  addSet: (set: Omit<ExerciseSet, "id" | "timestamp">) => string;
+  addSet: (setData: Omit<ExerciseSet, "id" | "timestamp">) => string;
   updateSet: (id: string, updates: Partial<Omit<ExerciseSet, "id" | "exerciseId">>) => void;
   deleteSet: (id: string) => void;
   getSetById: (id: string) => ExerciseSet | undefined;
@@ -97,10 +97,10 @@ export const useExerciseStore = create<ExerciseState>()(
       },
       
       // Set actions
-      addSet: (set) => {
+      addSet: (setData) => {
         const id = generateId();
         const timestamp = Date.now();
-        const newSet = { ...set, id, timestamp };
+        const newSet = { ...setData, id, timestamp };
         
         set((state) => ({
           sets: [...state.sets, newSet],
