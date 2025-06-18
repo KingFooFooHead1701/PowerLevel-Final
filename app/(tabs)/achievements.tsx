@@ -1,5 +1,12 @@
-import React, { useEffect } from "react";
-import { StyleSheet, Text, View, FlatList, TouchableOpacity } from "react-native";
+import React, { useEffect, useState } from "react";
+import { 
+  StyleSheet, 
+  Text, 
+  View, 
+  ScrollView, 
+  TouchableOpacity, 
+  FlatList
+} from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { useTheme } from "@/hooks/use-theme";
@@ -8,12 +15,17 @@ import {
   achievements, 
   Achievement, 
   AchievementCategory, 
-  formatAchievement
+  formatAchievement,
+  getAchievementsByCategory
 } from "@/constants/achievements";
 import { 
   Award, 
-  Lock,
-  ChevronRight
+  Zap, 
+  Dumbbell, 
+  Calendar, 
+  Star,
+  ChevronRight,
+  Lock
 } from "lucide-react-native";
 
 export default function AchievementsTab() {
@@ -26,16 +38,43 @@ export default function AchievementsTab() {
     getTotalPoints
   } = useAchievementStore();
   
+  const [selectedCategory, setSelectedCategory] = useState<AchievementCategory | "all">("all");
+  
   // Run achievement check on screen load
   useEffect(() => {
     checkAchievements();
   }, []);
+  
+  // Filter achievements by category
+  const filteredAchievements = selectedCategory === "all" 
+    ? achievements 
+    : getAchievementsByCategory(selectedCategory);
   
   // Calculate stats
   const totalAchievements = achievements.length;
   const unlockedCount = unlockedAchievements.length;
   const completionPercentage = Math.round((unlockedCount / totalAchievements) * 100);
   const totalPoints = getTotalPoints();
+  
+  // Render category icon
+  const renderCategoryIcon = (category: AchievementCategory | "all") => {
+    switch (category) {
+      case "all":
+        return <Award size={24} color={selectedCategory === "all" ? theme.primary : theme.textSecondary} />;
+      case "milestone":
+        return <Zap size={24} color={selectedCategory === "milestone" ? theme.primary : theme.textSecondary} />;
+      case "exercise":
+        return <Dumbbell size={24} color={selectedCategory === "exercise" ? theme.primary : theme.textSecondary} />;
+      case "consistency":
+        return <Calendar size={24} color={selectedCategory === "consistency" ? theme.primary : theme.textSecondary} />;
+      case "special":
+        return <Star size={24} color={selectedCategory === "special" ? theme.primary : theme.textSecondary} />;
+      case "hidden":
+        return <Star size={24} color={selectedCategory === "hidden" ? theme.primary : theme.textSecondary} />;
+      default:
+        return <Award size={24} color={selectedCategory === "all" ? theme.primary : theme.textSecondary} />;
+    }
+  };
   
   // Render achievement item
   const renderAchievement = ({ item }: { item: Achievement }) => {
@@ -165,11 +204,6 @@ export default function AchievementsTab() {
     );
   };
   
-  // Filter to show only a few achievements on the tab screen
-  const featuredAchievements = achievements
-    .filter(a => !a.hidden && a.category !== "hidden")
-    .slice(0, 5);
-  
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
@@ -193,24 +227,134 @@ export default function AchievementsTab() {
         </View>
       </View>
       
+      <View style={styles.categoryTabs}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryTabsContent}
+        >
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "all" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("all")}
+          >
+            {renderCategoryIcon("all")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "all" ? theme.primary : theme.textSecondary }
+            ]}>
+              All
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "milestone" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("milestone")}
+          >
+            {renderCategoryIcon("milestone")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "milestone" ? theme.primary : theme.textSecondary }
+            ]}>
+              Milestones
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "exercise" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("exercise")}
+          >
+            {renderCategoryIcon("exercise")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "exercise" ? theme.primary : theme.textSecondary }
+            ]}>
+              Exercises
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "consistency" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("consistency")}
+          >
+            {renderCategoryIcon("consistency")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "consistency" ? theme.primary : theme.textSecondary }
+            ]}>
+              Consistency
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "special" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("special")}
+          >
+            {renderCategoryIcon("special")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "special" ? theme.primary : theme.textSecondary }
+            ]}>
+              Special
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "hidden" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("hidden")}
+          >
+            {renderCategoryIcon("hidden")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "hidden" ? theme.primary : theme.textSecondary }
+            ]}>
+              Hidden
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+      
       <FlatList
-        data={featuredAchievements}
+        data={filteredAchievements}
         renderItem={renderAchievement}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.achievementsList}
         showsVerticalScrollIndicator={false}
-        ListFooterComponent={
-          <TouchableOpacity
-            style={[styles.viewAllButton, { backgroundColor: theme.primary }]}
-            onPress={() => {
-              // Fix navigation to the full achievements screen
-              router.push("/(tabs)/achievements/all");
-            }}
-            activeOpacity={0.7}
-          >
-            <Text style={styles.viewAllButtonText}>View All Achievements</Text>
-          </TouchableOpacity>
-        }
       />
     </SafeAreaView>
   );
@@ -246,8 +390,27 @@ const styles = StyleSheet.create({
   statLabel: {
     fontSize: 14,
   },
+  categoryTabs: {
+    height: 60,
+  },
+  categoryTabsContent: {
+    paddingHorizontal: 16,
+  },
+  categoryTab: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    marginRight: 8,
+    height: 60,
+  },
+  categoryText: {
+    fontSize: 16,
+    marginLeft: 8,
+  },
   achievementsList: {
     padding: 16,
+    paddingTop: 0,
   },
   achievementItem: {
     flexDirection: "row",
@@ -303,18 +466,5 @@ const styles = StyleSheet.create({
   },
   progressText: {
     fontSize: 12,
-  },
-  viewAllButton: {
-    paddingVertical: 16,
-    paddingHorizontal: 32,
-    borderRadius: 8,
-    alignItems: "center",
-    marginTop: 8,
-    marginBottom: 24,
-  },
-  viewAllButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "600",
   },
 });
