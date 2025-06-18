@@ -81,7 +81,7 @@ export default function AchievementsScreen() {
     const isUnlocked = isAchievementUnlocked(item.id);
     
     // For locked achievements, especially hidden ones, show placeholder
-    if (!isUnlocked && (item.category === "hidden" || item.isSecret)) {
+    if (!isUnlocked && (item.category === "hidden" || item.hidden)) {
       return (
         <View
           style={[
