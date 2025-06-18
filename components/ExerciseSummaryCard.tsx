@@ -2,14 +2,14 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { Exercise } from "@/constants/exercises";
-import { ExerciseSet } from "@/hooks/use-exercise-store";
+import { Set } from "@/hooks/use-exercise-store"; // Fixed: Import Set instead of ExerciseSet
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { formatDate } from "@/utils/date-utils";
 import { ChevronRight } from "lucide-react-native";
 
 interface ExerciseSummaryCardProps {
   exercise: Exercise;
-  sets: ExerciseSet[];
+  sets: Set[]; // Fixed: Use Set instead of ExerciseSet
   onPress: () => void;
 }
 

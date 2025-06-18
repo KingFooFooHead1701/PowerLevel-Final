@@ -7,7 +7,7 @@ import { useAchievementStore } from "@/hooks/use-achievement-store";
 
 export default function ResetDataButton() {
   const { theme, resetTheme } = useTheme();
-  const { resetExerciseData } = useExerciseStore();
+  const { resetToDefaults } = useExerciseStore(); // Fixed: Use resetToDefaults instead of resetExerciseData
   const { resetSettings } = useSettingsStore();
   const { resetAchievements } = useAchievementStore();
   const [confirmationStep, setConfirmationStep] = useState(0);
@@ -32,7 +32,7 @@ export default function ResetDataButton() {
             text: "Reset Everything",
             style: "destructive",
             onPress: () => {
-              resetExerciseData();
+              resetToDefaults(); // Fixed: Use resetToDefaults instead of resetExerciseData
               resetSettings();
               resetAchievements();
               resetTheme();

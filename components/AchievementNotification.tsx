@@ -10,6 +10,7 @@ import {
 } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useAchievementStore } from "@/hooks/use-achievement-store";
+import { useSettingsStore } from "@/hooks/use-settings-store";
 import { achievements } from "@/constants/achievements";
 import { Award, X } from "lucide-react-native";
 import { Audio } from "expo-av";
@@ -26,7 +27,7 @@ export default function AchievementNotification({
   onDismiss 
 }: AchievementNotificationProps) {
   const { theme } = useTheme();
-  const { soundEnabled } = useAchievementStore();
+  const { soundEnabled } = useSettingsStore(); // Fixed: Get soundEnabled from settings store
   const [sound, setSound] = useState<Audio.Sound | null>(null);
   
   // Animation values
