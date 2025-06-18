@@ -1,6 +1,13 @@
+import React from "react";
 import { Tabs } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
-import { Dumbbell, BarChart2, Settings, Calendar } from "lucide-react-native";
+import { 
+  Home, 
+  Dumbbell, 
+  BarChart2, 
+  Award,
+  Settings
+} from "lucide-react-native";
 
 export default function TabLayout() {
   const { theme } = useTheme();
@@ -15,7 +22,7 @@ export default function TabLayout() {
           borderTopColor: theme.border,
         },
         headerStyle: {
-          backgroundColor: theme.background,
+          backgroundColor: theme.cardBackground,
         },
         headerTintColor: theme.text,
         headerShadowVisible: false,
@@ -25,8 +32,7 @@ export default function TabLayout() {
         name="index"
         options={{
           title: "Dashboard",
-          tabBarIcon: ({ color }) => <BarChart2 size={24} color={color} />,
-          headerShown: false,
+          tabBarIcon: ({ color }) => <Home size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -34,15 +40,20 @@ export default function TabLayout() {
         options={{
           title: "Exercises",
           tabBarIcon: ({ color }) => <Dumbbell size={24} color={color} />,
-          headerShown: false,
         }}
       />
       <Tabs.Screen
         name="summary"
         options={{
           title: "Summary",
-          tabBarIcon: ({ color }) => <Calendar size={24} color={color} />,
-          headerShown: false,
+          tabBarIcon: ({ color }) => <BarChart2 size={24} color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name="achievements"
+        options={{
+          title: "Achievements",
+          tabBarIcon: ({ color }) => <Award size={24} color={color} />,
         }}
       />
       <Tabs.Screen
@@ -50,7 +61,6 @@ export default function TabLayout() {
         options={{
           title: "Settings",
           tabBarIcon: ({ color }) => <Settings size={24} color={color} />,
-          headerShown: false,
         }}
       />
     </Tabs>

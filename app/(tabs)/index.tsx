@@ -5,7 +5,7 @@ import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
-import { Zap } from "lucide-react-native";
+import { Zap, Award } from "lucide-react-native";
 import ExerciseSummaryCard from "@/components/ExerciseSummaryCard";
 import { 
   getCurrentMilestone, 
@@ -14,19 +14,28 @@ import {
   getRemainingToNextMilestone 
 } from "@/constants/milestones";
 import { getPowerTierName } from "@/utils/milestone-utils";
+import { useAchievementStore, checkAchievements } from "@/hooks/use-achievement-store";
 
 export default function DashboardScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const { exercises, sets, getTotalJoules, isLoading } = useExerciseStore();
+  const { unlockedAchievements, getTotalPoints } = useAchievementStore();
   const [totalJoules, setTotalJoules] = useState(0);
   
   useEffect(() => {
     setTotalJoules(getTotalJoules());
+    
+    // Check achievements on dashboard load
+    checkAchievements();
   }, [sets]);
 
   const navigateToPowerLevel = () => {
     router.push("/power-level");
+  };
+  
+  const navigateToAchievements = () => {
+    router.push("/achievements");
   };
 
   const exercisesWithSets = exercises.filter(exercise => 
@@ -39,6 +48,10 @@ export default function DashboardScreen() {
   const progressPercent = getMilestoneProgress(totalJoules);
   const remainingToNext = getRemainingToNextMilestone(totalJoules);
   const powerTierName = getPowerTierName(totalJoules);
+  
+  // Get achievement stats
+  const achievementCount = unlockedAchievements.length;
+  const totalAchievementPoints = getTotalPoints();
 
   if (isLoading) {
     return (
@@ -100,6 +113,35 @@ export default function DashboardScreen() {
               </TouchableOpacity>
             </>
           )}
+        </View>
+        
+        {/* Achievements Card */}
+        <View style={[styles.achievementsCard, { backgroundColor: theme.cardBackground }]}>
+          <View style={styles.achievementsHeader}>
+            <View>
+              <Text style={[styles.achievementsTitle, { color: theme.text }]}>
+                Achievements
+              </Text>
+              <Text style={[styles.achievementsSubtitle, { color: theme.textSecondary }]}>
+                {achievementCount} unlocked • {totalAchievementPoints} points
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.achievementIconContainer, { backgroundColor: theme.primary + "20" }]}
+              onPress={navigateToAchievements}
+            >
+              <Award size={24} color={theme.primary} />
+            </TouchableOpacity>
+          </View>
+          
+          <TouchableOpacity
+            style={[styles.achievementsButton, { borderColor: theme.border }]}
+            onPress={navigateToAchievements}
+          >
+            <Text style={[styles.achievementsButtonText, { color: theme.primary }]}>
+              View All Achievements
+            </Text>
+          </TouchableOpacity>
         </View>
 
         {exercisesWithSets.length > 0 ? (
@@ -204,6 +246,42 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  achievementsCard: {
+    padding: 20,
+    borderRadius: 12,
+    marginBottom: 16,
+  },
+  achievementsHeader: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 16,
+  },
+  achievementsTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  achievementsSubtitle: {
+    fontSize: 14,
+    marginTop: 4,
+  },
+  achievementIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  achievementsButton: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    alignItems: "center",
+  },
+  achievementsButtonText: {
     fontSize: 16,
     fontWeight: "600",
   },
