@@ -3,6 +3,7 @@ import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { defaultExercises } from "@/constants/exercises";
 import { checkMilestones } from "@/utils/milestone-utils";
+import { calculateTotalEnergy } from "@/utils/energy-utils";
 import { checkAchievements } from "@/hooks/use-achievement-store";
 
 // Types
@@ -49,6 +50,9 @@ export interface ExerciseState {
   getExerciseDates: (exerciseId: string) => string[];
   getUniqueDates: () => string[];
   getExercisesForDate: (date: string) => string[];
+  
+  // Energy calculations
+  getTotalJoules: () => number;
   
   // Data management
   resetAllData: () => void;
@@ -182,6 +186,11 @@ export const useExerciseStore = create<ExerciseState>()(
           .map((set) => set.exerciseId);
         
         return [...new Set(exerciseIds)];
+      },
+      
+      // Energy calculations
+      getTotalJoules: () => {
+        return calculateTotalEnergy();
       },
       
       // Data management

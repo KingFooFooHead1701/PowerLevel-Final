@@ -1,14 +1,9 @@
-import React, { useEffect, useState, ReactNode } from "react";
+import React, { useEffect, useState } from "react";
 import { View, StyleSheet, Image, Animated } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 
-interface CustomSplashScreenProps {
-  children: ReactNode;
-}
-
-export default function CustomSplashScreen({ children }: CustomSplashScreenProps) {
+export default function CustomSplashScreen() {
   const { theme } = useTheme();
-  const [isAppReady, setIsAppReady] = useState(false);
   const fadeAnim = useState(new Animated.Value(1))[0];
 
   useEffect(() => {
@@ -18,17 +13,11 @@ export default function CustomSplashScreen({ children }: CustomSplashScreenProps
         toValue: 0,
         duration: 500,
         useNativeDriver: true,
-      }).start(() => {
-        setIsAppReady(true);
-      });
+      }).start();
     }, 1500);
 
     return () => clearTimeout(timer);
   }, []);
-
-  if (isAppReady) {
-    return <>{children}</>;
-  }
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>

@@ -5,7 +5,7 @@ import { ChevronRight } from "lucide-react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatDate } from "@/utils/date-utils";
-import { calculateTotalEnergy } from "@/utils/energy-utils";
+import { calculateSetEnergy } from "@/utils/energy-utils";
 
 interface ExerciseSummaryCardProps {
   exerciseId: string;
@@ -25,7 +25,7 @@ export default function ExerciseSummaryCard({ exerciseId, date }: ExerciseSummar
   const totalSets = sets.length;
   const totalReps = sets.reduce((sum, set) => sum + set.reps, 0);
   const totalWeight = sets.reduce((sum, set) => sum + set.weight, 0);
-  const totalEnergy = calculateTotalEnergy(sets);
+  const totalEnergy = sets.reduce((sum, set) => sum + calculateSetEnergy(set.weight, set.reps), 0);
   
   const handlePress = () => {
     router.push(`/exercise/${exerciseId}?date=${date}`);
