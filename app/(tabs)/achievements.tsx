@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useRouter } from "expo-router";
 import { SafeAreaView } from "react-native-safe-area-context";
@@ -10,13 +10,9 @@ export default function AchievementsTab() {
   const { theme } = useTheme();
   
   const navigateToAchievements = () => {
+    // Use the correct path to the achievements screen
     router.push("/achievements");
   };
-  
-  useEffect(() => {
-    // Automatically navigate to the achievements screen
-    navigateToAchievements();
-  }, []);
   
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -29,6 +25,7 @@ export default function AchievementsTab() {
         <TouchableOpacity
           style={[styles.button, { backgroundColor: theme.primary }]}
           onPress={navigateToAchievements}
+          activeOpacity={0.7}
         >
           <Text style={styles.buttonText}>View Achievements</Text>
         </TouchableOpacity>

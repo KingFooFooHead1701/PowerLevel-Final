@@ -20,23 +20,22 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.cardBackground,
           borderTopColor: theme.border,
-          height: 65, // Increased height to ensure labels are visible
-          paddingBottom: 10, // Increased bottom padding
-          paddingTop: 6,
+          height: 80, // Increased height to ensure labels are fully visible
+          paddingBottom: 15, // Increased bottom padding
+          paddingTop: 10, // Increased top padding
         },
         tabBarItemStyle: {
-          paddingVertical: 4, // Add vertical padding to tab bar items
+          paddingVertical: 8, // Increased vertical padding for tab items
         },
         tabBarIconStyle: {
-          marginBottom: 0, // Reduced to give more space to label
+          marginBottom: 4, // Added margin to separate icon from label
         },
         tabBarLabelStyle: {
-          fontSize: 11, // Slightly increased font size
-          fontWeight: '500',
-          marginTop: 0, // Reduced top margin
+          fontSize: 12, // Slightly increased font size
+          fontWeight: '600',
+          marginTop: 2, // Added margin to separate label from icon
           marginBottom: 4,
           opacity: 1, // Ensure labels are fully opaque
-          color: 'inherit', // Use the inherited color
         },
         headerStyle: {
           backgroundColor: theme.cardBackground,
@@ -69,7 +68,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="achievements"
         options={{
-          title: "Achieve", // Changed from "Achievements" to "Achieve" as requested
+          title: "Achieve", // Already changed to "Achieve" as requested
           tabBarIcon: ({ color }) => <Award size={22} color={color} />,
         }}
       />
