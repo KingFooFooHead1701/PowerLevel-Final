@@ -51,7 +51,7 @@ export default function ResetDataButton() {
       <TouchableOpacity
         style={[
           styles.resetButton,
-          { backgroundColor: theme.danger + "20" },
+          { backgroundColor: theme.dangerBackground },
           isResetting && { opacity: 0.7 }
         ]}
         onPress={handleResetPress}

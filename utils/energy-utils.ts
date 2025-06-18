@@ -348,3 +348,18 @@ export function getMilestoneLevel(joules: number): string | null {
   if (joules >= 1e3) return "1 kJ";
   return null;
 }
+
+// Add the missing calculateTotalEnergy function
+export function calculateTotalEnergy(sets: Array<{ reps: number; weight: number }>): number {
+  if (!sets || sets.length === 0) return 0;
+  
+  // Simple calculation for total energy based on weight and reps
+  // This is a simplified version - in a real app, you might want to use the full calculateJoules function
+  const totalEnergy = sets.reduce((sum, set) => {
+    // Basic energy calculation: weight * reps * gravity constant
+    const energy = set.weight * set.reps * 9.8;
+    return sum + energy;
+  }, 0);
+  
+  return Math.round(totalEnergy);
+}

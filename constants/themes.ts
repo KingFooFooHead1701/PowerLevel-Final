@@ -13,7 +13,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   RoyalStardust: {
     primary: "#4169E1",
@@ -29,7 +30,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   TranquilJadewood: {
     primary: "#2E8B57",
@@ -45,7 +47,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   TriBeamFlame: {
     primary: "#DC143C",
@@ -61,7 +64,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   HowlingWolf: {
     primary: "#D2B48C",
@@ -77,7 +81,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   ShadowPuppeteer: {
     primary: "#9370DB",
@@ -93,7 +98,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   MidnightKeep: {
     primary: "#483D8B",
@@ -109,7 +115,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   WarriorScholar: {
     primary: "#1E90FF",
@@ -125,7 +132,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   ZenMonk: {
     primary: "#FF7F50",
@@ -141,7 +149,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   EmberLotus: {
     primary: "#FF6347",
@@ -157,7 +166,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   CyberSyndicate: {
     primary: "#00CED1",
@@ -173,7 +183,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   SyntheticSister: {
     primary: "#FFB6C1",
@@ -189,7 +200,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   // New anime-inspired themes
   OrangeFox: {
@@ -206,7 +218,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   SpiralSage: {
     primary: "#00BF63",
@@ -222,7 +235,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   CrimsonVision: { // Renamed from SharinganRed
     primary: "#FF2D55",
@@ -238,7 +252,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   DeathReaper: {
     primary: "#000000",
@@ -254,7 +269,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   FrostBlade: { // Renamed from IceZanpakuto
     primary: "#5AC8FA",
@@ -270,7 +286,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   StrawHatCrew: {
     primary: "#FF3B30",
@@ -286,7 +303,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   PirateHunter: {
     primary: "#34C759",
@@ -302,7 +320,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   FlameEmperor: {
     primary: "#FF9500",
@@ -318,7 +337,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   TitanRage: {
     primary: "#FF3B30",
@@ -334,7 +354,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   DragonSlayer: {
     primary: "#FF2D55",
@@ -350,7 +371,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   AlchemistBrothers: {
     primary: "#FF3B30",
@@ -366,7 +388,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   RoyalPride: { // Renamed from SaiyanPrince
     primary: "#5856D6",
@@ -382,7 +405,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   // New anime-inspired themes from the provided list
   // Naruto-inspired
@@ -400,7 +424,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   CrimsonEclipse: { // Renamed from Sharingan Shadow
     primary: "#DC143C", // Crimson Red
@@ -416,7 +441,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   CopyNinja: {
     primary: "#708090", // Smoky Gray
@@ -432,7 +458,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   CherryBlossom: {
     primary: "#FFB6C1", // Soft Pink
@@ -448,7 +475,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   Sandstorm: {
     primary: "#D2B48C", // Desert Tan
@@ -464,7 +492,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   // Bleach-inspired
   HollowBurst: {
@@ -481,7 +510,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   FrostReaper: {
     primary: "#87CEFA", // Ice Blue
@@ -497,7 +527,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   BlossomSovereign: {
     primary: "#9370DB", // Royal Purple
@@ -513,7 +544,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   BattleManiac: {
     primary: "#B22222", // Blood Red
@@ -529,7 +561,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   IceDragon: {
     primary: "#00BFFF", // Arctic Blue
@@ -545,7 +578,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   // One Piece-inspired
   GumGumSurge: {
@@ -562,7 +596,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   ThreeSwordJade: {
     primary: "#2E8B57", // Emerald Green
@@ -578,7 +613,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   DiableJambe: {
     primary: "#FF4500", // Diablo Orange
@@ -594,7 +630,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   StormNavigator: {
     primary: "#FF8C00", // Tangerine
@@ -610,7 +647,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   SurgeonsOath: {
     primary: "#20B2AA", // Hospital Green
@@ -626,7 +664,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   // Additional anime-inspired themes
   DemonSlayer: {
@@ -643,7 +682,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   ThunderBreath: {
     primary: "#FFD700", // Gold
@@ -659,7 +699,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   WaterPillar: {
     primary: "#1E90FF", // Dodger Blue
@@ -675,7 +716,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   SunBreather: {
     primary: "#FF4500", // Orange Red
@@ -691,7 +733,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
   LavenderMist: { // Renamed from MistHashira
     primary: "#E6E6FA", // Lavender
@@ -707,7 +750,8 @@ export const themes = {
     switchTrackOff: "#3A3A3A",
     switchThumb: "#FFFFFF",
     dangerBackground: "rgba(255, 77, 77, 0.15)",
-    dangerText: "#FF4D4D"
+    dangerText: "#FF4D4D",
+    danger: "#FF4D4D" // Added danger property
   },
 };
 
@@ -729,4 +773,5 @@ export type Theme = {
   switchThumb: string;
   dangerBackground: string;
   dangerText: string;
+  danger: string; // Added danger property to the type
 };

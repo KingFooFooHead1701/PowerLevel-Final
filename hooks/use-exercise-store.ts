@@ -1,7 +1,7 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { exercises as defaultExercises } from "@/constants/exercises";
+import { defaultExercises } from "@/constants/exercises";
 import { checkMilestones } from "@/utils/milestone-utils";
 import { checkAchievements } from "@/hooks/use-achievement-store";
 
