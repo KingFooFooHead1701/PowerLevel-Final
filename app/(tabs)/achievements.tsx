@@ -58,21 +58,23 @@ export default function AchievementsTab() {
   
   // Render category icon
   const renderCategoryIcon = (category: AchievementCategory | "all") => {
+    const color = selectedCategory === category ? theme.primary : theme.textSecondary;
+    
     switch (category) {
       case "all":
-        return <Award size={24} color={selectedCategory === "all" ? theme.primary : theme.textSecondary} />;
+        return <Award size={24} color={color} />;
       case "milestone":
-        return <Zap size={24} color={selectedCategory === "milestone" ? theme.primary : theme.textSecondary} />;
+        return <Zap size={24} color={color} />;
       case "exercise":
-        return <Dumbbell size={24} color={selectedCategory === "exercise" ? theme.primary : theme.textSecondary} />;
+        return <Dumbbell size={24} color={color} />;
       case "consistency":
-        return <Calendar size={24} color={selectedCategory === "consistency" ? theme.primary : theme.textSecondary} />;
+        return <Calendar size={24} color={color} />;
       case "special":
-        return <Star size={24} color={selectedCategory === "special" ? theme.primary : theme.textSecondary} />;
+        return <Star size={24} color={color} />;
       case "hidden":
-        return <Star size={24} color={selectedCategory === "hidden" ? theme.primary : theme.textSecondary} />;
+        return <Star size={24} color={color} />;
       default:
-        return <Award size={24} color={selectedCategory === "all" ? theme.primary : theme.textSecondary} />;
+        return <Award size={24} color={color} />;
     }
   };
   
@@ -145,12 +147,12 @@ export default function AchievementsTab() {
         <View style={[
           styles.achievementIcon,
           { 
-            backgroundColor: isUnlocked ? theme.primary + "20" : theme.backgroundSecondary,
-            borderColor: isUnlocked ? theme.primary : theme.border
+            backgroundColor: isUnlocked ? theme.secondary + "20" : theme.backgroundSecondary,
+            borderColor: isUnlocked ? theme.secondary : theme.border
           }
         ]}>
           {isUnlocked ? (
-            <Award size={24} color={theme.primary} />
+            <Award size={24} color={theme.secondary} />
           ) : (
             <Lock size={24} color={theme.textSecondary} />
           )}
@@ -194,7 +196,7 @@ export default function AchievementsTab() {
         <View style={styles.achievementPoints}>
           <Text style={[
             styles.pointsText,
-            { color: isUnlocked ? theme.primary : theme.textSecondary }
+            { color: isUnlocked ? theme.secondary : theme.textSecondary }
           ]}>
             {isUnlocked ? `${item.points} pts` : "? pts"}
           </Text>
@@ -211,17 +213,17 @@ export default function AchievementsTab() {
         
         <View style={[styles.statsCard, { backgroundColor: theme.cardBackground }]}>
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.primary }]}>{unlockedCount}</Text>
+            <Text style={[styles.statValue, { color: theme.secondary }]}>{unlockedCount}</Text>
             <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Unlocked</Text>
           </View>
           
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.primary }]}>{completionPercentage}%</Text>
+            <Text style={[styles.statValue, { color: theme.secondary }]}>{completionPercentage}%</Text>
             <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Complete</Text>
           </View>
           
           <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.primary }]}>{totalPoints}</Text>
+            <Text style={[styles.statValue, { color: theme.secondary }]}>{totalPoints}</Text>
             <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Points</Text>
           </View>
         </View>

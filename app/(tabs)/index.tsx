@@ -109,7 +109,7 @@ export default function DashboardScreen() {
                 onPress={navigateToPowerLevel}
               >
                 <Zap size={20} color="#fff" style={styles.buttonIcon} />
-                <Text style={styles.buttonText}>Show My Current Power Level</Text>
+                <Text style={[styles.buttonText, { color: "#fff" }]}>Show My Current Power Level</Text>
               </TouchableOpacity>
             </>
           )}
@@ -127,10 +127,10 @@ export default function DashboardScreen() {
               </Text>
             </View>
             <TouchableOpacity
-              style={[styles.achievementIconContainer, { backgroundColor: theme.primary + "20" }]}
+              style={[styles.achievementIconContainer, { backgroundColor: theme.secondary + "20" }]}
               onPress={navigateToAchievements}
             >
-              <Award size={24} color={theme.primary} />
+              <Award size={24} color={theme.secondary} />
             </TouchableOpacity>
           </View>
           
@@ -138,7 +138,7 @@ export default function DashboardScreen() {
             style={[styles.achievementsButton, { borderColor: theme.border }]}
             onPress={navigateToAchievements}
           >
-            <Text style={[styles.achievementsButtonText, { color: theme.primary }]}>
+            <Text style={[styles.achievementsButtonText, { color: theme.secondary }]}>
               View All Achievements
             </Text>
           </TouchableOpacity>
@@ -245,7 +245,6 @@ const styles = StyleSheet.create({
     marginRight: 8,
   },
   buttonText: {
-    color: "#fff",
     fontSize: 16,
     fontWeight: "600",
   },

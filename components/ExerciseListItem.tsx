@@ -43,7 +43,7 @@ export default function ExerciseListItem({
         styles.container, 
         { 
           backgroundColor: theme.cardBackground,
-          borderLeftColor: hasHistory ? theme.primary : "transparent",
+          borderLeftColor: hasHistory ? theme.secondary : "transparent",
           borderLeftWidth: hasHistory ? 4 : 0,
         }
       ]}
@@ -62,7 +62,7 @@ export default function ExerciseListItem({
       
       <View style={styles.actionsContainer}>
         {hasHistory && (
-          <Star size={16} color={theme.primary} fill={theme.primary} style={styles.starIcon} />
+          <Star size={16} color={theme.secondary} fill={theme.secondary} style={styles.starIcon} />
         )}
         
         {isCustomExercise && (

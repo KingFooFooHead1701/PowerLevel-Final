@@ -61,8 +61,11 @@ export default function SettingsScreen() {
 
   // Format theme name with spaces
   const formatThemeName = (name: string) => {
-    // Insert a space before each capital letter
-    return name.replace(/([A-Z])/g, ' $1').trim();
+    // Insert a space before each capital letter and ensure first letter is capitalized
+    return name
+      .replace(/([A-Z])/g, ' $1')
+      .trim()
+      .replace(/^./, str => str.toUpperCase());
   };
 
   const renderThemeOptions = () => {
@@ -307,12 +310,13 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // Center the theme boxes
+    justifyContent: "space-evenly", // Better centering of theme boxes
     marginBottom: 16,
+    paddingHorizontal: 8, // Add padding to center the grid better
   },
   themeOption: {
-    width: 95, // Slightly wider to accommodate spaced names
-    height: 105, // Taller to fit two color circles
+    width: 100, // Slightly wider to accommodate spaced names
+    height: 110, // Taller to fit two color circles
     margin: 8,
     borderRadius: 8,
     justifyContent: "center",

@@ -193,7 +193,7 @@ export default function SummaryScreen() {
           
           {!isToday(selectedDate.toISOString()) && (
             <TouchableOpacity 
-              style={[styles.todayButton, { backgroundColor: theme.primary }]}
+              style={[styles.todayButton, { backgroundColor: theme.secondary }]}
               onPress={goToToday}
             >
               <Text style={styles.todayButtonText}>Today</Text>
@@ -260,7 +260,7 @@ export default function SummaryScreen() {
                   ))}
                   
                   <View style={styles.exerciseTotalRow}>
-                    <Text style={[styles.exerciseTotal, { color: theme.primary }]}>
+                    <Text style={[styles.exerciseTotal, { color: theme.secondary }]}>
                       Total for {summary.exerciseName}: {formatTotalWeight(summary.totalWeight)}
                     </Text>
                   </View>
@@ -271,7 +271,7 @@ export default function SummaryScreen() {
                 <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
                   All-Time Total Weight Lifted
                 </Text>
-                <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
+                <Text style={[styles.allTimeTotal, { color: theme.secondary }]}>
                   {formatTotalWeight(allTimeTotal)}
                 </Text>
               </View>
