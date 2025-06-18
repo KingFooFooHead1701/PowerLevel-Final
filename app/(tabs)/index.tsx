@@ -107,11 +107,14 @@ export default function DashboardScreen() {
         <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Activity</Text>
       </View>
       
-      <RecentDaysStrip 
-        selectedDate={selectedDate}
-        datesWithData={datesWithData}
-        onSelectDate={handleSelectDate}
-      />
+      {datesWithData.length > 0 && (
+        <RecentDaysStrip 
+          selectedDate={selectedDate}
+          datesWithData={datesWithData}
+          onSelectDate={handleSelectDate}
+          scrollToToday={true}
+        />
+      )}
 
       {/* Stats Overview */}
       <View style={styles.statsContainer}>

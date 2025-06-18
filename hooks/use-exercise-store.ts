@@ -106,7 +106,7 @@ export const useExerciseStore = create<ExerciseState>()(
         const timestamp = Date.now();
         const newSet = { ...setData, id, timestamp };
         
-        set((state) => ({
+        set((state: ExerciseState) => ({
           sets: [...state.sets, newSet],
         }));
         

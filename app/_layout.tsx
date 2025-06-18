@@ -16,7 +16,12 @@ export default function RootLayout() {
   }, []);
 
   if (!isReady) {
-    return <CustomSplashScreen />;
+    return (
+      <CustomSplashScreen>
+        {/* This empty fragment ensures children prop is provided */}
+        <></>
+      </CustomSplashScreen>
+    );
   }
 
   return (
