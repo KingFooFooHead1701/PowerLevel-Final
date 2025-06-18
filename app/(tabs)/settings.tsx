@@ -70,13 +70,14 @@ export default function SettingsScreen() {
             style={[
               styles.themeOption,
               {
-                backgroundColor: themes[name].primary,
+                backgroundColor: themes[name].secondary,
                 borderColor: theme.border,
                 borderWidth: themeName === name ? 3 : 0,
               },
             ]}
             onPress={() => setThemeName(name)}
           >
+            <View style={[styles.themeColorCircle, { backgroundColor: themes[name].primary }]} />
             <Text style={styles.themeText}>{name}</Text>
           </TouchableOpacity>
         ))}
@@ -276,6 +277,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
+  },
+  themeColorCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginBottom: 8,
   },
   themeText: {
     color: "#fff",
