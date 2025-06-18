@@ -81,7 +81,13 @@ export default function AchievementNotification({
   
   const handlePress = () => {
     dismissNotification();
-    router.push(`/achievement/${achievementId}`);
+    
+    // Navigate to the appropriate screen based on achievement category
+    if (achievement.category === "hidden") {
+      router.push(`/hidden-achievement?id=${achievementId}`);
+    } else {
+      router.push(`/achievement/${achievementId}`);
+    }
   };
   
   return (
@@ -107,7 +113,7 @@ export default function AchievementNotification({
         
         <View style={styles.textContainer}>
           <Text style={[styles.title, { color: theme.primary }]}>
-            Achievement Unlocked!
+            {achievement.hidden ? "Hidden Achievement Unlocked!" : "Achievement Unlocked!"}
           </Text>
           <Text style={[styles.achievementName, { color: theme.text }]}>
             {achievement.name}

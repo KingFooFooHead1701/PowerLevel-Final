@@ -175,6 +175,13 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
           }} 
         />
         <Stack.Screen 
+          name="hidden-achievement" 
+          options={{ 
+            headerShown: false,
+            presentation: "modal",
+          }} 
+        />
+        <Stack.Screen 
           name="custom-exercise" 
           options={{ 
             headerShown: true,

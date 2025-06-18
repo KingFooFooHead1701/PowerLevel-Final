@@ -11,7 +11,7 @@ export default function ResetDataButton() {
   const { theme } = useTheme();
   const { resetToDefaults } = useExerciseStore();
   const { resetSettings } = useSettingsStore();
-  const { resetAchievements } = useAchievementStore();
+  const { resetAchievements, setDataReset } = useAchievementStore();
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [resetType, setResetType] = useState<'all' | 'exercises' | 'achievements' | 'settings'>('all');
 
@@ -45,6 +45,7 @@ export default function ResetDataButton() {
           resetToDefaults();
           resetSettings();
           resetAchievements();
+          setDataReset(true); // Track data reset for achievement
           Alert.alert('Success', 'All app data has been reset to defaults.');
           break;
         case 'exercises':

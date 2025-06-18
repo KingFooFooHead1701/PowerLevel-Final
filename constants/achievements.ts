@@ -10,13 +10,15 @@ export interface Achievement {
   condition: AchievementCondition;
   points: number; // Achievement points value
   hint?: string; // Optional hint for hidden achievements
+  popupMessage?: string; // Message to show when achievement is unlocked
 }
 
 export type AchievementCategory = 
   | "milestone" 
   | "exercise" 
   | "consistency" 
-  | "special";
+  | "special"
+  | "hidden";
 
 export type AchievementCondition = 
   | { type: "totalJoules"; threshold: number }
@@ -24,11 +26,29 @@ export type AchievementCondition =
   | { type: "exerciseStreak"; days: number }
   | { type: "specificExercise"; exerciseId: string; count: number }
   | { type: "categoryComplete"; category: string }
-  | { type: "timeOfDay"; hour: number }
+  | { type: "timeOfDay"; hour: number; endHour?: number }
   | { type: "weekendWarrior"; count: number }
   | { type: "heavyLifter"; weight: number; useMetric: boolean }
   | { type: "perfectSet"; reps: number }
-  | { type: "allCategories"; count: number };
+  | { type: "allCategories"; count: number }
+  | { type: "scanCount"; count: number }
+  | { type: "dailyJoules"; threshold: number }
+  | { type: "unitSwitch" }
+  | { type: "customExercises"; count: number }
+  | { type: "bodyWeightExercises"; count: number }
+  | { type: "liftHeavier"; ratio: number }
+  | { type: "isometricExercises"; count: number }
+  | { type: "treadmillIncline"; threshold: number }
+  | { type: "cardioVariety"; count: number; sameDay: boolean }
+  | { type: "tierJump"; tiers: number }
+  | { type: "tapDisplay"; count: number }
+  | { type: "allExerciseCategories"; sameDay: boolean }
+  | { type: "weekendWorkout" }
+  | { type: "dataReset" }
+  | { type: "soundToggle" }
+  | { type: "themeSwitch" }
+  | { type: "maxTier" }
+  | { type: "allDefaultExercises" };
 
 export const achievements: Achievement[] = [
   // Milestone Achievements
@@ -128,7 +148,7 @@ export const achievements: Achievement[] = [
     id: "bench_master",
     name: "Bench Boss",
     description: "Complete 10 sets of bench press",
-    icon: "trending-up",
+    icon: "bench",
     hidden: false,
     category: "exercise",
     condition: { type: "specificExercise", exerciseId: "bench_press", count: 10 },
@@ -243,6 +263,260 @@ export const achievements: Achievement[] = [
     condition: { type: "allCategories", count: 5 },
     points: 100,
     hint: "Try everything at least once"
+  },
+  
+  // New Hidden Achievements
+  {
+    id: "midnight_warrior",
+    name: "Midnight Warrior",
+    description: "Perform a scan between 12 AM and 4 AM",
+    icon: "moon-star",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "timeOfDay", hour: 0, endHour: 4 },
+    points: 25,
+    hint: "Train when others sleep",
+    popupMessage: "You're training when the rest of the world sleeps—true dedication!"
+  },
+  {
+    id: "early_bird_special",
+    name: "Early Bird",
+    description: "First scan before 6 AM",
+    icon: "sunrise",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "timeOfDay", hour: 0, endHour: 6 },
+    points: 20,
+    hint: "The early bird gets the gains",
+    popupMessage: "Sunrise squat squad—nice hustle!"
+  },
+  {
+    id: "streak_master",
+    name: "Streak Master",
+    description: "Log at least one set every day for 7 consecutive days",
+    icon: "flame",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "exerciseStreak", days: 7 },
+    points: 40,
+    hint: "Consistency is key",
+    popupMessage: "7-day streak! Your power level's consistency is off the charts."
+  },
+  {
+    id: "century_club",
+    name: "Century Club",
+    description: "Accumulate 100 kJ in a single day",
+    icon: "hundred-points",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "dailyJoules", threshold: 100000 },
+    points: 50,
+    hint: "Triple digits in a day",
+    popupMessage: "100 kJ smashed! You're officially bench-pressing small planets."
+  },
+  {
+    id: "metric_maverick",
+    name: "Metric Maverick",
+    description: "Switch your units from lbs to kg (or vice versa) and complete an entry",
+    icon: "ruler",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "unitSwitch" },
+    points: 15,
+    hint: "Try a different measurement system",
+    popupMessage: "Unit switch complete—globetrotting gains!"
+  },
+  {
+    id: "custom_creator",
+    name: "Custom Creator",
+    description: "Add 5 or more custom exercises",
+    icon: "pencil",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "customExercises", count: 5 },
+    points: 30,
+    hint: "Create your own workout routine",
+    popupMessage: "You've created your own moves—innovation unlocked!"
+  },
+  {
+    id: "shadow_lifter",
+    name: "Shadow Lifter",
+    description: "Complete a body-weight exercise 50 times total",
+    icon: "user",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "bodyWeightExercises", count: 50 },
+    points: 35,
+    hint: "Your body is the best equipment",
+    popupMessage: "You're so strong—gravity itself is your barbell."
+  },
+  {
+    id: "heavy_hitter",
+    name: "Heavy Hitter",
+    description: "Log a single set lifting more than your body weight",
+    icon: "dumbbell",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "liftHeavier", ratio: 1.0 },
+    points: 45,
+    hint: "Lift more than yourself",
+    popupMessage: "You just defied physics—congrats!"
+  },
+  {
+    id: "marathon_scanner",
+    name: "Marathon Scanner",
+    description: "Perform 50 scans (power-level reveals)",
+    icon: "scan-line",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "scanCount", count: 50 },
+    points: 25,
+    hint: "Check your progress often",
+    popupMessage: "50 scans deep—you're not just lifting, you're scanning history."
+  },
+  {
+    id: "silent_but_deadly",
+    name: "Silent but Deadly",
+    description: "Complete a set of isometric exercises 20 times",
+    icon: "mountain",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "isometricExercises", count: 20 },
+    points: 30,
+    hint: "Hold still for strength",
+    popupMessage: "Still as a statue, powerful as a storm."
+  },
+  {
+    id: "incline_innovator",
+    name: "Incline Innovator",
+    description: "Log a treadmill workout at ≥ 10% incline",
+    icon: "trending-up",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "treadmillIncline", threshold: 10 },
+    points: 25,
+    hint: "Take your cardio to new heights",
+    popupMessage: "Climbing Mount Gains—impressive!"
+  },
+  {
+    id: "surprise_sprint",
+    name: "Surprise Sprint",
+    description: "Do 3 distinct cardio workouts in one day",
+    icon: "heart",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "cardioVariety", count: 3, sameDay: true },
+    points: 35,
+    hint: "Mix up your cardio routine",
+    popupMessage: "Triple cardio day—your heart says hello!"
+  },
+  {
+    id: "tier_jump",
+    name: "Tier Jump",
+    description: "Advance two power-tiers in a single workout session",
+    icon: "rocket",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "tierJump", tiers: 2 },
+    points: 50,
+    hint: "Massive power increase",
+    popupMessage: "Leveled up twice—boss difficulty engaged!"
+  },
+  {
+    id: "glitch_in_the_matrix",
+    name: "Glitch in the Matrix",
+    description: "Tap the total joules display 5 times in rapid succession",
+    icon: "bug",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "tapDisplay", count: 5 },
+    points: 15,
+    hint: "Try interacting with the UI",
+    popupMessage: "Whoa—did you just hack the system?"
+  },
+  {
+    id: "renaissance_lifter",
+    name: "Renaissance Lifter",
+    description: "Complete one exercise in every category in a single day",
+    icon: "palette",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "allExerciseCategories", sameDay: true },
+    points: 40,
+    hint: "Be well-rounded in your training",
+    popupMessage: "All-rounder unlocked—master of every realm!"
+  },
+  {
+    id: "weekend_warrior_hidden",
+    name: "Weekend Warrior",
+    description: "Log a workout on a Saturday or Sunday",
+    icon: "calendar-weekend",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "weekendWorkout" },
+    points: 20,
+    hint: "Don't skip weekend workouts",
+    popupMessage: "Rest days are for the weak—weekends belong to you!"
+  },
+  {
+    id: "data_cleanup_crew",
+    name: "Data Cleanup Crew",
+    description: "Clear your app's local data and then log a new workout",
+    icon: "trash",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "dataReset" },
+    points: 20,
+    hint: "Sometimes you need a fresh start",
+    popupMessage: "Fresh start—like a phoenix from the ashes."
+  },
+  {
+    id: "audio_aficionado",
+    name: "Audio Aficionado",
+    description: "Mute and unmute sounds, then complete a scan",
+    icon: "volume-2",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "soundToggle" },
+    points: 15,
+    hint: "Experiment with app settings",
+    popupMessage: "Sound toggled—your ears approve."
+  },
+  {
+    id: "theme_chameleon",
+    name: "Theme Chameleon",
+    description: "Switch between themes and log a workout",
+    icon: "palette",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "themeSwitch" },
+    points: 15,
+    hint: "Try a different look",
+    popupMessage: "You adapt like true training chameleon."
+  },
+  {
+    id: "legendary_status",
+    name: "Legendary Status",
+    description: "Reach the maximum designed milestone",
+    icon: "crown",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "maxTier" },
+    points: 100,
+    hint: "Reach the pinnacle of power",
+    popupMessage: "Legend achieved—your power level defies description!"
+  },
+  {
+    id: "all_default_exercises",
+    name: "You Had to Do Them All!",
+    description: "Completed at least one set of each and every default exercise in Power Level",
+    icon: "check-circle-2",
+    hidden: true,
+    category: "hidden",
+    condition: { type: "allDefaultExercises" },
+    points: 150,
+    hint: "Try every exercise at least once",
+    popupMessage: "Legendary achievement— You balance determination and composure with obsession!"
   }
 ];
 

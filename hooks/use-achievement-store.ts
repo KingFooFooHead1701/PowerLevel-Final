@@ -4,6 +4,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Achievement, achievements } from "@/constants/achievements";
 import { useExerciseStore } from "./use-exercise-store";
 import { useSettingsStore } from "./use-settings-store";
+import { getPowerTierName } from "@/utils/milestone-utils";
 
 export interface UnlockedAchievement {
   id: string;
@@ -22,6 +23,15 @@ interface AchievementState {
   achievementProgress: AchievementProgress[];
   streakDays: string[]; // ISO date strings of days with logged exercises
   lastCheckedDate: string | null;
+  scanCount: number; // Track number of power level scans
+  lastUnitSetting: boolean | null; // Track last unit setting (metric or imperial)
+  customExerciseCount: number; // Track number of custom exercises added
+  lastThemeName: string | null; // Track last theme name
+  soundToggled: boolean; // Track if sound has been toggled
+  dataReset: boolean; // Track if data has been reset
+  displayTapCount: number; // Track number of taps on joules display
+  lastTapTime: number; // Track time of last tap
+  lastTierName: string | null; // Track last power tier name
   version: number;
   
   // Actions
@@ -30,6 +40,15 @@ interface AchievementState {
   updateProgress: (id: string, progress: number, total: number) => void;
   addStreakDay: (date: string) => void;
   setLastCheckedDate: (date: string) => void;
+  incrementScanCount: () => void;
+  setLastUnitSetting: (useMetric: boolean) => void;
+  incrementCustomExerciseCount: () => void;
+  setLastThemeName: (themeName: string) => void;
+  setSoundToggled: (toggled: boolean) => void;
+  setDataReset: (reset: boolean) => void;
+  incrementDisplayTapCount: () => void;
+  resetDisplayTapCount: () => void;
+  setLastTierName: (tierName: string) => void;
   resetAchievements: () => void;
   
   // Getters
@@ -41,7 +60,7 @@ interface AchievementState {
 }
 
 // Current version of the store schema
-const CURRENT_VERSION = 1;
+const CURRENT_VERSION = 2;
 
 export const useAchievementStore = create<AchievementState>()(
   persist(
@@ -50,6 +69,15 @@ export const useAchievementStore = create<AchievementState>()(
       achievementProgress: [],
       streakDays: [],
       lastCheckedDate: null,
+      scanCount: 0,
+      lastUnitSetting: null,
+      customExerciseCount: 0,
+      lastThemeName: null,
+      soundToggled: false,
+      dataReset: false,
+      displayTapCount: 0,
+      lastTapTime: 0,
+      lastTierName: null,
       version: CURRENT_VERSION,
       
       unlockAchievement: (id: string) => {
@@ -114,12 +142,72 @@ export const useAchievementStore = create<AchievementState>()(
         set({ lastCheckedDate: date });
       },
       
+      incrementScanCount: () => {
+        set((state) => ({
+          scanCount: state.scanCount + 1
+        }));
+      },
+      
+      setLastUnitSetting: (useMetric: boolean) => {
+        set({ lastUnitSetting: useMetric });
+      },
+      
+      incrementCustomExerciseCount: () => {
+        set((state) => ({
+          customExerciseCount: state.customExerciseCount + 1
+        }));
+      },
+      
+      setLastThemeName: (themeName: string) => {
+        set({ lastThemeName: themeName });
+      },
+      
+      setSoundToggled: (toggled: boolean) => {
+        set({ soundToggled: toggled });
+      },
+      
+      setDataReset: (reset: boolean) => {
+        set({ dataReset: reset });
+      },
+      
+      incrementDisplayTapCount: () => {
+        const now = Date.now();
+        const { lastTapTime, displayTapCount } = get();
+        
+        // If last tap was more than 2 seconds ago, reset counter
+        if (now - lastTapTime > 2000) {
+          set({ displayTapCount: 1, lastTapTime: now });
+        } else {
+          set({ 
+            displayTapCount: displayTapCount + 1,
+            lastTapTime: now
+          });
+        }
+      },
+      
+      resetDisplayTapCount: () => {
+        set({ displayTapCount: 0, lastTapTime: 0 });
+      },
+      
+      setLastTierName: (tierName: string) => {
+        set({ lastTierName: tierName });
+      },
+      
       resetAchievements: () => {
         set({
           unlockedAchievements: [],
           achievementProgress: [],
           streakDays: [],
           lastCheckedDate: null,
+          scanCount: 0,
+          lastUnitSetting: null,
+          customExerciseCount: 0,
+          lastThemeName: null,
+          soundToggled: false,
+          dataReset: false,
+          displayTapCount: 0,
+          lastTapTime: 0,
+          lastTierName: null,
           version: CURRENT_VERSION
         });
       },
@@ -197,6 +285,15 @@ export const useAchievementStore = create<AchievementState>()(
             state.achievementProgress = [];
             state.streakDays = [];
             state.lastCheckedDate = null;
+            state.scanCount = 0;
+            state.lastUnitSetting = null;
+            state.customExerciseCount = 0;
+            state.lastThemeName = null;
+            state.soundToggled = false;
+            state.dataReset = false;
+            state.displayTapCount = 0;
+            state.lastTapTime = 0;
+            state.lastTierName = null;
             state.version = CURRENT_VERSION;
           }
         }
@@ -210,11 +307,13 @@ export function checkAchievements() {
   const { 
     exercises, 
     sets, 
-    getTotalJoules 
+    getTotalJoules,
+    isCustomExercise
   } = useExerciseStore.getState();
   
   const { 
-    useMetricUnits 
+    useMetricUnits,
+    bodyWeight
   } = useSettingsStore.getState();
   
   const {
@@ -222,7 +321,13 @@ export function checkAchievements() {
     isAchievementUnlocked,
     updateProgress,
     addStreakDay,
-    getCurrentStreak
+    getCurrentStreak,
+    scanCount,
+    lastUnitSetting,
+    customExerciseCount,
+    displayTapCount,
+    lastTierName,
+    dataReset
   } = useAchievementStore.getState();
   
   const totalJoules = getTotalJoules();
@@ -248,6 +353,81 @@ export function checkAchievements() {
       return exercise?.category || "";
     }).filter(Boolean)
   );
+  
+  // Get today's joules
+  const todayJoules = sets
+    .filter(set => new Date(set.date).toISOString().split('T')[0] === today)
+    .reduce((total, set) => total + set.joules, 0);
+  
+  // Check for body weight exercises
+  const bodyWeightExercisesCount = sets.filter(set => {
+    const exercise = exercises.find(e => e.id === set.exerciseId);
+    return exercise?.requiresBodyWeight;
+  }).length;
+  
+  // Check for isometric exercises
+  const isometricExercisesCount = sets.filter(set => {
+    const exercise = exercises.find(e => e.id === set.exerciseId);
+    return exercise?.isIsometric;
+  }).length;
+  
+  // Check for treadmill exercises with high incline
+  const highInclineTreadmill = sets.some(set => {
+    const exercise = exercises.find(e => e.id === set.exerciseId);
+    return exercise?.name?.toLowerCase().includes("treadmill") && set.incline && set.incline >= 10;
+  });
+  
+  // Check for cardio variety in a single day
+  const cardioExercisesToday = new Set();
+  sets.forEach(set => {
+    const setDate = new Date(set.date).toISOString().split('T')[0];
+    if (setDate === today) {
+      const exercise = exercises.find(e => e.id === set.exerciseId);
+      if (exercise?.isCardio) {
+        cardioExercisesToday.add(set.exerciseId);
+      }
+    }
+  });
+  
+  // Check for all exercise categories in a single day
+  const categoriesCompletedToday = new Set();
+  sets.forEach(set => {
+    const setDate = new Date(set.date).toISOString().split('T')[0];
+    if (setDate === today) {
+      const exercise = exercises.find(e => e.id === set.exerciseId);
+      if (exercise?.category) {
+        categoriesCompletedToday.add(exercise.category);
+      }
+    }
+  });
+  
+  // Check for weekend workout
+  const isWeekend = () => {
+    const day = new Date().getDay();
+    return day === 0 || day === 6; // 0 is Sunday, 6 is Saturday
+  };
+  
+  // Check for heavy lifter (lifting more than body weight)
+  const liftedMoreThanBodyWeight = bodyWeight > 0 && sets.some(set => {
+    // Convert weights to same unit if needed
+    const setWeightInUserUnits = set.weight;
+    const bodyWeightInUserUnits = bodyWeight;
+    
+    return setWeightInUserUnits > bodyWeightInUserUnits;
+  });
+  
+  // Check for all default exercises completed
+  const defaultExerciseIds = exercises
+    .filter(e => !isCustomExercise(e.id))
+    .map(e => e.id);
+  
+  const completedDefaultExercises = new Set(
+    sets.filter(set => defaultExerciseIds.includes(set.exerciseId))
+      .map(set => set.exerciseId)
+  );
+  
+  const allDefaultExercisesCompleted = 
+    completedDefaultExercises.size === defaultExerciseIds.length;
   
   // Check each achievement
   achievements.forEach(achievement => {
@@ -317,12 +497,12 @@ export function checkAchievements() {
         break;
         
       case "timeOfDay":
-        const hasExerciseAtHour = sets.some(set => {
-          const setDate = new Date(set.date);
-          return setDate.getHours() < condition.hour;
-        });
+        const currentHour = new Date().getHours();
+        const isInTimeRange = condition.endHour 
+          ? currentHour >= condition.hour && currentHour < condition.endHour
+          : currentHour < condition.hour;
         
-        if (hasExerciseAtHour) {
+        if (isInTimeRange) {
           unlockAchievement(achievement.id);
         }
         break;
@@ -374,6 +554,136 @@ export function checkAchievements() {
           unlockAchievement(achievement.id);
         } else {
           updateProgress(achievement.id, uniqueCategories.size, condition.count);
+        }
+        break;
+        
+      case "scanCount":
+        if (scanCount >= condition.count) {
+          unlockAchievement(achievement.id);
+        } else {
+          updateProgress(achievement.id, scanCount, condition.count);
+        }
+        break;
+        
+      case "dailyJoules":
+        if (todayJoules >= condition.threshold) {
+          unlockAchievement(achievement.id);
+        } else {
+          updateProgress(achievement.id, todayJoules, condition.threshold);
+        }
+        break;
+        
+      case "unitSwitch":
+        if (lastUnitSetting !== null && lastUnitSetting !== useMetricUnits) {
+          unlockAchievement(achievement.id);
+        }
+        break;
+        
+      case "customExercises":
+        if (customExerciseCount >= condition.count) {
+          unlockAchievement(achievement.id);
+        } else {
+          updateProgress(achievement.id, customExerciseCount, condition.count);
+        }
+        break;
+        
+      case "bodyWeightExercises":
+        if (bodyWeightExercisesCount >= condition.count) {
+          unlockAchievement(achievement.id);
+        } else {
+          updateProgress(achievement.id, bodyWeightExercisesCount, condition.count);
+        }
+        break;
+        
+      case "liftHeavier":
+        if (liftedMoreThanBodyWeight) {
+          unlockAchievement(achievement.id);
+        }
+        break;
+        
+      case "isometricExercises":
+        if (isometricExercisesCount >= condition.count) {
+          unlockAchievement(achievement.id);
+        } else {
+          updateProgress(achievement.id, isometricExercisesCount, condition.count);
+        }
+        break;
+        
+      case "treadmillIncline":
+        if (highInclineTreadmill) {
+          unlockAchievement(achievement.id);
+        }
+        break;
+        
+      case "cardioVariety":
+        if (condition.sameDay) {
+          if (cardioExercisesToday.size >= condition.count) {
+            unlockAchievement(achievement.id);
+          } else {
+            updateProgress(achievement.id, cardioExercisesToday.size, condition.count);
+          }
+        } else {
+          // Implementation for non-same-day variety would go here
+        }
+        break;
+        
+      case "tierJump":
+        // This is checked in the power-level.tsx component
+        break;
+        
+      case "tapDisplay":
+        if (displayTapCount >= condition.count) {
+          unlockAchievement(achievement.id);
+        }
+        break;
+        
+      case "allExerciseCategories":
+        const allCategories = new Set(exercises.map(e => e.category).filter(Boolean));
+        
+        if (condition.sameDay) {
+          if (categoriesCompletedToday.size === allCategories.size) {
+            unlockAchievement(achievement.id);
+          } else {
+            updateProgress(achievement.id, categoriesCompletedToday.size, allCategories.size);
+          }
+        } else {
+          if (uniqueCategories.size === allCategories.size) {
+            unlockAchievement(achievement.id);
+          } else {
+            updateProgress(achievement.id, uniqueCategories.size, allCategories.size);
+          }
+        }
+        break;
+        
+      case "weekendWorkout":
+        if (isWeekend() && hasExercisesToday) {
+          unlockAchievement(achievement.id);
+        }
+        break;
+        
+      case "dataReset":
+        if (dataReset && hasExercisesToday) {
+          unlockAchievement(achievement.id);
+        }
+        break;
+        
+      case "soundToggle":
+        // This is checked in the settings component
+        break;
+        
+      case "themeSwitch":
+        // This is checked in the settings component
+        break;
+        
+      case "maxTier":
+        // This is checked in the power-level.tsx component
+        break;
+        
+      case "allDefaultExercises":
+        if (allDefaultExercisesCompleted) {
+          unlockAchievement(achievement.id);
+        } else {
+          updateProgress(achievement.id, completedDefaultExercises.size, defaultExerciseIds.length);
         }
         break;
     }
