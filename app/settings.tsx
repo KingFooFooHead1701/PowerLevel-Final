@@ -117,14 +117,15 @@ export default function SettingsScreen() {
                 key={name}
                 style={[
                   styles.themeItem,
-                  { borderColor: theme.border },
-                  name === themeName && { borderColor: theme.primary, borderWidth: 2 }
+                  { 
+                    backgroundColor: themeColors.secondary,
+                    borderColor: name === themeName ? theme.primary : theme.border,
+                    borderWidth: name === themeName ? 2 : 1
+                  }
                 ]}
                 onPress={() => setThemeName(name as ThemeName)}
               >
-                <View style={[styles.themeColorPreview, { backgroundColor: themeColors.primary }]}>
-                  <View style={[styles.themeColorSecondary, { backgroundColor: themeColors.secondary }]} />
-                </View>
+                <View style={[styles.themeColorPreview, { backgroundColor: themeColors.primary }]} />
                 <Text 
                   style={[
                     styles.themeLabel, 
@@ -216,7 +217,6 @@ const styles = StyleSheet.create({
   themeItem: {
     width: "48%",
     borderRadius: 8,
-    borderWidth: 1,
     padding: 12,
     marginBottom: 12,
     alignItems: "center",
@@ -226,13 +226,6 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginBottom: 8,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  themeColorSecondary: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
   },
   themeLabel: {
     fontSize: 14,

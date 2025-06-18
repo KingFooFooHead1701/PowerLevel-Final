@@ -10,7 +10,7 @@ export default function AchievementsTab() {
   const { theme } = useTheme();
   
   const navigateToAchievements = () => {
-    // Use the correct path to the achievements screen
+    // Navigate to the achievements screen (not the tab)
     router.push("/achievements");
   };
   

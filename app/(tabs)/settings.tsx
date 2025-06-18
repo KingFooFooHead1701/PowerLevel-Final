@@ -71,8 +71,8 @@ export default function SettingsScreen() {
               styles.themeOption,
               {
                 backgroundColor: themes[name].secondary,
-                borderColor: theme.border,
-                borderWidth: themeName === name ? 3 : 0,
+                borderColor: themeName === name ? theme.primary : theme.border,
+                borderWidth: themeName === name ? 3 : 1,
               },
             ]}
             onPress={() => setThemeName(name)}
