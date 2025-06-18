@@ -57,8 +57,8 @@ export default function ResetDataButton() {
         onPress={handleResetPress}
         disabled={isResetting}
       >
-        <Trash2 size={20} color={theme.danger} style={styles.icon} />
-        <Text style={[styles.resetText, { color: theme.danger }]}>
+        <Trash2 size={20} color={theme.error} style={styles.icon} />
+        <Text style={[styles.resetText, { color: theme.error }]}>
           {isResetting ? "Resetting..." : "Reset All Data"}
         </Text>
       </TouchableOpacity>

@@ -20,6 +20,13 @@ export function calculateSetEnergy(weightKg: number, reps: number): number {
   return workPerRep * reps;
 }
 
+// Calculate total energy for multiple sets
+export function calculateTotalEnergy(sets: Array<{ weight: number; reps: number }>): number {
+  return sets.reduce((total, set) => {
+    return total + calculateSetEnergy(set.weight, set.reps);
+  }, 0);
+}
+
 // Format energy values for display
 export function formatEnergy(joules: number): { full: string; abbreviated: string } {
   if (joules < 1000) {

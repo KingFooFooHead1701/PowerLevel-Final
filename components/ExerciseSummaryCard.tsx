@@ -76,7 +76,7 @@ export default function ExerciseSummaryCard({ exerciseId, date }: ExerciseSummar
         
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: theme.primary }]}>
-            {totalEnergy}
+            {Math.round(totalEnergy)}
           </Text>
           <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
             Energy
