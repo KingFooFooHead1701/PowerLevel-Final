@@ -1,131 +1,200 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { Exercise, defaultExercises } from "@/constants/exercises";
+import { exercises as defaultExercises } from "@/constants/exercises";
+import { checkMilestones } from "@/utils/milestone-utils";
+import { checkAchievements } from "@/hooks/use-achievement-store";
 
-export interface Set {
+// Types
+export interface Exercise {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  instructions: string[];
+  muscles: string[];
+  equipment: string[];
+  isCustom?: boolean;
+}
+
+export interface ExerciseSet {
   id: string;
   exerciseId: string;
-  date: string;
+  date: string; // ISO date string (YYYY-MM-DD)
   reps: number;
   weight: number;
-  joules: number;
-  duration?: number; // in seconds, for isometric exercises
-  distance?: number; // in km or miles, for cardio exercises
-  speed?: number; // in km/h or mph, for cardio exercises
-  incline?: number; // in percent, for treadmill exercises
+  timestamp: number; // Unix timestamp
+  notes?: string;
 }
 
-interface ExerciseState {
+export interface ExerciseState {
   exercises: Exercise[];
-  sets: Set[];
-  customExerciseIds: string[]; // Track custom exercise IDs
-  isLoading: boolean;
-  version: number; // Add version tracking
-  addExercise: (exercise: Exercise) => void;
-  updateExercise: (id: string, exercise: Partial<Exercise>) => void;
-  removeExercise: (id: string) => void;
-  addSet: (set: Set) => void;
-  removeSet: (id: string) => void;
-  getTotalJoules: () => number;
-  getDailyJoules: (date: string) => number;
-  isCustomExercise: (id: string) => boolean;
-  resetToDefaults: () => void; // Add reset function
+  sets: ExerciseSet[];
+  
+  // Exercise actions
+  addExercise: (exercise: Omit<Exercise, "id">) => string;
+  updateExercise: (id: string, updates: Partial<Omit<Exercise, "id">>) => void;
+  deleteExercise: (id: string) => void;
+  getExerciseById: (id: string) => Exercise | undefined;
+  getExercisesByCategory: (category: string) => Exercise[];
+  
+  // Set actions
+  addSet: (set: Omit<ExerciseSet, "id" | "timestamp">) => string;
+  updateSet: (id: string, updates: Partial<Omit<ExerciseSet, "id" | "exerciseId">>) => void;
+  deleteSet: (id: string) => void;
+  getSetById: (id: string) => ExerciseSet | undefined;
+  getSetsByExercise: (exerciseId: string) => ExerciseSet[];
+  getSetsByDate: (date: string) => ExerciseSet[];
+  getSetsByExerciseAndDate: (exerciseId: string, date: string) => ExerciseSet[];
+  getExerciseDates: (exerciseId: string) => string[];
+  getUniqueDates: () => string[];
+  getExercisesForDate: (date: string) => string[];
+  
+  // Data management
+  resetAllData: () => void;
 }
 
-// Current version of the store schema - increment this when making changes to force a reset
-const CURRENT_VERSION = 5; // Incremented to force reset
+// Helper to generate a unique ID
+const generateId = () => Math.random().toString(36).substring(2, 15);
 
+// Create the store
 export const useExerciseStore = create<ExerciseState>()(
   persist(
     (set, get) => ({
-      exercises: defaultExercises,
+      exercises: [...defaultExercises],
       sets: [],
-      customExerciseIds: [],
-      isLoading: true,
-      version: CURRENT_VERSION,
       
-      addExercise: (exercise) => 
+      // Exercise actions
+      addExercise: (exercise) => {
+        const id = generateId();
         set((state) => ({
-          exercises: [...state.exercises, exercise],
-          customExerciseIds: [...state.customExerciseIds, exercise.id]
-        })),
+          exercises: [...state.exercises, { ...exercise, id }],
+        }));
+        return id;
+      },
       
-      updateExercise: (id, updatedExercise) =>
+      updateExercise: (id, updates) => {
         set((state) => ({
           exercises: state.exercises.map((exercise) =>
-            exercise.id === id ? { ...exercise, ...updatedExercise } : exercise
+            exercise.id === id ? { ...exercise, ...updates } : exercise
           ),
-        })),
+        }));
+      },
       
-      removeExercise: (id) =>
+      deleteExercise: (id) => {
         set((state) => ({
           exercises: state.exercises.filter((exercise) => exercise.id !== id),
           sets: state.sets.filter((set) => set.exerciseId !== id),
-          customExerciseIds: state.customExerciseIds.filter(customId => customId !== id)
-        })),
+        }));
+      },
       
-      addSet: (newSet) =>
+      getExerciseById: (id) => {
+        return get().exercises.find((exercise) => exercise.id === id);
+      },
+      
+      getExercisesByCategory: (category) => {
+        return get().exercises.filter((exercise) => exercise.category === category);
+      },
+      
+      // Set actions
+      addSet: (set) => {
+        const id = generateId();
+        const timestamp = Date.now();
+        const newSet = { ...set, id, timestamp };
+        
         set((state) => ({
-          sets: [newSet, ...state.sets],
-        })),
+          sets: [...state.sets, newSet],
+        }));
+        
+        // Check for milestones and achievements after adding a set
+        setTimeout(() => {
+          checkMilestones();
+          checkAchievements();
+        }, 100);
+        
+        return id;
+      },
       
-      removeSet: (id) =>
+      updateSet: (id, updates) => {
+        set((state) => ({
+          sets: state.sets.map((set) =>
+            set.id === id ? { ...set, ...updates } : set
+          ),
+        }));
+        
+        // Check for milestones and achievements after updating a set
+        setTimeout(() => {
+          checkMilestones();
+          checkAchievements();
+        }, 100);
+      },
+      
+      deleteSet: (id) => {
         set((state) => ({
           sets: state.sets.filter((set) => set.id !== id),
-        })),
-      
-      getTotalJoules: () => {
-        const { sets } = get();
-        return sets.reduce((total, set) => total + set.joules, 0);
+        }));
+        
+        // Check for milestones and achievements after deleting a set
+        setTimeout(() => {
+          checkMilestones();
+          checkAchievements();
+        }, 100);
       },
       
-      getDailyJoules: (date) => {
-        const { sets } = get();
-        return sets
-          .filter(set => new Date(set.date).toISOString().split('T')[0] === date)
-          .reduce((total, set) => total + set.joules, 0);
+      getSetById: (id) => {
+        return get().sets.find((set) => set.id === id);
       },
       
-      isCustomExercise: (id) => {
-        return get().customExerciseIds.includes(id);
+      getSetsByExercise: (exerciseId) => {
+        return get().sets
+          .filter((set) => set.exerciseId === exerciseId)
+          .sort((a, b) => b.timestamp - a.timestamp);
       },
       
-      resetToDefaults: () => 
-        set({
-          exercises: defaultExercises,
+      getSetsByDate: (date) => {
+        return get().sets
+          .filter((set) => set.date === date)
+          .sort((a, b) => b.timestamp - a.timestamp);
+      },
+      
+      getSetsByExerciseAndDate: (exerciseId, date) => {
+        return get().sets
+          .filter((set) => set.exerciseId === exerciseId && set.date === date)
+          .sort((a, b) => b.timestamp - a.timestamp);
+      },
+      
+      getExerciseDates: (exerciseId) => {
+        const dates = get().sets
+          .filter((set) => set.exerciseId === exerciseId)
+          .map((set) => set.date);
+        
+        return [...new Set(dates)].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+      },
+      
+      getUniqueDates: () => {
+        const dates = get().sets.map((set) => set.date);
+        return [...new Set(dates)].sort((a, b) => new Date(b).getTime() - new Date(a).getTime());
+      },
+      
+      getExercisesForDate: (date) => {
+        const exerciseIds = get().sets
+          .filter((set) => set.date === date)
+          .map((set) => set.exerciseId);
+        
+        return [...new Set(exerciseIds)];
+      },
+      
+      // Data management
+      resetAllData: () => {
+        set((state) => ({
+          exercises: state.exercises.filter((exercise) => !exercise.isCustom),
           sets: [],
-          customExerciseIds: [],
-          version: CURRENT_VERSION,
-        }),
+        }));
+      },
     }),
     {
-      name: "power-level-data",
+      name: "fitness-tracker",
       storage: createJSONStorage(() => AsyncStorage),
-      onRehydrateStorage: () => (state) => {
-        if (state) {
-          // Check if we need to update from an older version
-          if (!state.version || state.version < CURRENT_VERSION) {
-            // Reset to defaults if version mismatch
-            console.log("Version mismatch, resetting to defaults");
-            state.exercises = defaultExercises;
-            state.sets = [];
-            state.customExerciseIds = [];
-            state.version = CURRENT_VERSION;
-          }
-          state.isLoading = false;
-        }
-      },
     }
   )
 );
-
-// Add a function to clear all app data (for development/testing)
-export const clearAllAppData = async () => {
-  try {
-    await AsyncStorage.clear();
-    console.log("All app data cleared successfully");
-  } catch (error) {
-    console.error("Error clearing app data:", error);
-  }
-};

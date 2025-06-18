@@ -1,103 +1,82 @@
-import React, { useEffect, useState } from "react";
-import { 
-  StyleSheet, 
-  Text, 
-  View, 
-  TouchableOpacity, 
-  Animated, 
-  Dimensions,
-  Platform
-} from "react-native";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, View, TouchableOpacity, Animated } from "react-native";
+import { useRouter } from "expo-router";
+import { Award } from "lucide-react-native";
+import { Audio } from "expo-av";
 import { useTheme } from "@/hooks/use-theme";
+import { getAchievementById } from "@/constants/achievements";
 import { useAchievementStore } from "@/hooks/use-achievement-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
-import { achievements } from "@/constants/achievements";
-import { Award, X } from "lucide-react-native";
-import { Audio } from "expo-av";
 
 interface AchievementNotificationProps {
   achievementId: string;
   onDismiss: () => void;
 }
 
-const { width } = Dimensions.get("window");
-
 export default function AchievementNotification({ 
   achievementId, 
   onDismiss 
 }: AchievementNotificationProps) {
+  const router = useRouter();
   const { theme } = useTheme();
-  const { soundEnabled } = useSettingsStore(); // Fixed: Get soundEnabled from settings store
-  const [sound, setSound] = useState<Audio.Sound | null>(null);
-  
-  // Animation values
-  const translateY = new Animated.Value(-150);
-  const opacity = new Animated.Value(0);
-  
-  // Get achievement details
-  const achievement = achievements.find(a => a.id === achievementId);
+  const { soundEnabled } = useSettingsStore();
+  const achievement = getAchievementById(achievementId);
+  const slideAnim = React.useRef(new Animated.Value(-200)).current;
   
   useEffect(() => {
-    // Show notification with animation
-    Animated.parallel([
-      Animated.timing(translateY, {
-        toValue: 0,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 1,
-        duration: 500,
-        useNativeDriver: true,
-      }),
-    ]).start();
-    
     // Play sound if enabled
-    if (soundEnabled) {
-      playSound();
-    }
+    const playSound = async () => {
+      if (soundEnabled) {
+        try {
+          const { sound } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/chirp.mp3")
+          );
+          await sound.playAsync();
+        } catch (error) {
+          console.log("Error playing sound:", error);
+        }
+      }
+    };
     
-    // Auto-dismiss after 5 seconds
+    // Animate in
+    Animated.spring(slideAnim, {
+      toValue: 0,
+      useNativeDriver: true,
+      speed: 12,
+      bounciness: 8,
+    }).start();
+    
+    playSound();
+    
+    // Auto dismiss after 5 seconds
     const timer = setTimeout(() => {
       handleDismiss();
     }, 5000);
     
     return () => {
       clearTimeout(timer);
-      if (sound) {
-        sound.unloadAsync();
-      }
     };
   }, []);
   
-  const playSound = async () => {
-    try {
-      const { sound } = await Audio.Sound.createAsync(
-        require("@/assets/sounds/chirp.mp3")
-      );
-      setSound(sound);
-      await sound.playAsync();
-    } catch (error) {
-      console.log("Error playing sound:", error);
-    }
-  };
-  
   const handleDismiss = () => {
-    // Hide with animation
-    Animated.parallel([
-      Animated.timing(translateY, {
-        toValue: -150,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-      Animated.timing(opacity, {
-        toValue: 0,
-        duration: 300,
-        useNativeDriver: true,
-      }),
-    ]).start(() => {
+    Animated.timing(slideAnim, {
+      toValue: -200,
+      duration: 300,
+      useNativeDriver: true,
+    }).start(() => {
       onDismiss();
     });
+  };
+  
+  const handlePress = () => {
+    handleDismiss();
+    if (achievement) {
+      if (achievement.category === "hidden") {
+        router.push(`/hidden-achievement?id=${achievement.id}`);
+      } else {
+        router.push(`/achievement/${achievement.id}`);
+      }
+    }
   };
   
   if (!achievement) return null;
@@ -105,44 +84,44 @@ export default function AchievementNotification({
   return (
     <Animated.View 
       style={[
-        styles.container, 
-        { 
-          backgroundColor: theme.cardBackground,
-          borderColor: theme.secondary,
-          transform: [{ translateY }],
-          opacity,
-          // Add extra padding for iOS notch
-          paddingTop: Platform.OS === "ios" ? 50 : 20,
-        }
+        styles.container,
+        { transform: [{ translateY: slideAnim }] }
       ]}
     >
-      <View style={styles.content}>
+      <TouchableOpacity 
+        style={[
+          styles.notification,
+          { backgroundColor: theme.cardBackground }
+        ]}
+        onPress={handlePress}
+        activeOpacity={0.8}
+      >
         <View style={[
-          styles.iconContainer, 
-          { backgroundColor: theme.secondary + "20" }
+          styles.iconContainer,
+          { backgroundColor: theme.primary + "20" }
         ]}>
-          <Award size={24} color={theme.secondary} />
+          <Award size={24} color={theme.primary} />
         </View>
         
-        <View style={styles.textContainer}>
-          <Text style={[styles.title, { color: theme.primary }]}>
+        <View style={styles.content}>
+          <Text style={[styles.title, { color: theme.text }]}>
             Achievement Unlocked!
           </Text>
-          <Text style={[styles.achievementName, { color: theme.text }]}>
+          <Text style={[styles.achievementName, { color: theme.primary }]}>
             {achievement.name}
-          </Text>
-          <Text style={[styles.points, { color: theme.secondary }]}>
-            +{achievement.points} points
           </Text>
         </View>
         
         <TouchableOpacity 
           style={styles.closeButton}
           onPress={handleDismiss}
+          hitSlop={{ top: 10, right: 10, bottom: 10, left: 10 }}
         >
-          <X size={20} color={theme.textSecondary} />
+          <Text style={[styles.closeText, { color: theme.textSecondary }]}>
+            ✕
+          </Text>
         </TouchableOpacity>
-      </View>
+      </TouchableOpacity>
     </Animated.View>
   );
 }
@@ -153,20 +132,20 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0,
     right: 0,
-    width: width,
-    borderBottomWidth: 1,
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
+    padding: 16,
+    paddingTop: 50,
     zIndex: 1000,
   },
-  content: {
+  notification: {
     flexDirection: "row",
+    borderRadius: 12,
+    padding: 16,
     alignItems: "center",
-    paddingHorizontal: 16,
-    paddingBottom: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
   },
   iconContainer: {
     width: 48,
@@ -176,24 +155,22 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 16,
   },
-  textContainer: {
+  content: {
     flex: 1,
   },
   title: {
     fontSize: 14,
-    fontWeight: "600",
+    marginBottom: 4,
   },
   achievementName: {
     fontSize: 16,
     fontWeight: "bold",
-    marginTop: 2,
-  },
-  points: {
-    fontSize: 14,
-    fontWeight: "500",
-    marginTop: 2,
   },
   closeButton: {
-    padding: 8,
+    padding: 4,
+  },
+  closeText: {
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });

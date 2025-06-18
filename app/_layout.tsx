@@ -31,6 +31,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
           <Stack.Screen name="achievement/[id]" options={{ presentation: "card" }} />
           <Stack.Screen name="hidden-achievement" options={{ presentation: "card" }} />
+          {/* Make sure there are no other screens with name "achievements" here */}
         </Stack>
         {unviewedAchievement && (
           <AchievementNotification 

@@ -1,117 +1,142 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { useTheme } from "@/hooks/use-theme";
-import { Exercise } from "@/constants/exercises";
-import { Set } from "@/hooks/use-exercise-store"; // Fixed: Import Set instead of ExerciseSet
-import { useSettingsStore } from "@/hooks/use-settings-store";
-import { formatDate } from "@/utils/date-utils";
+import { useRouter } from "expo-router";
 import { ChevronRight } from "lucide-react-native";
+import { useTheme } from "@/hooks/use-theme";
+import { useExerciseStore } from "@/hooks/use-exercise-store";
+import { formatDate } from "@/utils/date-utils";
+import { calculateTotalEnergy } from "@/utils/energy-utils";
 
 interface ExerciseSummaryCardProps {
-  exercise: Exercise;
-  sets: Set[]; // Fixed: Use Set instead of ExerciseSet
-  onPress: () => void;
+  exerciseId: string;
+  date: string;
 }
 
-export default function ExerciseSummaryCard({
-  exercise,
-  sets,
-  onPress,
-}: ExerciseSummaryCardProps) {
+export default function ExerciseSummaryCard({ exerciseId, date }: ExerciseSummaryCardProps) {
+  const router = useRouter();
   const { theme } = useTheme();
-  const { useMetricUnits } = useSettingsStore();
-
-  // Calculate total weight lifted
-  const totalWeight = sets.reduce((sum, set) => sum + set.weight * set.reps, 0);
+  const { getExerciseById, getSetsByExerciseAndDate } = useExerciseStore();
   
-  // Get the most recent set date
-  const mostRecentDate = sets.length > 0
-    ? new Date(Math.max(...sets.map(set => new Date(set.date).getTime())))
-    : null;
-
-  // Format the date
-  const formattedDate = mostRecentDate 
-    ? formatDate(mostRecentDate.toISOString()) 
-    : "No date";
-
+  const exercise = getExerciseById(exerciseId);
+  const sets = getSetsByExerciseAndDate(exerciseId, date);
+  
+  if (!exercise || sets.length === 0) return null;
+  
+  const totalSets = sets.length;
+  const totalReps = sets.reduce((sum, set) => sum + set.reps, 0);
+  const totalWeight = sets.reduce((sum, set) => sum + set.weight, 0);
+  const totalEnergy = calculateTotalEnergy(sets);
+  
+  const handlePress = () => {
+    router.push(`/exercise/${exerciseId}?date=${date}`);
+  };
+  
   return (
     <TouchableOpacity
-      style={[styles.container, { backgroundColor: theme.cardBackground }]}
-      onPress={onPress}
+      style={[styles.card, { backgroundColor: theme.cardBackground }]}
+      onPress={handlePress}
+      activeOpacity={0.7}
     >
-      <View style={styles.content}>
-        <Text style={[styles.name, { color: theme.primary }]}>{exercise.name}</Text>
-        <Text style={[styles.category, { color: theme.textSecondary }]}>
-          {exercise.category}
+      <View style={styles.header}>
+        <Text style={[styles.exerciseName, { color: theme.text }]}>
+          {exercise.name}
         </Text>
+        <Text style={[styles.date, { color: theme.textSecondary }]}>
+          {formatDate(date)}
+        </Text>
+      </View>
+      
+      <View style={styles.statsContainer}>
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.primary }]}>
+            {totalSets}
+          </Text>
+          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+            Sets
+          </Text>
+        </View>
         
-        <View style={styles.statsRow}>
-          <View style={styles.stat}>
-            <Text style={[styles.statValue, { color: theme.text }]}>
-              {sets.length}
-            </Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              Sets
-            </Text>
-          </View>
-          
-          <View style={styles.stat}>
-            <Text style={[styles.statValue, { color: theme.text }]}>
-              {totalWeight.toLocaleString()}
-            </Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              {useMetricUnits ? "kg" : "lbs"} Total
-            </Text>
-          </View>
-          
-          <View style={styles.stat}>
-            <Text style={[styles.statValue, { color: theme.text }]}>
-              {formattedDate}
-            </Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              Last Active
-            </Text>
-          </View>
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.primary }]}>
+            {totalReps}
+          </Text>
+          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+            Reps
+          </Text>
+        </View>
+        
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.primary }]}>
+            {totalWeight}
+          </Text>
+          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+            Weight
+          </Text>
+        </View>
+        
+        <View style={styles.statItem}>
+          <Text style={[styles.statValue, { color: theme.primary }]}>
+            {totalEnergy}
+          </Text>
+          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+            Energy
+          </Text>
         </View>
       </View>
       
-      <ChevronRight size={20} color={theme.secondary} />
+      <View style={styles.footer}>
+        <Text style={[styles.viewDetails, { color: theme.primary }]}>
+          View Details
+        </Text>
+        <ChevronRight size={16} color={theme.primary} />
+      </View>
     </TouchableOpacity>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexDirection: "row",
-    alignItems: "center",
-    padding: 16,
+  card: {
     borderRadius: 12,
-    marginBottom: 12,
+    padding: 16,
+    marginBottom: 16,
   },
-  content: {
-    flex: 1,
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  category: {
-    fontSize: 14,
-    marginBottom: 12,
-  },
-  statsRow: {
+  header: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    marginBottom: 12,
   },
-  stat: {
-    flex: 1,
+  exerciseName: {
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  date: {
+    fontSize: 14,
+  },
+  statsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  statItem: {
+    alignItems: "center",
   },
   statValue: {
-    fontSize: 16,
-    fontWeight: "500",
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    marginTop: 2,
+  },
+  footer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "flex-end",
+  },
+  viewDetails: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginRight: 4,
   },
 });

@@ -1,69 +1,70 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
+import { Trash2 } from "lucide-react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
-import { useSettingsStore } from "@/hooks/use-settings-store";
 import { useAchievementStore } from "@/hooks/use-achievement-store";
 
 export default function ResetDataButton() {
-  const { theme, resetTheme } = useTheme();
-  const { resetToDefaults } = useExerciseStore(); // Fixed: Use resetToDefaults instead of resetExerciseData
-  const { resetSettings } = useSettingsStore();
+  const { theme } = useTheme();
+  const { resetAllData } = useExerciseStore();
   const { resetAchievements } = useAchievementStore();
-  const [confirmationStep, setConfirmationStep] = useState(0);
-
-  const handleResetData = () => {
-    if (confirmationStep === 0) {
-      setConfirmationStep(1);
-      return;
-    }
-
-    if (confirmationStep === 1) {
-      Alert.alert(
-        "Reset All Data",
-        "This will permanently delete all your exercise data, achievements, and settings. This action cannot be undone.",
-        [
-          {
-            text: "Cancel",
-            style: "cancel",
-            onPress: () => setConfirmationStep(0),
-          },
-          {
-            text: "Reset Everything",
-            style: "destructive",
-            onPress: () => {
-              resetToDefaults(); // Fixed: Use resetToDefaults instead of resetExerciseData
-              resetSettings();
-              resetAchievements();
-              resetTheme();
-              setConfirmationStep(0);
-              Alert.alert("Data Reset", "All data has been reset successfully.");
-            },
-          },
-        ]
-      );
-    }
+  const [isResetting, setIsResetting] = useState(false);
+  
+  const handleResetPress = () => {
+    Alert.alert(
+      "Reset All Data",
+      "This will permanently delete all your exercise data, sets, and achievements. This action cannot be undone.",
+      [
+        {
+          text: "Cancel",
+          style: "cancel"
+        },
+        {
+          text: "Reset",
+          style: "destructive",
+          onPress: confirmReset
+        }
+      ]
+    );
   };
-
+  
+  const confirmReset = () => {
+    setIsResetting(true);
+    
+    // Add a small delay to show loading state
+    setTimeout(() => {
+      resetAllData();
+      resetAchievements();
+      setIsResetting(false);
+      
+      Alert.alert(
+        "Data Reset Complete",
+        "All your exercise data and achievements have been reset.",
+        [{ text: "OK" }]
+      );
+    }, 500);
+  };
+  
   return (
     <View style={styles.container}>
       <TouchableOpacity
         style={[
           styles.resetButton,
-          {
-            backgroundColor: confirmationStep === 0 ? theme.dangerBackground : theme.dangerText + "20",
-          },
+          { backgroundColor: theme.danger + "20" },
+          isResetting && { opacity: 0.7 }
         ]}
-        onPress={handleResetData}
+        onPress={handleResetPress}
+        disabled={isResetting}
       >
-        <Text style={[styles.resetButtonText, { color: theme.dangerText }]}>
-          {confirmationStep === 0
-            ? "Reset All Data"
-            : "Tap Again to Confirm Reset"}
+        <Trash2 size={20} color={theme.danger} style={styles.icon} />
+        <Text style={[styles.resetText, { color: theme.danger }]}>
+          {isResetting ? "Resetting..." : "Reset All Data"}
         </Text>
       </TouchableOpacity>
+      
       <Text style={[styles.warningText, { color: theme.textSecondary }]}>
-        This will delete all your exercise data, achievements, and settings.
+        This will permanently delete all your exercise data, sets, and achievements.
       </Text>
     </View>
   );
@@ -71,21 +72,29 @@ export default function ResetDataButton() {
 
 const styles = StyleSheet.create({
   container: {
+    marginTop: 24,
+    marginBottom: 16,
     alignItems: "center",
   },
   resetButton: {
-    width: "100%",
-    paddingVertical: 16,
-    borderRadius: 8,
+    flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
+    justifyContent: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 8,
   },
-  resetButtonText: {
+  icon: {
+    marginRight: 8,
+  },
+  resetText: {
     fontSize: 16,
     fontWeight: "600",
   },
   warningText: {
-    fontSize: 14,
+    fontSize: 12,
     textAlign: "center",
+    marginTop: 8,
+    paddingHorizontal: 32,
   },
 });
