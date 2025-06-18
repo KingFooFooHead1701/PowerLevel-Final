@@ -179,7 +179,7 @@ export default function SummaryScreen() {
             onPress={() => setShowDatePicker(true)}
           >
             <Text style={[styles.date, { color: theme.textSecondary }]}>{formattedDate}</Text>
-            <Calendar size={20} color={theme.textSecondary} style={styles.calendarIcon} />
+            <Calendar size={20} color={theme.secondary} style={styles.calendarIcon} />
           </TouchableOpacity>
         </View>
         
@@ -188,7 +188,7 @@ export default function SummaryScreen() {
             style={[styles.navButton, { backgroundColor: theme.cardBackground }]}
             onPress={goToPreviousDay}
           >
-            <ChevronLeft size={20} color={theme.textSecondary} />
+            <ChevronLeft size={20} color={theme.secondary} />
           </TouchableOpacity>
           
           {!isToday(selectedDate.toISOString()) && (
@@ -204,7 +204,7 @@ export default function SummaryScreen() {
             style={[styles.navButton, { backgroundColor: theme.cardBackground }]}
             onPress={goToNextDay}
           >
-            <ChevronRight size={20} color={theme.textSecondary} />
+            <ChevronRight size={20} color={theme.secondary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -232,7 +232,7 @@ export default function SummaryScreen() {
                   key={summary.exerciseId} 
                   style={[styles.exerciseCard, { backgroundColor: theme.cardBackground }]}
                 >
-                  <Text style={[styles.exerciseName, { color: theme.text }]}>
+                  <Text style={[styles.exerciseName, { color: theme.primary }]}>
                     {summary.exerciseName}
                   </Text>
                   

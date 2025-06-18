@@ -61,7 +61,22 @@ export default function SettingsScreen() {
 
   // Format theme name with spaces
   const formatThemeName = (name: string) => {
-    // Insert a space before each capital letter and ensure first letter is capitalized
+    // First, handle special cases with acronyms or specific formatting
+    const specialCases = {
+      "GumGumSurge": "Gum Gum Surge",
+      "TriBeamFlame": "Tri Beam Flame",
+      "NineTailsFury": "Nine Tails Fury",
+      "IceDragon": "Ice Dragon",
+      "SunBreather": "Sun Breather",
+      "ThreeSwordJade": "Three Sword Jade",
+      "DiableJambe": "Diable Jambe"
+    };
+    
+    if (specialCases[name as keyof typeof specialCases]) {
+      return specialCases[name as keyof typeof specialCases];
+    }
+    
+    // For other names, insert spaces before capital letters
     return name
       .replace(/([A-Z])/g, ' $1')
       .trim()
@@ -310,14 +325,14 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-evenly", // Better centering of theme boxes
+    justifyContent: "center", // Center the theme boxes
     marginBottom: 16,
-    paddingHorizontal: 8, // Add padding to center the grid better
+    paddingHorizontal: 4, // Reduced padding to allow more space
   },
   themeOption: {
-    width: 100, // Slightly wider to accommodate spaced names
+    width: 105, // Slightly wider to accommodate spaced names
     height: 110, // Taller to fit two color circles
-    margin: 8,
+    margin: 6, // Reduced margin for better spacing
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",

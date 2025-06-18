@@ -76,7 +76,7 @@ export default function DashboardScreen() {
           <Text style={[styles.powerTierLabel, { color: theme.textSecondary }]}>
             Current Power Tier
           </Text>
-          <Text style={[styles.powerTierValue, { color: theme.text }]}>
+          <Text style={[styles.powerTierValue, { color: theme.secondary }]}>
             {powerTierName}
           </Text>
           

@@ -161,7 +161,7 @@ export default function AchievementsTab() {
         <View style={styles.achievementContent}>
           <Text style={[
             styles.achievementName,
-            { color: isUnlocked ? theme.text : theme.textSecondary }
+            { color: isUnlocked ? theme.primary : theme.textSecondary }
           ]}>
             {name}
           </Text>
@@ -200,7 +200,7 @@ export default function AchievementsTab() {
           ]}>
             {isUnlocked ? `${item.points} pts` : "? pts"}
           </Text>
-          {isUnlocked && <ChevronRight size={16} color={theme.textSecondary} />}
+          {isUnlocked && <ChevronRight size={16} color={theme.secondary} />}
         </View>
       </TouchableOpacity>
     );

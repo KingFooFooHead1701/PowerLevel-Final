@@ -8,75 +8,66 @@ interface CategoryTabsProps {
   onSelectCategory: (category: string) => void;
 }
 
-export default function CategoryTabs({ 
-  categories, 
-  selectedCategory, 
-  onSelectCategory 
+export default function CategoryTabs({
+  categories,
+  selectedCategory,
+  onSelectCategory,
 }: CategoryTabsProps) {
   const { theme } = useTheme();
-  
+
   return (
-    <ScrollView
-      horizontal
-      showsHorizontalScrollIndicator={false}
-      contentContainerStyle={styles.container}
-    >
-      {categories.map((category: string) => (
-        <TouchableOpacity
-          key={category}
-          style={[
-            styles.tab,
-            { 
-              backgroundColor: 
-                selectedCategory === category 
-                  ? theme.primary 
-                  : theme.cardBackground 
-            }
-          ]}
-          onPress={() => onSelectCategory(category)}
-        >
-          <Text
+    <View style={styles.container}>
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {categories.map((category) => (
+          <TouchableOpacity
+            key={category}
             style={[
-              styles.tabText,
-              { 
-                color: 
-                  selectedCategory === category 
-                    ? "#fff" 
-                    : theme.textSecondary 
-              }
+              styles.tab,
+              selectedCategory === category && {
+                backgroundColor: theme.primary + "20",
+                borderColor: theme.primary,
+              },
+              { borderColor: theme.border },
             ]}
-            numberOfLines={1}
-            ellipsizeMode="tail"
+            onPress={() => onSelectCategory(category)}
           >
-            {category}
-          </Text>
-        </TouchableOpacity>
-      ))}
-    </ScrollView>
+            <Text
+              style={[
+                styles.tabText,
+                {
+                  color: selectedCategory === category ? theme.secondary : theme.textSecondary,
+                  fontWeight: selectedCategory === category ? "600" : "400",
+                },
+              ]}
+            >
+              {category}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
+    marginBottom: 16,
+  },
+  scrollContent: {
     paddingHorizontal: 16,
-    paddingVertical: 12,
-    flexDirection: "row",
-    alignItems: "center",
   },
   tab: {
     paddingHorizontal: 16,
     paddingVertical: 8,
-    borderRadius: 20,
+    borderRadius: 16,
     marginRight: 8,
-    minWidth: 80,
-    maxWidth: 120,
-    height: 36,
-    justifyContent: "center",
-    alignItems: "center",
+    borderWidth: 1,
   },
   tabText: {
     fontSize: 14,
-    fontWeight: "500",
-    textAlign: "center",
   },
 });
