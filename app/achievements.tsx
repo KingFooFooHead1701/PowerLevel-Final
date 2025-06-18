@@ -68,6 +68,10 @@ export default function AchievementsScreen() {
         return <Calendar size={24} color={selectedCategory === "consistency" ? theme.primary : theme.textSecondary} />;
       case "special":
         return <Star size={24} color={selectedCategory === "special" ? theme.primary : theme.textSecondary} />;
+      case "hidden":
+        return <Star size={24} color={selectedCategory === "hidden" ? theme.primary : theme.textSecondary} />;
+      default:
+        return <Award size={24} color={selectedCategory === "all" ? theme.primary : theme.textSecondary} />;
     }
   };
   
@@ -88,7 +92,13 @@ export default function AchievementsScreen() {
           styles.achievementItem,
           { backgroundColor: theme.cardBackground }
         ]}
-        onPress={() => router.push(`/achievement/${item.id}`)}
+        onPress={() => {
+          if (isUnlocked && item.category === "hidden") {
+            router.push(`/hidden-achievement?id=${item.id}`);
+          } else {
+            router.push(`/achievement/${item.id}`);
+          }
+        }}
       >
         <View style={[
           styles.achievementIcon,
@@ -272,6 +282,25 @@ export default function AchievementsScreen() {
               { color: selectedCategory === "special" ? theme.primary : theme.textSecondary }
             ]}>
               Special
+            </Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity
+            style={[
+              styles.categoryTab,
+              selectedCategory === "hidden" && { 
+                borderBottomColor: theme.primary,
+                borderBottomWidth: 2
+              }
+            ]}
+            onPress={() => setSelectedCategory("hidden")}
+          >
+            {renderCategoryIcon("hidden")}
+            <Text style={[
+              styles.categoryText,
+              { color: selectedCategory === "hidden" ? theme.primary : theme.textSecondary }
+            ]}>
+              Hidden
             </Text>
           </TouchableOpacity>
         </ScrollView>
