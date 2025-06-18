@@ -20,16 +20,19 @@ export default function TabLayout() {
         tabBarStyle: {
           backgroundColor: theme.cardBackground,
           borderTopColor: theme.border,
-          paddingHorizontal: 8, // Add horizontal padding for better spacing
+          height: 60, // Increase height for better visibility
+          paddingBottom: 8, // Add padding at the bottom
+          paddingTop: 6, // Add padding at the top
         },
         tabBarItemStyle: {
-          paddingHorizontal: 4, // Add padding to each tab item
+          paddingHorizontal: 2, // Reduce horizontal padding to fit all tabs
         },
         tabBarIconStyle: {
           marginBottom: 2, // Adjust icon position
         },
         tabBarLabelStyle: {
-          fontSize: 11, // Slightly smaller font for labels
+          fontSize: 12, // Slightly larger font for better readability
+          fontWeight: '500', // Make the font a bit bolder
           marginBottom: 4, // Add some bottom margin to labels
         },
         headerStyle: {
