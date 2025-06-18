@@ -307,9 +307,8 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-evenly", // Better spacing between theme boxes
+    justifyContent: "center", // Center the theme boxes
     marginBottom: 16,
-    paddingHorizontal: 8, // Add padding to center the grid better
   },
   themeOption: {
     width: 95, // Slightly wider to accommodate spaced names

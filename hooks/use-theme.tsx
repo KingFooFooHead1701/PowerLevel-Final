@@ -1,10 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { themes, ThemeName } from "@/constants/themes";
+import { themes, ThemeName, Theme } from "@/constants/themes";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useAchievementStore } from "./use-achievement-store";
-
-// Define the theme type
-type Theme = typeof themes.WarriorsAura;
 
 type ThemeContextType = {
   theme: Theme;

@@ -29,6 +29,7 @@ export default function SettingsScreen() {
 
   // Format theme name with spaces
   const formatThemeName = (name: string) => {
+    // Insert a space before each capital letter
     return name.replace(/([A-Z])/g, ' $1').trim();
   };
 
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
   themesGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "space-between",
+    justifyContent: "center", // Center the theme boxes
     paddingHorizontal: 4,
   },
   themeItem: {
