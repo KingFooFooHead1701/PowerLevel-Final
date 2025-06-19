@@ -20,19 +20,11 @@ import { getPowerTierName } from "@/utils/milestone-utils";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";
 import { ChevronLeft } from "lucide-react-native";
-import { useAchievementStore, checkAchievements } from "@/hooks/use-achievement-store";
 
 export default function PowerLevelScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const { getTotalJoules } = useExerciseStore();
-  const { 
-    incrementScanCount, 
-    incrementDisplayTapCount,
-    setLastTierName,
-    lastTierName,
-    unlockAchievement
-  } = useAchievementStore();
   const [totalJoules, setTotalJoules] = useState(0);
   const [soundsLoaded, setSoundsLoaded] = useState(false);
 
@@ -106,21 +98,6 @@ export default function PowerLevelScreen() {
   };
 
   const startScannerAnimation = () => {
-    // Increment scan count for achievements
-    incrementScanCount();
-    
-    // Check for time-based achievements
-    const currentHour = new Date().getHours();
-    if (currentHour >= 0 && currentHour < 4) {
-      unlockAchievement("midnight_warrior");
-    }
-    if (currentHour >= 0 && currentHour < 6) {
-      unlockAchievement("early_bird_special");
-    }
-    
-    // Check achievements
-    checkAchievements();
-    
     scannerAnim.setValue(0);
     opacityAnim.setValue(0);
     valueOpacityAnim.setValue(0);
@@ -201,30 +178,6 @@ export default function PowerLevelScreen() {
           setTimeout(() => {
             Animated.sequence([tierScaleUp, tierScaleDown]).start();
           }, 100);
-          
-          // Check for tier jump achievement
-          const powerTierName = getPowerTierName(totalJoules);
-          if (lastTierName && lastTierName !== powerTierName) {
-            // Get tier indices to check for jumps
-            const tiers = [
-              "Novice", "Apprentice", "Adept", "Expert", "Master", 
-              "Grandmaster", "Legend", "Mythic", "Godlike", "Transcendent"
-            ];
-            const lastTierIndex = tiers.indexOf(lastTierName);
-            const currentTierIndex = tiers.indexOf(powerTierName);
-            
-            if (lastTierIndex >= 0 && currentTierIndex >= 0 && currentTierIndex - lastTierIndex >= 2) {
-              unlockAchievement("tier_jump");
-            }
-            
-            // Check for max tier achievement
-            if (currentTierIndex === tiers.length - 1) {
-              unlockAchievement("legendary_status");
-            }
-          }
-          
-          // Update last tier name
-          setLastTierName(powerTierName);
         }, 500);
       });
     });
@@ -236,11 +189,6 @@ export default function PowerLevelScreen() {
   const maxTranslation = (containerWidth - scannerWidth) / 2;
 
   const handleGoBack = () => router.back();
-  
-  const handleJoulesTap = () => {
-    incrementDisplayTapCount();
-    checkAchievements(); // Check for "glitch_in_the_matrix" achievement
-  };
 
   return (
     <>
@@ -300,18 +248,12 @@ export default function PowerLevelScreen() {
               />
             </Animated.View>
           </View>
-          <TouchableOpacity 
-            activeOpacity={0.8} 
-            onPress={handleJoulesTap}
-            style={styles.powerValueContainer}
-          >
-            <Animated.Text style={[styles.powerValue, { color: theme.text, opacity: valueOpacityAnim }]}>
-              {formatEnergy(totalJoules).abbreviated}
-            </Animated.Text>
-            <Animated.Text style={[styles.fullJoulesValue, { color: theme.textSecondary, opacity: fullJoulesOpacityAnim }]}>
-              {formatEnergy(totalJoules).full}
-            </Animated.Text>
-          </TouchableOpacity>
+          <Animated.Text style={[styles.powerValue, { color: theme.text, opacity: valueOpacityAnim }]}>
+            {formatEnergy(totalJoules).abbreviated}
+          </Animated.Text>
+          <Animated.Text style={[styles.fullJoulesValue, { color: theme.textSecondary, opacity: fullJoulesOpacityAnim }]}>
+            {formatEnergy(totalJoules).full}
+          </Animated.Text>
         </View>
         <Animated.View style={[styles.tierContainer, { opacity: tierOpacityAnim }]}>
           <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
@@ -362,11 +304,6 @@ const styles = StyleSheet.create({
   scannerContainer: { position: "absolute", width: 220, height: 120, overflow: "hidden", borderRadius: 12 },
   scanner: { position: "absolute", width: 40, height: 120, borderRadius: 8, left: 90 },
   scannerGlow: { position: "absolute", width: 80, height: 120, left: -20 },
-  powerValueContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    zIndex: 10,
-  },
   powerValue: { fontSize: 64, fontWeight: "bold", zIndex: 10 },
   fullJoulesValue: { fontSize: 16, marginTop: 8, zIndex: 10 },
   tierContainer: { marginTop: 32, alignItems: "center", width: "100%" },

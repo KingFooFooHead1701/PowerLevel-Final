@@ -20,7 +20,6 @@ import SetInput from "@/components/SetInput";
 import SetHistoryItem from "@/components/SetHistoryItem";
 import { checkMilestone } from "@/utils/milestone-utils";
 import SetConfirmationDialog from "@/components/SetConfirmationDialog";
-import { checkAchievements } from "@/hooks/use-achievement-store";
 
 export default function ExerciseDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -181,9 +180,6 @@ export default function ExerciseDetailScreen() {
     
     // Check for milestone after adding the set
     const milestone = checkMilestone(updatedTotalJoules, currentTotalJoules);
-    
-    // Check for achievements
-    checkAchievements();
     
     if (milestone) {
       // Close confirmation dialog if open

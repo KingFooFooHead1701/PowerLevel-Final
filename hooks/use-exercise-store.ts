@@ -19,7 +19,6 @@ export interface Set {
 interface ExerciseState {
   exercises: Exercise[];
   sets: Set[];
-  customExerciseIds: string[]; // Track custom exercise IDs
   isLoading: boolean;
   version: number; // Add version tracking
   addExercise: (exercise: Exercise) => void;
@@ -28,8 +27,6 @@ interface ExerciseState {
   addSet: (set: Set) => void;
   removeSet: (id: string) => void;
   getTotalJoules: () => number;
-  getDailyJoules: (date: string) => number;
-  isCustomExercise: (id: string) => boolean;
   resetToDefaults: () => void; // Add reset function
 }
 
@@ -41,14 +38,12 @@ export const useExerciseStore = create<ExerciseState>()(
     (set, get) => ({
       exercises: defaultExercises,
       sets: [],
-      customExerciseIds: [],
       isLoading: true,
       version: CURRENT_VERSION,
       
       addExercise: (exercise) => 
         set((state) => ({
           exercises: [...state.exercises, exercise],
-          customExerciseIds: [...state.customExerciseIds, exercise.id]
         })),
       
       updateExercise: (id, updatedExercise) =>
@@ -62,7 +57,6 @@ export const useExerciseStore = create<ExerciseState>()(
         set((state) => ({
           exercises: state.exercises.filter((exercise) => exercise.id !== id),
           sets: state.sets.filter((set) => set.exerciseId !== id),
-          customExerciseIds: state.customExerciseIds.filter(customId => customId !== id)
         })),
       
       addSet: (newSet) =>
@@ -80,22 +74,10 @@ export const useExerciseStore = create<ExerciseState>()(
         return sets.reduce((total, set) => total + set.joules, 0);
       },
       
-      getDailyJoules: (date) => {
-        const { sets } = get();
-        return sets
-          .filter(set => new Date(set.date).toISOString().split('T')[0] === date)
-          .reduce((total, set) => total + set.joules, 0);
-      },
-      
-      isCustomExercise: (id) => {
-        return get().customExerciseIds.includes(id);
-      },
-      
       resetToDefaults: () => 
         set({
           exercises: defaultExercises,
           sets: [],
-          customExerciseIds: [],
           version: CURRENT_VERSION,
         }),
     }),
@@ -110,7 +92,6 @@ export const useExerciseStore = create<ExerciseState>()(
             console.log("Version mismatch, resetting to defaults");
             state.exercises = defaultExercises;
             state.sets = [];
-            state.customExerciseIds = [];
             state.version = CURRENT_VERSION;
           }
           state.isLoading = false;

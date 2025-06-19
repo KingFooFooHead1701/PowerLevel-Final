@@ -12,8 +12,6 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { clearAllAppData } from "@/hooks/use-exercise-store";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
-import { useAchievementStore, checkAchievements } from "@/hooks/use-achievement-store";
-import AchievementNotification from "@/components/AchievementNotification";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
@@ -23,7 +21,7 @@ export const unstable_settings = {
 SplashScreen.preventAutoHideAsync();
 
 // App version for data migration checks
-const APP_VERSION = "1.0.3"; // Incremented to force data reset
+const APP_VERSION = "1.0.2"; // Incremented to force data reset
 const APP_VERSION_KEY = "app-version";
 
 export default function RootLayout() {
@@ -100,21 +98,6 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
   const colorScheme = useColorScheme();
   const exerciseStore = useExerciseStore();
   const settingsStore = useSettingsStore();
-  const achievementStore = useAchievementStore();
-  const [achievementNotification, setAchievementNotification] = useState<string | null>(null);
-  
-  // Check for unviewed achievements
-  useEffect(() => {
-    const unviewedAchievements = achievementStore.getUnviewedAchievements();
-    if (unviewedAchievements.length > 0) {
-      setAchievementNotification(unviewedAchievements[0].id);
-    }
-  }, [achievementStore.unlockedAchievements]);
-  
-  // Check achievements on app start
-  useEffect(() => {
-    checkAchievements();
-  }, []);
 
   // Reset stores to defaults on first launch
   useEffect(() => {
@@ -122,7 +105,6 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
       // Reset all stores to defaults
       exerciseStore.resetToDefaults();
       settingsStore.resetSettings();
-      achievementStore.resetAchievements();
       
       // You could show a welcome message or tutorial here
       console.log("First launch detected - stores reset to defaults");
@@ -132,15 +114,6 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
   return (
     <ThemeProvider>
       <StatusBar style="light" />
-      
-      {/* Achievement notification */}
-      {achievementNotification && (
-        <AchievementNotification 
-          achievementId={achievementNotification}
-          onDismiss={() => setAchievementNotification(null)}
-        />
-      )}
-      
       <Stack screenOptions={{ 
         headerShown: false,
         headerShadowVisible: false,
@@ -175,39 +148,12 @@ function RootLayoutNav({ isFirstLaunch }: { isFirstLaunch: boolean }) {
           }} 
         />
         <Stack.Screen 
-          name="hidden-achievement" 
-          options={{ 
-            headerShown: false,
-            presentation: "modal",
-          }} 
-        />
-        <Stack.Screen 
           name="custom-exercise" 
           options={{ 
             headerShown: true,
             headerStyle: { backgroundColor: "#1A1A2E" },
             headerTintColor: "#fff",
             headerTitle: "Add Custom Exercise",
-            headerBackTitle: "Back",
-          }} 
-        />
-        <Stack.Screen 
-          name="achievements" 
-          options={{ 
-            headerShown: true,
-            headerStyle: { backgroundColor: "#1A1A2E" },
-            headerTintColor: "#fff",
-            headerTitle: "Achievements",
-            headerBackTitle: "Back",
-          }} 
-        />
-        <Stack.Screen 
-          name="achievement/[id]" 
-          options={{ 
-            headerShown: true,
-            headerStyle: { backgroundColor: "#1A1A2E" },
-            headerTintColor: "#fff",
-            headerTitle: "Achievement Details",
             headerBackTitle: "Back",
           }} 
         />
