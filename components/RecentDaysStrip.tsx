@@ -9,9 +9,9 @@ import {
 import { useTheme } from "@/hooks/use-theme";
 
 interface RecentDaysStripProps {
-  selectedDate: string;
-  datesWithData: string[];
-  onSelectDate: (date: string) => void;
+  selectedDate: Date;
+  datesWithData: Date[];
+  onSelectDate: (date: Date) => void;
   scrollToToday?: boolean;
 }
 
@@ -24,15 +24,9 @@ const isSameDay = (date1: Date, date2: Date) => {
   );
 };
 
-// Helper function to check if a date string matches another date
-const isDateMatch = (dateStr: string, date: Date) => {
-  const dateObj = new Date(dateStr);
-  return isSameDay(dateObj, date);
-};
-
 // Helper function to check if a date has workout data
-const hasWorkoutData = (date: Date, datesWithData: string[]) => {
-  return datesWithData.some(dataDate => isDateMatch(dataDate, date));
+const hasWorkoutData = (date: Date, datesWithData: Date[]) => {
+  return datesWithData.some(dataDate => isSameDay(dataDate, date));
 };
 
 // Helper function to get all days in a month
@@ -88,7 +82,6 @@ export default function RecentDaysStrip({
     const isToday = isSameDay(date, new Date());
     const dayName = date.toLocaleDateString('en-US', { weekday: 'short' });
     const dayNumber = date.getDate();
-    const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD format
     
     // Store the index of today for scrolling
     if (isToday) {
@@ -101,15 +94,15 @@ export default function RecentDaysStrip({
         style={[
           styles.dayPill,
           { backgroundColor: theme.cardBackground },
-          isDateMatch(selectedDate, date) && { backgroundColor: theme.primary },
+          isSameDay(date, selectedDate) && { backgroundColor: theme.primary },
           !hasWorkoutData(date, datesWithData) && { opacity: 0.6 }
         ]}
-        onPress={() => onSelectDate(dateStr)}
+        onPress={() => onSelectDate(date)}
       >
         <Text 
           style={[
             styles.dayName,
-            { color: isDateMatch(selectedDate, date) ? "#FFFFFF" : theme.textSecondary }
+            { color: isSameDay(date, selectedDate) ? "#FFFFFF" : theme.textSecondary }
           ]}
         >
           {isToday ? "Today" : dayName}
@@ -117,7 +110,7 @@ export default function RecentDaysStrip({
         <Text 
           style={[
             styles.dayNumber,
-            { color: isDateMatch(selectedDate, date) ? "#FFFFFF" : theme.text }
+            { color: isSameDay(date, selectedDate) ? "#FFFFFF" : theme.text }
           ]}
         >
           {dayNumber}

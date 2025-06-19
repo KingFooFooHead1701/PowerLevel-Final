@@ -59,85 +59,28 @@ export default function SettingsScreen() {
     checkAchievements();
   };
 
-  // Format theme name with spaces
-  const formatThemeName = (name: string) => {
-    // First, handle special cases with acronyms or specific formatting
-    const specialCases = {
-      "GumGumSurge": "Gum Gum Surge",
-      "TriBeamFlame": "Tri Beam Flame",
-      "NineTailsFury": "Nine Tails Fury",
-      "IceDragon": "Ice Dragon",
-      "SunBreather": "Sun Breather",
-      "ThreeSwordJade": "Three Sword Jade",
-      "DiableJambe": "Diable Jambe"
-    };
-    
-    if (specialCases[name as keyof typeof specialCases]) {
-      return specialCases[name as keyof typeof specialCases];
-    }
-    
-    // For other names, insert spaces before capital letters
-    return name
-      .replace(/([A-Z])/g, ' $1')
-      .trim()
-      .replace(/^./, str => str.toUpperCase());
-  };
-
   const renderThemeOptions = () => {
     const themeNames = Object.keys(themes) as ThemeName[];
     
     return (
       <View style={styles.themeContainer}>
-        {themeNames.map((name) => {
-          // Get the actual theme colors for accurate representation
-          const themeColors = themes[name];
-          
-          return (
-            <TouchableOpacity
-              key={name}
-              style={[
-                styles.themeOption,
-                {
-                  backgroundColor: themeColors.cardBackground,
-                  borderColor: themeName === name ? themeColors.primary : theme.border,
-                  borderWidth: themeName === name ? 3 : 1,
-                },
-              ]}
-              onPress={() => setThemeName(name)}
-            >
-              {/* Primary color circle */}
-              <View style={[
-                styles.themeColorCircle, 
-                { 
-                  backgroundColor: themeColors.primary,
-                  borderColor: "rgba(255,255,255,0.3)" 
-                }
-              ]} />
-              
-              {/* Secondary color circle */}
-              <View style={[
-                styles.themeColorCircle, 
-                { 
-                  backgroundColor: themeColors.secondary, 
-                  marginTop: 4,
-                  borderColor: "rgba(255,255,255,0.3)" 
-                }
-              ]} />
-              
-              <Text style={[
-                styles.themeText, 
-                { 
-                  color: themeColors.text,
-                  textShadowColor: 'rgba(0,0,0,0.5)',
-                  textShadowOffset: { width: 1, height: 1 },
-                  textShadowRadius: 2,
-                }
-              ]}>
-                {formatThemeName(name)}
-              </Text>
-            </TouchableOpacity>
-          );
-        })}
+        {themeNames.map((name) => (
+          <TouchableOpacity
+            key={name}
+            style={[
+              styles.themeOption,
+              {
+                backgroundColor: themes[name].secondary,
+                borderColor: theme.border,
+                borderWidth: themeName === name ? 3 : 0,
+              },
+            ]}
+            onPress={() => setThemeName(name)}
+          >
+            <View style={[styles.themeColorCircle, { backgroundColor: themes[name].primary }]} />
+            <Text style={styles.themeText}>{name}</Text>
+          </TouchableOpacity>
+        ))}
       </View>
     );
   };
@@ -325,36 +268,29 @@ const styles = StyleSheet.create({
   themeContainer: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // Center the theme boxes
     marginBottom: 16,
-    paddingHorizontal: 4, // Reduced padding to allow more space
   },
   themeOption: {
-    width: 105, // Slightly wider to accommodate spaced names
-    height: 110, // Taller to fit two color circles
-    margin: 6, // Reduced margin for better spacing
+    width: 80,
+    height: 80,
+    margin: 8,
     borderRadius: 8,
     justifyContent: "center",
     alignItems: "center",
-    padding: 6,
   },
   themeColorCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    borderWidth: 1,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 1,
-    elevation: 2,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginBottom: 8,
   },
   themeText: {
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
-    textAlign: "center",
-    marginTop: 8,
+    textShadowColor: "rgba(0, 0, 0, 0.75)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 2,
   },
   aboutText: {
     fontSize: 14,

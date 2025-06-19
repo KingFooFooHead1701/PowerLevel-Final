@@ -1,8 +1,9 @@
 import React from "react";
-import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, TouchableOpacity, Alert } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
-import { ChevronRight } from "lucide-react-native";
+import { Dumbbell, Star, Trash2 } from "lucide-react-native";
 import { Exercise } from "@/constants/exercises";
+import { useExerciseStore } from "@/hooks/use-exercise-store";
 
 interface ExerciseListItemProps {
   exercise: Exercise;
@@ -10,32 +11,70 @@ interface ExerciseListItemProps {
   onPress: () => void;
 }
 
-export default function ExerciseListItem({
-  exercise,
-  hasHistory,
-  onPress,
+export default function ExerciseListItem({ 
+  exercise, 
+  hasHistory, 
+  onPress 
 }: ExerciseListItemProps) {
   const { theme } = useTheme();
-
+  const { removeExercise } = useExerciseStore();
+  
+  // Check if this is a custom exercise (ID starts with "custom-")
+  const isCustomExercise = exercise.id.startsWith("custom-");
+  
+  const handleDelete = () => {
+    Alert.alert(
+      "Delete Exercise",
+      `Are you sure you want to delete "${exercise.name}"? This will also delete all sets associated with this exercise.`,
+      [
+        { text: "Cancel", style: "cancel" },
+        { 
+          text: "Delete", 
+          style: "destructive",
+          onPress: () => removeExercise(exercise.id)
+        }
+      ]
+    );
+  };
+  
   return (
-    <TouchableOpacity
-      style={[styles.container, { backgroundColor: theme.cardBackground }]}
+    <TouchableOpacity 
+      style={[
+        styles.container, 
+        { 
+          backgroundColor: theme.cardBackground,
+          borderLeftColor: hasHistory ? theme.primary : "transparent",
+          borderLeftWidth: hasHistory ? 4 : 0,
+        }
+      ]}
       onPress={onPress}
     >
+      <View style={[styles.iconContainer, { backgroundColor: theme.primary + "20" }]}>
+        <Dumbbell size={20} color={theme.primary} />
+      </View>
+      
       <View style={styles.content}>
-        <Text style={[styles.name, { color: theme.primary }]}>{exercise.name}</Text>
+        <Text style={[styles.name, { color: theme.text }]}>{exercise.name}</Text>
         <Text style={[styles.category, { color: theme.textSecondary }]}>
           {exercise.category}
         </Text>
+      </View>
+      
+      <View style={styles.actionsContainer}>
         {hasHistory && (
-          <View style={[styles.historyBadge, { backgroundColor: theme.secondary + "20" }]}>
-            <Text style={[styles.historyText, { color: theme.secondary }]}>
-              History Available
-            </Text>
-          </View>
+          <Star size={16} color={theme.primary} fill={theme.primary} style={styles.starIcon} />
+        )}
+        
+        {isCustomExercise && (
+          <TouchableOpacity 
+            onPress={handleDelete}
+            hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+            style={styles.deleteButton}
+          >
+            <Trash2 size={18} color={theme.error} />
+          </TouchableOpacity>
         )}
       </View>
-      <ChevronRight size={20} color={theme.secondary} />
     </TouchableOpacity>
   );
 }
@@ -45,29 +84,36 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     padding: 16,
-    borderRadius: 12,
-    marginBottom: 12,
+    borderRadius: 8,
+    marginBottom: 8,
+  },
+  iconContainer: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    marginRight: 12,
   },
   content: {
     flex: 1,
   },
   name: {
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "500",
     marginBottom: 4,
   },
   category: {
     fontSize: 14,
-    marginBottom: 8,
   },
-  historyBadge: {
-    alignSelf: "flex-start",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
+  actionsContainer: {
+    flexDirection: "row",
+    alignItems: "center",
   },
-  historyText: {
-    fontSize: 12,
-    fontWeight: "500",
+  starIcon: {
+    marginRight: 8,
+  },
+  deleteButton: {
+    padding: 4,
   },
 });

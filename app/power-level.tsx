@@ -1,254 +1,387 @@
-import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
-import { useRouter } from "expo-router";
+import React, { useEffect, useRef, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Animated,
+  Easing,
+  Platform,
+  TouchableOpacity,
+  Dimensions,
+  StatusBar,
+} from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
-import { getPowerTierName, getNextPowerTier } from "@/utils/milestone-utils";
-import { milestones } from "@/constants/milestones";
-import { Zap, ChevronRight } from "lucide-react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import * as Haptics from "expo-haptics";
+import { Audio } from "expo-av";
+import { getPowerTierName } from "@/utils/milestone-utils";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack, useRouter } from "expo-router";
+import { ChevronLeft } from "lucide-react-native";
+import { useAchievementStore, checkAchievements } from "@/hooks/use-achievement-store";
 
 export default function PowerLevelScreen() {
   const router = useRouter();
   const { theme } = useTheme();
   const { getTotalJoules } = useExerciseStore();
+  const { 
+    incrementScanCount, 
+    incrementDisplayTapCount,
+    setLastTierName,
+    lastTierName,
+    unlockAchievement
+  } = useAchievementStore();
   const [totalJoules, setTotalJoules] = useState(0);
+  const [soundsLoaded, setSoundsLoaded] = useState(false);
+
+  const scannerSound = useRef<Audio.Sound | null>(null);
+  const revealSound = useRef<Audio.Sound | null>(null);
+  const thumpSound = useRef<Audio.Sound | null>(null);
+
+  const scannerAnim = useRef(new Animated.Value(0)).current;
+  const opacityAnim = useRef(new Animated.Value(0)).current;
+  const valueOpacityAnim = useRef(new Animated.Value(0)).current;
+  const fullJoulesOpacityAnim = useRef(new Animated.Value(0)).current;
+  const tierOpacityAnim = useRef(new Animated.Value(0)).current;
+  const tierScaleAnim = useRef(new Animated.Value(1)).current;
 
   useEffect(() => {
     setTotalJoules(getTotalJoules());
+    const loadSounds = async () => {
+      if (Platform.OS !== "web") {
+        try {
+          const { sound: scanner } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/beep.mp3")
+          );
+          scannerSound.current = scanner;
+        } catch {}
+        try {
+          const { sound: reveal } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/chirp.mp3")
+          );
+          revealSound.current = reveal;
+        } catch {}
+        try {
+          const { sound: thump } = await Audio.Sound.createAsync(
+            require("@/assets/sounds/thump.mp3")
+          );
+          thumpSound.current = thump;
+        } catch {}
+      }
+      setSoundsLoaded(true);
+    };
+    loadSounds();
+    return () => {
+      (async () => {
+        if (scannerSound.current) await scannerSound.current.unloadAsync();
+        if (revealSound.current) await revealSound.current.unloadAsync();
+        if (thumpSound.current) await thumpSound.current.unloadAsync();
+      })();
+    };
   }, []);
 
+  useEffect(() => {
+    if (soundsLoaded) setTimeout(startScannerAnimation, 1000);
+  }, [soundsLoaded]);
+
+  const playScanner = async () => {
+    if (scannerSound.current) {
+      await scannerSound.current.setPositionAsync(0);
+      await scannerSound.current.playAsync();
+    }
+  };
+  const playReveal = async () => {
+    if (revealSound.current) {
+      await revealSound.current.setPositionAsync(0);
+      await revealSound.current.playAsync();
+    }
+  };
+  const playThump = async () => {
+    if (thumpSound.current) {
+      await thumpSound.current.setPositionAsync(0);
+      await thumpSound.current.playAsync();
+    }
+  };
+
+  const startScannerAnimation = () => {
+    // Increment scan count for achievements
+    incrementScanCount();
+    
+    // Check for time-based achievements
+    const currentHour = new Date().getHours();
+    if (currentHour >= 0 && currentHour < 4) {
+      unlockAchievement("midnight_warrior");
+    }
+    if (currentHour >= 0 && currentHour < 6) {
+      unlockAchievement("early_bird_special");
+    }
+    
+    // Check achievements
+    checkAchievements();
+    
+    scannerAnim.setValue(0);
+    opacityAnim.setValue(0);
+    valueOpacityAnim.setValue(0);
+    fullJoulesOpacityAnim.setValue(0);
+    tierOpacityAnim.setValue(0);
+    tierScaleAnim.setValue(1);
+
+    Animated.timing(opacityAnim, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+    setTimeout(playScanner, 300);
+
+    const firstPass = Animated.timing(scannerAnim, {
+      toValue: 1,
+      duration: 800,
+      easing: Easing.inOut(Easing.quad),
+      useNativeDriver: Platform.OS !== "web",
+    });
+    const secondPass = Animated.timing(scannerAnim, {
+      toValue: 0,
+      duration: 1000,
+      easing: Easing.inOut(Easing.quad),
+      useNativeDriver: Platform.OS !== "web",
+    });
+    const thirdPass = Animated.timing(scannerAnim, {
+      toValue: 1,
+      duration: 1200,
+      easing: Easing.inOut(Easing.quad),
+      useNativeDriver: Platform.OS !== "web",
+    });
+    const reveal = Animated.timing(valueOpacityAnim, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    });
+    const fullJoulesReveal = Animated.timing(fullJoulesOpacityAnim, {
+      toValue: 1,
+      duration: 500,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    });
+    const tierReveal = Animated.timing(tierOpacityAnim, {
+      toValue: 1,
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    });
+    
+    // New tier scale animations
+    const tierScaleUp = Animated.timing(tierScaleAnim, {
+      toValue: 1.3,
+      duration: 300,
+      easing: Easing.out(Easing.ease),
+      useNativeDriver: true,
+    });
+    
+    const tierScaleDown = Animated.timing(tierScaleAnim, {
+      toValue: 1,
+      duration: 400,
+      easing: Easing.bounce,
+      useNativeDriver: true,
+    });
+
+    Animated.sequence([firstPass, secondPass, thirdPass]).start(() => {
+      playReveal();
+      Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
+      reveal.start(() => {
+        setTimeout(() => fullJoulesReveal.start(), 200);
+        setTimeout(() => {
+          // Play thump sound right when tier appears
+          playThump();
+          Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+          tierReveal.start();
+          // Start scale animation immediately with the tier reveal
+          setTimeout(() => {
+            Animated.sequence([tierScaleUp, tierScaleDown]).start();
+          }, 100);
+          
+          // Check for tier jump achievement
+          const powerTierName = getPowerTierName(totalJoules);
+          if (lastTierName && lastTierName !== powerTierName) {
+            // Get tier indices to check for jumps
+            const tiers = [
+              "Novice", "Apprentice", "Adept", "Expert", "Master", 
+              "Grandmaster", "Legend", "Mythic", "Godlike", "Transcendent"
+            ];
+            const lastTierIndex = tiers.indexOf(lastTierName);
+            const currentTierIndex = tiers.indexOf(powerTierName);
+            
+            if (lastTierIndex >= 0 && currentTierIndex >= 0 && currentTierIndex - lastTierIndex >= 2) {
+              unlockAchievement("tier_jump");
+            }
+            
+            // Check for max tier achievement
+            if (currentTierIndex === tiers.length - 1) {
+              unlockAchievement("legendary_status");
+            }
+          }
+          
+          // Update last tier name
+          setLastTierName(powerTierName);
+        }, 500);
+      });
+    });
+  };
+
   const powerTierName = getPowerTierName(totalJoules);
-  const nextTier = getNextPowerTier(totalJoules);
-  const formattedEnergy = formatEnergy(totalJoules);
+  const containerWidth = 220;
+  const scannerWidth = 40;
+  const maxTranslation = (containerWidth - scannerWidth) / 2;
+
+  const handleGoBack = () => router.back();
   
-  // Filter milestones that are relevant to the user's progress
-  const relevantMilestones = milestones
-    .filter(milestone => milestone.threshold_j <= nextTier.threshold * 2)
-    .sort((a, b) => b.threshold_j - a.threshold_j);
+  const handleJoulesTap = () => {
+    incrementDisplayTapCount();
+    checkAchievements(); // Check for "glitch_in_the_matrix" achievement
+  };
 
   return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: theme.background }]}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>Power Level</Text>
-      </View>
+    <>
+      {/* hide expo-router header */}
+      <Stack.Screen options={{ headerShown: false }} />
 
-      {/* Current Power Level */}
-      <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
-        <View style={styles.powerLevelContainer}>
-          <Text style={[styles.powerTierName, { color: theme.primary }]}>
-            {powerTierName}
-          </Text>
-          <Text style={[styles.energyText, { color: theme.textSecondary }]}>
-            {formattedEnergy.full}
-          </Text>
-        </View>
-        
-        <View style={styles.progressContainer}>
-          <View 
-            style={[
-              styles.progressBar, 
-              { backgroundColor: theme.backgroundSecondary }
-            ]}
+      {/* status bar & custom header */}
+      <StatusBar translucent backgroundColor="transparent" barStyle="light-content" />
+      <SafeAreaView
+        edges={["top"]}
+        style={[styles.safeArea, { backgroundColor: theme.background }]}
+      >
+        <View style={[styles.header, { backgroundColor: theme.background }]}>
+          <TouchableOpacity 
+            onPress={handleGoBack} 
+            hitSlop={{ top: 15, bottom: 15, left: 15, right: 15 }}
           >
-            <View 
-              style={[
-                styles.progressFill, 
-                { 
-                  backgroundColor: theme.primary,
-                  width: `${nextTier.progress * 100}%` 
-                }
-              ]}
-            />
-          </View>
-          <Text style={[styles.nextTierText, { color: theme.textSecondary }]}>
-            Next: {nextTier.name} ({formatEnergy(nextTier.threshold).abbreviated})
-          </Text>
+            <ChevronLeft size={24} color={theme.text} />
+          </TouchableOpacity>
+          <Text style={[styles.headerTitle, { color: theme.text }]}>Power Level</Text>
         </View>
-      </View>
+      </SafeAreaView>
 
-      {/* Power Tiers Explanation */}
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>About Power Levels</Text>
-      </View>
-      
-      <View style={[styles.card, { backgroundColor: theme.cardBackground }]}>
-        <Text style={[styles.explanationText, { color: theme.text }]}>
-          Your power level is calculated based on the total energy you've generated during your workouts. 
-          Energy is measured in joules and is calculated from the weight lifted and repetitions performed.
-        </Text>
-        <Text style={[styles.explanationText, { color: theme.text, marginTop: 12 }]}>
-          As you continue to work out, your power level will increase, unlocking new tiers and achievements.
-        </Text>
-      </View>
-
-      {/* Milestones */}
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Energy Milestones</Text>
-      </View>
-      
-      {relevantMilestones.map((milestone) => {
-        const isCompleted = totalJoules >= milestone.threshold_j;
-        
-        return (
-          <TouchableOpacity
-            key={milestone.id}
+      {/* main content */}
+      <View style={[styles.contentContainer, { backgroundColor: theme.background }]}>
+        <Text style={[styles.label, { color: theme.textSecondary }]}>Your Power Level</Text>
+        <View style={styles.animationContainer}>
+          <Animated.View
             style={[
-              styles.milestoneCard, 
+              styles.scannerBackground,
+              { backgroundColor: theme.cardBackground, opacity: opacityAnim },
+            ]}
+          />
+          <View style={styles.scannerContainer}>
+            <Animated.View
+              style={[
+                styles.scanner,
+                {
+                  transform: [
+                    {
+                      translateX: scannerAnim.interpolate({
+                        inputRange: [0, 1],
+                        outputRange: [-maxTranslation, maxTranslation],
+                      }),
+                    },
+                  ],
+                  opacity: opacityAnim,
+                  backgroundColor: theme.primary,
+                },
+              ]}
+            >
+              <LinearGradient
+                colors={["transparent", theme.primary, "transparent"]}
+                start={{ x: 0, y: 0.5 }}
+                end={{ x: 1, y: 0.5 }}
+                style={styles.scannerGlow}
+              />
+            </Animated.View>
+          </View>
+          <TouchableOpacity 
+            activeOpacity={0.8} 
+            onPress={handleJoulesTap}
+            style={styles.powerValueContainer}
+          >
+            <Animated.Text style={[styles.powerValue, { color: theme.text, opacity: valueOpacityAnim }]}>
+              {formatEnergy(totalJoules).abbreviated}
+            </Animated.Text>
+            <Animated.Text style={[styles.fullJoulesValue, { color: theme.textSecondary, opacity: fullJoulesOpacityAnim }]}>
+              {formatEnergy(totalJoules).full}
+            </Animated.Text>
+          </TouchableOpacity>
+        </View>
+        <Animated.View style={[styles.tierContainer, { opacity: tierOpacityAnim }]}>
+          <Text style={[styles.tierLabel, { color: theme.textSecondary }]}>
+            Power Tier:
+          </Text>
+          <Animated.Text 
+            style={[
+              styles.tierValue, 
               { 
-                backgroundColor: theme.cardBackground,
-                opacity: isCompleted ? 1 : 0.7
+                color: theme.primary,
+                transform: [{ scale: tierScaleAnim }]
               }
             ]}
-            onPress={() => router.push("/milestone?id=" + milestone.id)}
-            activeOpacity={0.7}
           >
-            <View style={styles.milestoneHeader}>
-              <View style={styles.milestoneIconContainer}>
-                <Zap 
-                  size={20} 
-                  color={isCompleted ? milestone.color : theme.textSecondary} 
-                />
-              </View>
-              <View style={styles.milestoneInfo}>
-                <Text 
-                  style={[
-                    styles.milestoneName, 
-                    { 
-                      color: isCompleted ? theme.text : theme.textSecondary,
-                      fontWeight: isCompleted ? "600" : "400"
-                    }
-                  ]}
-                >
-                  {milestone.name}
-                </Text>
-                <Text style={[styles.milestoneThreshold, { color: theme.textSecondary }]}>
-                  {formatEnergy(milestone.threshold_j).full}
-                </Text>
-              </View>
-              <ChevronRight size={16} color={theme.textSecondary} />
-            </View>
-            
-            {isCompleted && (
-              <View 
-                style={[
-                  styles.completedBadge, 
-                  { backgroundColor: theme.primary }
-                ]}
-              >
-                <Text style={styles.completedText}>Completed</Text>
-              </View>
-            )}
-          </TouchableOpacity>
-        );
-      })}
-    </ScrollView>
+            {powerTierName}
+          </Animated.Text>
+        </Animated.View>
+      </View>
+
+      {/* Tier/Rank footer */}
+      <View style={styles.footerContainer}>
+        <Text style={[styles.footerText, { color: theme.textSecondary }]}>
+          Keep training to unlock higher power tiers!
+        </Text>
+      </View>
+    </>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-  contentContainer: {
-    padding: 16,
-    paddingBottom: 32,
-  },
+  safeArea: { width: "100%" },
   header: {
-    marginBottom: 16,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-  },
-  card: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  powerLevelContainer: {
-    marginBottom: 12,
-  },
-  powerTierName: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  energyText: {
-    fontSize: 16,
-  },
-  progressContainer: {
-    marginTop: 8,
-  },
-  progressBar: {
-    height: 8,
-    borderRadius: 4,
-    marginBottom: 8,
-    overflow: "hidden",
-  },
-  progressFill: {
-    height: "100%",
-    borderRadius: 4,
-  },
-  nextTierText: {
-    fontSize: 14,
-    textAlign: "right",
-  },
-  sectionHeader: {
-    marginTop: 16,
-    marginBottom: 12,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  explanationText: {
-    fontSize: 14,
-    lineHeight: 20,
-  },
-  milestoneCard: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
-    position: "relative",
-    overflow: "hidden",
-  },
-  milestoneHeader: {
     flexDirection: "row",
     alignItems: "center",
+    paddingHorizontal: 16,
+    paddingVertical: 8,
   },
-  milestoneIconContainer: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+  headerTitle: { fontSize: 18, fontWeight: "600", marginLeft: 12 },
+  contentContainer: { flex: 1, alignItems: "center", justifyContent: "center" },
+  label: { fontSize: 20, marginBottom: 16 },
+  animationContainer: {
+    width: 250,
+    height: 250,
     justifyContent: "center",
     alignItems: "center",
-    marginRight: 12,
   },
-  milestoneInfo: {
-    flex: 1,
+  scannerBackground: { position: "absolute", width: 220, height: 120, borderRadius: 12 },
+  scannerContainer: { position: "absolute", width: 220, height: 120, overflow: "hidden", borderRadius: 12 },
+  scanner: { position: "absolute", width: 40, height: 120, borderRadius: 8, left: 90 },
+  scannerGlow: { position: "absolute", width: 80, height: 120, left: -20 },
+  powerValueContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    zIndex: 10,
   },
-  milestoneName: {
-    fontSize: 16,
-    marginBottom: 2,
-  },
-  milestoneThreshold: {
-    fontSize: 14,
-  },
-  completedBadge: {
+  powerValue: { fontSize: 64, fontWeight: "bold", zIndex: 10 },
+  fullJoulesValue: { fontSize: 16, marginTop: 8, zIndex: 10 },
+  tierContainer: { marginTop: 32, alignItems: "center", width: "100%" },
+  tierLabel: { fontSize: 16, marginBottom: 8 },
+  tierValue: { fontSize: 24, fontWeight: "bold" },
+  footerContainer: {
     position: "absolute",
-    top: 0,
+    bottom: 32,
+    left: 0,
     right: 0,
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderBottomLeftRadius: 8,
+    alignItems: "center",
+    paddingHorizontal: 20,
   },
-  completedText: {
-    color: "#FFFFFF",
-    fontSize: 10,
-    fontWeight: "bold",
+  footerText: {
+    fontSize: 16,
+    textAlign: "center",
   },
 });

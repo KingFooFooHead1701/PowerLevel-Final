@@ -24,8 +24,7 @@ import {
   Dumbbell, 
   Calendar, 
   Star,
-  ChevronRight,
-  Lock
+  ChevronRight
 } from "lucide-react-native";
 
 export default function AchievementsScreen() {
@@ -79,46 +78,6 @@ export default function AchievementsScreen() {
   // Render achievement item
   const renderAchievement = ({ item }: { item: Achievement }) => {
     const isUnlocked = isAchievementUnlocked(item.id);
-    
-    // For locked achievements, especially hidden ones, show placeholder
-    if (!isUnlocked && (item.category === "hidden" || item.hidden)) {
-      return (
-        <View
-          style={[
-            styles.achievementItem,
-            { backgroundColor: theme.cardBackground }
-          ]}
-        >
-          <View style={[
-            styles.achievementIcon,
-            { 
-              backgroundColor: theme.backgroundSecondary,
-              borderColor: theme.border
-            }
-          ]}>
-            <Lock size={24} color={theme.textSecondary} />
-          </View>
-          
-          <View style={styles.achievementContent}>
-            <Text style={[styles.achievementName, { color: theme.textSecondary }]}>
-              ??? Secret Achievement ???
-            </Text>
-            
-            <Text style={[styles.achievementDescription, { color: theme.textSecondary }]}>
-              Keep working out to discover this achievement
-            </Text>
-          </View>
-          
-          <View style={styles.achievementPoints}>
-            <Text style={[styles.pointsText, { color: theme.textSecondary }]}>
-              ? pts
-            </Text>
-          </View>
-        </View>
-      );
-    }
-    
-    // For unlocked or visible achievements
     const { name, description } = formatAchievement(item, isUnlocked);
     
     // Get progress if not unlocked
@@ -136,11 +95,10 @@ export default function AchievementsScreen() {
         onPress={() => {
           if (isUnlocked && item.category === "hidden") {
             router.push(`/hidden-achievement?id=${item.id}`);
-          } else if (isUnlocked) {
+          } else {
             router.push(`/achievement/${item.id}`);
           }
         }}
-        disabled={!isUnlocked}
       >
         <View style={[
           styles.achievementIcon,
@@ -149,11 +107,8 @@ export default function AchievementsScreen() {
             borderColor: isUnlocked ? theme.primary : theme.border
           }
         ]}>
-          {isUnlocked ? (
-            <Award size={24} color={theme.primary} />
-          ) : (
-            <Lock size={24} color={theme.textSecondary} />
-          )}
+          {/* @ts-ignore - dynamic icon name */}
+          <Award size={24} color={isUnlocked ? theme.primary : theme.textSecondary} />
         </View>
         
         <View style={styles.achievementContent}>
@@ -196,9 +151,9 @@ export default function AchievementsScreen() {
             styles.pointsText,
             { color: isUnlocked ? theme.primary : theme.textSecondary }
           ]}>
-            {isUnlocked ? `${item.points} pts` : "? pts"}
+            {item.points} pts
           </Text>
-          {isUnlocked && <ChevronRight size={16} color={theme.textSecondary} />}
+          <ChevronRight size={16} color={theme.textSecondary} />
         </View>
       </TouchableOpacity>
     );

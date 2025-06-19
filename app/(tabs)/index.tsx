@@ -1,187 +1,170 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, Text, View, ScrollView, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View, ScrollView, TouchableOpacity, ActivityIndicator } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
-import { useAchievementStore } from "@/hooks/use-achievement-store";
 import { formatEnergy } from "@/utils/energy-utils";
-import { getPowerTierName, getNextPowerTier, checkMilestones } from "@/utils/milestone-utils";
-import { Award, Dumbbell, Zap, ChevronRight } from "lucide-react-native";
-import RecentDaysStrip from "@/components/RecentDaysStrip";
+import { Zap, Award } from "lucide-react-native";
+import ExerciseSummaryCard from "@/components/ExerciseSummaryCard";
+import { 
+  getCurrentMilestone, 
+  getNextMilestone, 
+  getMilestoneProgress, 
+  getRemainingToNextMilestone 
+} from "@/constants/milestones";
+import { getPowerTierName } from "@/utils/milestone-utils";
+import { useAchievementStore, checkAchievements } from "@/hooks/use-achievement-store";
 
 export default function DashboardScreen() {
   const router = useRouter();
   const { theme } = useTheme();
-  const { exercises, sets, getTotalJoules } = useExerciseStore();
+  const { exercises, sets, getTotalJoules, isLoading } = useExerciseStore();
   const { unlockedAchievements, getTotalPoints } = useAchievementStore();
   const [totalJoules, setTotalJoules] = useState(0);
-  const [selectedDate, setSelectedDate] = useState("");
-
+  
   useEffect(() => {
-    // Get the total joules
-    const joules = getTotalJoules();
-    setTotalJoules(joules);
+    setTotalJoules(getTotalJoules());
     
     // Check achievements on dashboard load
-    checkMilestones();
-  }, [sets.length]);
-
-  // Get unique dates with workout data
-  const datesWithData = useExerciseStore().getUniqueDates();
-  
-  // Set the selected date to the most recent date if not already set
-  useEffect(() => {
-    if (datesWithData.length > 0 && !selectedDate) {
-      setSelectedDate(datesWithData[0]);
-    }
-  }, [datesWithData, selectedDate]);
-
-  const powerTierName = getPowerTierName(totalJoules);
-  const nextTier = getNextPowerTier(totalJoules);
-  const achievementCount = unlockedAchievements.length;
-  const achievementPoints = getTotalPoints();
-  const formattedEnergy = formatEnergy(totalJoules);
+    checkAchievements();
+  }, [sets]);
 
   const navigateToPowerLevel = () => {
     router.push("/power-level");
   };
-
-  const handleSelectDate = (date: string) => {
-    setSelectedDate(date);
+  
+  const navigateToAchievements = () => {
+    router.push("/achievements");
   };
 
-  return (
-    <ScrollView 
-      style={[styles.container, { backgroundColor: theme.background }]}
-      contentContainerStyle={styles.contentContainer}
-    >
-      <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>Dashboard</Text>
-      </View>
+  const exercisesWithSets = exercises.filter(exercise => 
+    sets.some(set => set.exerciseId === exercise.id)
+  );
 
-      {/* Power Level Card */}
-      <TouchableOpacity
-        style={[styles.card, { backgroundColor: theme.cardBackground }]}
-        onPress={navigateToPowerLevel}
-        activeOpacity={0.7}
-      >
-        <View style={styles.cardHeader}>
-          <Zap size={20} color={theme.primary} />
-          <Text style={[styles.cardTitle, { color: theme.text }]}>Power Level</Text>
+  // Get milestone information
+  const currentMilestone = getCurrentMilestone(totalJoules);
+  const nextMilestone = getNextMilestone(totalJoules);
+  const progressPercent = getMilestoneProgress(totalJoules);
+  const remainingToNext = getRemainingToNextMilestone(totalJoules);
+  const powerTierName = getPowerTierName(totalJoules);
+  
+  // Get achievement stats
+  const achievementCount = unlockedAchievements.length;
+  const totalAchievementPoints = getTotalPoints();
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+        <ActivityIndicator size="large" color={theme.primary} />
+      </SafeAreaView>
+    );
+  }
+
+  return (
+    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
+      <ScrollView style={styles.scrollView}>
+        <View style={styles.header}>
+          <Text style={[styles.title, { color: theme.text }]}>Power Level</Text>
+          <Text style={[styles.subtitle, { color: theme.textSecondary }]}>
+            Track your workout energy
+          </Text>
         </View>
-        
-        <View style={styles.powerLevelContainer}>
-          <Text style={[styles.powerTierName, { color: theme.primary }]}>
+
+        {/* Power Tier Card */}
+        <View style={[styles.powerTierCard, { backgroundColor: theme.cardBackground }]}>
+          <Text style={[styles.powerTierLabel, { color: theme.textSecondary }]}>
+            Current Power Tier
+          </Text>
+          <Text style={[styles.powerTierValue, { color: theme.text }]}>
             {powerTierName}
           </Text>
-          <Text style={[styles.energyText, { color: theme.textSecondary }]}>
-            {formattedEnergy.full}
-          </Text>
+          
+          {nextMilestone && (
+            <>
+              <View style={styles.progressContainer}>
+                <View 
+                  style={[
+                    styles.progressBar, 
+                    { backgroundColor: theme.border }
+                  ]}
+                >
+                  <View 
+                    style={[
+                      styles.progressFill, 
+                      { 
+                        backgroundColor: theme.primary,
+                        width: `${progressPercent}%` 
+                      }
+                    ]} 
+                  />
+                </View>
+                <Text style={[styles.progressText, { color: theme.textSecondary }]}>
+                  {remainingToNext} to {nextMilestone.name}
+                </Text>
+              </View>
+              
+              <TouchableOpacity
+                style={[styles.powerLevelButton, { backgroundColor: theme.primary }]}
+                onPress={navigateToPowerLevel}
+              >
+                <Zap size={20} color="#fff" style={styles.buttonIcon} />
+                <Text style={styles.buttonText}>Show My Current Power Level</Text>
+              </TouchableOpacity>
+            </>
+          )}
         </View>
         
-        <View style={styles.progressContainer}>
-          <View 
-            style={[
-              styles.progressBar, 
-              { backgroundColor: theme.backgroundSecondary }
-            ]}
-          >
-            <View 
-              style={[
-                styles.progressFill, 
-                { 
-                  backgroundColor: theme.primary,
-                  width: `${nextTier.progress * 100}%` 
-                }
-              ]}
-            />
+        {/* Achievements Card */}
+        <View style={[styles.achievementsCard, { backgroundColor: theme.cardBackground }]}>
+          <View style={styles.achievementsHeader}>
+            <View>
+              <Text style={[styles.achievementsTitle, { color: theme.text }]}>
+                Achievements
+              </Text>
+              <Text style={[styles.achievementsSubtitle, { color: theme.textSecondary }]}>
+                {achievementCount} unlocked • {totalAchievementPoints} points
+              </Text>
+            </View>
+            <TouchableOpacity
+              style={[styles.achievementIconContainer, { backgroundColor: theme.primary + "20" }]}
+              onPress={navigateToAchievements}
+            >
+              <Award size={24} color={theme.primary} />
+            </TouchableOpacity>
           </View>
-          <Text style={[styles.nextTierText, { color: theme.textSecondary }]}>
-            Next: {nextTier.name} ({formatEnergy(nextTier.threshold).abbreviated})
-          </Text>
+          
+          <TouchableOpacity
+            style={[styles.achievementsButton, { borderColor: theme.border }]}
+            onPress={navigateToAchievements}
+          >
+            <Text style={[styles.achievementsButtonText, { color: theme.primary }]}>
+              View All Achievements
+            </Text>
+          </TouchableOpacity>
         </View>
-      </TouchableOpacity>
 
-      {/* Recent Activity */}
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Recent Activity</Text>
-      </View>
-      
-      {datesWithData.length > 0 && (
-        <RecentDaysStrip 
-          selectedDate={selectedDate}
-          datesWithData={datesWithData}
-          onSelectDate={handleSelectDate}
-          scrollToToday={true}
-        />
-      )}
-
-      {/* Stats Overview */}
-      <View style={styles.statsContainer}>
-        <TouchableOpacity 
-          style={[styles.statCard, { backgroundColor: theme.cardBackground }]}
-          onPress={() => router.push("/exercises")}
-          activeOpacity={0.7}
-        >
-          <Dumbbell size={24} color={theme.primary} style={styles.statIcon} />
-          <Text style={[styles.statValue, { color: theme.text }]}>{exercises.length}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Exercises</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.statCard, { backgroundColor: theme.cardBackground }]}
-          onPress={() => router.push("/achievements")}
-          activeOpacity={0.7}
-        >
-          <Award size={24} color={theme.primary} style={styles.statIcon} />
-          <Text style={[styles.statValue, { color: theme.text }]}>{achievementCount}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Achievements</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.statCard, { backgroundColor: theme.cardBackground }]}
-          onPress={() => router.push("/achievements")}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.pointsValue, { color: theme.primary }]}>{achievementPoints}</Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Points</Text>
-        </TouchableOpacity>
-      </View>
-
-      {/* Quick Actions */}
-      <View style={styles.sectionHeader}>
-        <Text style={[styles.sectionTitle, { color: theme.text }]}>Quick Actions</Text>
-      </View>
-      
-      <View style={styles.quickActionsContainer}>
-        <TouchableOpacity 
-          style={[styles.actionButton, { backgroundColor: theme.cardBackground }]}
-          onPress={() => router.push("/exercises")}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.actionText, { color: theme.text }]}>Start Workout</Text>
-          <ChevronRight size={16} color={theme.primary} />
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.actionButton, { backgroundColor: theme.cardBackground }]}
-          onPress={() => router.push("/summary")}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.actionText, { color: theme.text }]}>View Summary</Text>
-          <ChevronRight size={16} color={theme.primary} />
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.actionButton, { backgroundColor: theme.cardBackground }]}
-          onPress={() => router.push("/custom-exercise")}
-          activeOpacity={0.7}
-        >
-          <Text style={[styles.actionText, { color: theme.text }]}>Add Custom Exercise</Text>
-          <ChevronRight size={16} color={theme.primary} />
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+        {exercisesWithSets.length > 0 ? (
+          <>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>Your Exercises</Text>
+            {exercisesWithSets.map(exercise => (
+              <ExerciseSummaryCard 
+                key={exercise.id} 
+                exercise={exercise} 
+                sets={sets.filter(set => set.exerciseId === exercise.id)}
+                onPress={() => router.push(`/exercise/${exercise.id}`)}
+              />
+            ))}
+          </>
+        ) : (
+          <View style={styles.emptyState}>
+            <Text style={[styles.emptyStateText, { color: theme.textSecondary }]}>
+              No exercises logged yet. Start by adding a set in the Exercises tab.
+            </Text>
+          </View>
+        )}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
@@ -189,45 +172,53 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  contentContainer: {
+  scrollView: {
+    flex: 1,
     padding: 16,
-    paddingBottom: 32,
   },
   header: {
-    marginBottom: 16,
+    marginBottom: 24,
   },
   title: {
     fontSize: 28,
     fontWeight: "bold",
   },
-  card: {
+  subtitle: {
+    fontSize: 16,
+    marginTop: 4,
+  },
+  sectionTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+    marginTop: 24,
+    marginBottom: 12,
+  },
+  emptyState: {
+    padding: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  emptyStateText: {
+    fontSize: 16,
+    textAlign: "center",
+    lineHeight: 24,
+  },
+  powerTierCard: {
+    padding: 20,
     borderRadius: 12,
-    padding: 16,
     marginBottom: 16,
   },
-  cardHeader: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 12,
-  },
-  cardTitle: {
+  powerTierLabel: {
     fontSize: 16,
-    fontWeight: "600",
-    marginLeft: 8,
+    marginBottom: 8,
   },
-  powerLevelContainer: {
-    marginBottom: 12,
-  },
-  powerTierName: {
-    fontSize: 24,
+  powerTierValue: {
+    fontSize: 36,
     fontWeight: "bold",
-    marginBottom: 4,
-  },
-  energyText: {
-    fontSize: 14,
+    marginBottom: 16,
   },
   progressContainer: {
-    marginTop: 8,
+    marginBottom: 20,
   },
   progressBar: {
     height: 8,
@@ -239,59 +230,59 @@ const styles = StyleSheet.create({
     height: "100%",
     borderRadius: 4,
   },
-  nextTierText: {
-    fontSize: 12,
+  progressText: {
+    fontSize: 14,
     textAlign: "right",
   },
-  sectionHeader: {
-    marginTop: 8,
-    marginBottom: 12,
+  powerLevelButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 16,
+    borderRadius: 8,
   },
-  sectionTitle: {
-    fontSize: 18,
+  buttonIcon: {
+    marginRight: 8,
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 16,
     fontWeight: "600",
   },
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 24,
-  },
-  statCard: {
-    flex: 1,
+  achievementsCard: {
+    padding: 20,
     borderRadius: 12,
-    padding: 16,
-    marginHorizontal: 4,
-    alignItems: "center",
-  },
-  statIcon: {
-    marginBottom: 8,
-  },
-  statValue: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  pointsValue: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-  },
-  quickActionsContainer: {
     marginBottom: 16,
   },
-  actionButton: {
+  achievementsHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 8,
+    marginBottom: 16,
   },
-  actionText: {
+  achievementsTitle: {
+    fontSize: 20,
+    fontWeight: "600",
+  },
+  achievementsSubtitle: {
+    fontSize: 14,
+    marginTop: 4,
+  },
+  achievementIconContainer: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  achievementsButton: {
+    borderWidth: 1,
+    borderRadius: 8,
+    padding: 12,
+    alignItems: "center",
+  },
+  achievementsButtonText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "600",
   },
 });

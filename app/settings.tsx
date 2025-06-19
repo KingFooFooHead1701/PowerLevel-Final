@@ -5,7 +5,6 @@ import { useTheme } from "@/hooks/use-theme";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { themes, ThemeName } from "@/constants/themes";
 import { Palette } from "lucide-react-native";
-import { Stack } from "expo-router";
 
 export default function SettingsScreen() {
   const { theme, setThemeName, themeName } = useTheme();
@@ -27,15 +26,8 @@ export default function SettingsScreen() {
     }
   };
 
-  // Format theme name with spaces
-  const formatThemeName = (name: string) => {
-    // Insert a space before each capital letter
-    return name.replace(/([A-Z])/g, ' $1').trim();
-  };
-
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
-      <Stack.Screen options={{ title: "Settings" }} />
       <ScrollView style={styles.scrollView}>
         <Text style={[styles.title, { color: theme.text }]}>Settings</Text>
         
@@ -125,33 +117,22 @@ export default function SettingsScreen() {
                 key={name}
                 style={[
                   styles.themeItem,
-                  { 
-                    backgroundColor: themeColors.cardBackground,
-                    borderColor: name === themeName ? theme.primary : 'transparent',
-                    borderWidth: name === themeName ? 3 : 0,
-                    shadowColor: themeColors.primary,
-                    shadowOpacity: name === themeName ? 0.5 : 0.2,
-                  }
+                  { borderColor: theme.border },
+                  name === themeName && { borderColor: theme.primary, borderWidth: 2 }
                 ]}
                 onPress={() => setThemeName(name as ThemeName)}
               >
-                <View style={styles.themePreviewContainer}>
-                  <View style={[styles.themeColorCircle, { backgroundColor: themeColors.primary }]} />
-                  <View style={[styles.themeColorCircle, { backgroundColor: themeColors.secondary }]} />
+                <View style={[styles.themeColorPreview, { backgroundColor: themeColors.primary }]}>
+                  <View style={[styles.themeColorSecondary, { backgroundColor: themeColors.secondary }]} />
                 </View>
                 <Text 
                   style={[
                     styles.themeLabel, 
-                    { 
-                      color: themeColors.text,
-                      textShadowColor: 'rgba(0,0,0,0.5)',
-                      textShadowOffset: { width: 1, height: 1 },
-                      textShadowRadius: 2,
-                    }
+                    { color: theme.text },
+                    name === themeName && { color: theme.primary }
                   ]}
-                  numberOfLines={2}
                 >
-                  {formatThemeName(name)}
+                  {name.split(/(?=[A-Z])/).join(" ")}
                 </Text>
               </TouchableOpacity>
             ))}
@@ -230,37 +211,32 @@ const styles = StyleSheet.create({
   themesGrid: {
     flexDirection: "row",
     flexWrap: "wrap",
-    justifyContent: "center", // Center the theme boxes
-    paddingHorizontal: 4,
+    justifyContent: "space-between",
   },
   themeItem: {
-    width: "46%",
-    borderRadius: 12,
-    padding: 12,
-    marginBottom: 16,
-    marginHorizontal: "2%",
-    alignItems: "center",
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 6,
-    elevation: 3,
-  },
-  themePreviewContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    marginBottom: 8,
-  },
-  themeColorCircle: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    marginHorizontal: 4,
+    width: "48%",
+    borderRadius: 8,
     borderWidth: 1,
-    borderColor: "rgba(255,255,255,0.2)",
+    padding: 12,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  themeColorPreview: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    marginBottom: 8,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  themeColorSecondary: {
+    width: 20,
+    height: 20,
+    borderRadius: 10,
   },
   themeLabel: {
     fontSize: 14,
     textAlign: "center",
-    fontWeight: "600",
   },
   aboutSection: {
     alignItems: "center",

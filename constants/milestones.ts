@@ -1,91 +1,136 @@
+import { formatEnergy } from "@/utils/energy-utils";
+
+// Step size between milestone levels in joules
+export const MILESTONE_STEP_J = 150000; // 150 kJ
+
+// Materials in ascending order
+const MATERIALS = [
+  "Dust",
+  "Sand",
+  "Gravel",
+  "Pebble",
+  "Stone",
+  "Iron",
+  "Bronze",
+  "Steel",
+  "Titanium",
+  "Adamantium",
+  "Mythril",
+  "Orichalcum",
+  "Drakonium",
+  "Celestium",
+  "Aetherium"
+];
+
+// Ranks in ascending order
+const RANKS = [
+  "Initiate",
+  "Adept",
+  "Warrior",
+  "Soldier",
+  "Gladiator",
+  "Champion",
+  "Overlord",
+  "Warlord",
+  "Conqueror",
+  "Vanquisher",
+  "Juggernaut",
+  "Colossus",
+  "Leviathan",
+  "Titan",
+  "Behemoth",
+  "Battlemaster",
+  "Warbringer",
+  "Ravager",
+  "Supreme",
+  "Apex"
+];
+
 export interface Milestone {
-  id: string;
+  id: number;
   name: string;
-  description: string;
   threshold_j: number;
-  icon: string;
-  color: string;
+  material: string;
+  rank: string;
 }
 
-export const milestones: Milestone[] = [
-  {
-    id: "first-spark",
-    name: "First Spark",
-    description: "Generate your first 1,000 joules of energy",
-    threshold_j: 1000,
-    icon: "zap",
-    color: "#FFD700"
-  },
-  {
-    id: "power-surge",
-    name: "Power Surge",
-    description: "Reach 10,000 joules of total energy",
-    threshold_j: 10000,
-    icon: "zap",
-    color: "#FF9500"
-  },
-  {
-    id: "energy-flow",
-    name: "Energy Flow",
-    description: "Reach 25,000 joules of total energy",
-    threshold_j: 25000,
-    icon: "zap",
-    color: "#FF3B30"
-  },
-  {
-    id: "force-awakens",
-    name: "Force Awakens",
-    description: "Reach 50,000 joules of total energy",
-    threshold_j: 50000,
-    icon: "zap",
-    color: "#5856D6"
-  },
-  {
-    id: "power-unleashed",
-    name: "Power Unleashed",
-    description: "Reach 100,000 joules of total energy",
-    threshold_j: 100000,
-    icon: "zap",
-    color: "#007AFF"
-  },
-  {
-    id: "energy-master",
-    name: "Energy Master",
-    description: "Reach 250,000 joules of total energy",
-    threshold_j: 250000,
-    icon: "zap",
-    color: "#4CD964"
-  },
-  {
-    id: "force-of-nature",
-    name: "Force of Nature",
-    description: "Reach 500,000 joules of total energy",
-    threshold_j: 500000,
-    icon: "zap",
-    color: "#5AC8FA"
-  },
-  {
-    id: "power-overwhelming",
-    name: "Power Overwhelming",
-    description: "Reach 1,000,000 joules of total energy",
-    threshold_j: 1000000,
-    icon: "zap",
-    color: "#FF2D55"
-  },
-  {
-    id: "energy-transcendence",
-    name: "Energy Transcendence",
-    description: "Reach 2,000,000 joules of total energy",
-    threshold_j: 2000000,
-    icon: "zap",
-    color: "#FFCC00"
-  },
-  {
-    id: "limitless-power",
-    name: "Limitless Power",
-    description: "Reach 5,000,000 joules of total energy",
-    threshold_j: 5000000,
-    icon: "zap",
-    color: "#FF9500"
+// Generate all 300 milestones
+export const milestones: Milestone[] = [];
+
+let id = 1;
+for (let materialIndex = 0; materialIndex < MATERIALS.length; materialIndex++) {
+  const material = MATERIALS[materialIndex];
+  
+  for (let rankIndex = 0; rankIndex < RANKS.length; rankIndex++) {
+    const rank = RANKS[rankIndex];
+    const threshold_j = id * MILESTONE_STEP_J;
+    
+    milestones.push({
+      id,
+      name: `${material} ${rank}`,
+      threshold_j,
+      material,
+      rank
+    });
+    
+    id++;
   }
-];
+}
+
+// Get the current milestone based on total joules
+export function getCurrentMilestone(totalJoules: number): Milestone | null {
+  if (totalJoules < milestones[0].threshold_j) {
+    return null; // Not reached first milestone yet
+  }
+  
+  // Find the highest milestone that has been reached
+  for (let i = milestones.length - 1; i >= 0; i--) {
+    if (totalJoules >= milestones[i].threshold_j) {
+      return milestones[i];
+    }
+  }
+  
+  return null;
+}
+
+// Get the next milestone based on total joules
+export function getNextMilestone(totalJoules: number): Milestone | null {
+  // Find the next milestone that has not been reached
+  for (let i = 0; i < milestones.length; i++) {
+    if (totalJoules < milestones[i].threshold_j) {
+      return milestones[i];
+    }
+  }
+  
+  return null; // Already at max milestone
+}
+
+// Get progress percentage toward the next milestone
+export function getMilestoneProgress(totalJoules: number): number {
+  const currentMilestone = getCurrentMilestone(totalJoules);
+  const nextMilestone = getNextMilestone(totalJoules);
+  
+  if (!nextMilestone) {
+    return 100; // Already at max milestone
+  }
+  
+  const currentThreshold = currentMilestone ? currentMilestone.threshold_j : 0;
+  const nextThreshold = nextMilestone.threshold_j;
+  
+  // Calculate progress percentage
+  const progress = ((totalJoules - currentThreshold) / (nextThreshold - currentThreshold)) * 100;
+  
+  return Math.min(Math.max(progress, 0), 100); // Clamp between 0-100
+}
+
+// Format the remaining joules to next milestone
+export function getRemainingToNextMilestone(totalJoules: number): string {
+  const nextMilestone = getNextMilestone(totalJoules);
+  
+  if (!nextMilestone) {
+    return "Max level reached";
+  }
+  
+  const remaining = nextMilestone.threshold_j - totalJoules;
+  return formatEnergy(remaining).abbreviated;
+}

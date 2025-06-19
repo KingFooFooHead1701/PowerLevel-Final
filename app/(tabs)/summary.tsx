@@ -179,7 +179,7 @@ export default function SummaryScreen() {
             onPress={() => setShowDatePicker(true)}
           >
             <Text style={[styles.date, { color: theme.textSecondary }]}>{formattedDate}</Text>
-            <Calendar size={20} color={theme.secondary} style={styles.calendarIcon} />
+            <Calendar size={20} color={theme.textSecondary} style={styles.calendarIcon} />
           </TouchableOpacity>
         </View>
         
@@ -188,12 +188,12 @@ export default function SummaryScreen() {
             style={[styles.navButton, { backgroundColor: theme.cardBackground }]}
             onPress={goToPreviousDay}
           >
-            <ChevronLeft size={20} color={theme.secondary} />
+            <ChevronLeft size={20} color={theme.textSecondary} />
           </TouchableOpacity>
           
           {!isToday(selectedDate.toISOString()) && (
             <TouchableOpacity 
-              style={[styles.todayButton, { backgroundColor: theme.secondary }]}
+              style={[styles.todayButton, { backgroundColor: theme.primary }]}
               onPress={goToToday}
             >
               <Text style={styles.todayButtonText}>Today</Text>
@@ -204,7 +204,7 @@ export default function SummaryScreen() {
             style={[styles.navButton, { backgroundColor: theme.cardBackground }]}
             onPress={goToNextDay}
           >
-            <ChevronRight size={20} color={theme.secondary} />
+            <ChevronRight size={20} color={theme.textSecondary} />
           </TouchableOpacity>
         </View>
       </View>
@@ -232,7 +232,7 @@ export default function SummaryScreen() {
                   key={summary.exerciseId} 
                   style={[styles.exerciseCard, { backgroundColor: theme.cardBackground }]}
                 >
-                  <Text style={[styles.exerciseName, { color: theme.primary }]}>
+                  <Text style={[styles.exerciseName, { color: theme.text }]}>
                     {summary.exerciseName}
                   </Text>
                   
@@ -260,7 +260,7 @@ export default function SummaryScreen() {
                   ))}
                   
                   <View style={styles.exerciseTotalRow}>
-                    <Text style={[styles.exerciseTotal, { color: theme.secondary }]}>
+                    <Text style={[styles.exerciseTotal, { color: theme.primary }]}>
                       Total for {summary.exerciseName}: {formatTotalWeight(summary.totalWeight)}
                     </Text>
                   </View>
@@ -271,7 +271,7 @@ export default function SummaryScreen() {
                 <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
                   All-Time Total Weight Lifted
                 </Text>
-                <Text style={[styles.allTimeTotal, { color: theme.secondary }]}>
+                <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
                   {formatTotalWeight(allTimeTotal)}
                 </Text>
               </View>
