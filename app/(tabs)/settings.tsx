@@ -132,7 +132,7 @@ export default function SettingsScreen() {
 
           <View style={styles.themeGrid}>
             {(Object.keys(themes) as ThemeName[]).map((name) => {
-              // split camelCase into words
+              // split camelCase into words and join with newline
               const words = name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name];
               const labelText = words.join('\n');
 
@@ -147,7 +147,18 @@ export default function SettingsScreen() {
                   ]}
                   onPress={() => setThemeName(name)}
                 >
-                  <View style={[styles.themeColorPreview, { backgroundColor: themes[name].primary }]} />
+                  {/* Outer ring = secondary color */}
+                  <View style={[styles.themeColorPreview, { backgroundColor: themes[name].secondary }]}>
+                    {/* Inner dot = primary color */}
+                    <View
+                      style={[
+                        styles.themeColorSecondary,
+                        { backgroundColor: themes[name].primary }
+                      ]}
+                    />
+                  </View>
+
+                  {/* Two-line, centered theme name */}
                   <Text
                     style={[
                       styles.themeName,
@@ -171,7 +182,7 @@ export default function SettingsScreen() {
           </View>
           <ResetDataButton />
           <Text style={[styles.disclaimer, { color: theme.textSecondary }]}>
-            Warning: Resetting data will permanently delete all your exercises, sets, and settings.
+            Warning: Reseting data will permanently delete all your exercises, sets, and settings.
           </Text>
         </View>
 
@@ -190,6 +201,7 @@ const styles = StyleSheet.create({
   container: { flex: 1 },
   scrollView: { flex: 1 },
   scrollContent: { padding: 16 },
+
   section: { borderRadius: 12, marginBottom: 16, overflow: 'hidden' },
   sectionHeader: {
     flexDirection: 'row',
@@ -200,6 +212,7 @@ const styles = StyleSheet.create({
     borderBottomColor: 'rgba(150,150,150,0.2)'
   },
   sectionTitle: { fontSize: 18, fontWeight: '600', flex: 1 },
+
   settingRow: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -212,6 +225,7 @@ const styles = StyleSheet.create({
   settingLabelContainer: { flexDirection: 'row', alignItems: 'center', flex: 1 },
   settingLabel: { fontSize: 16 },
   infoButton: { marginLeft: 8, padding: 4 },
+
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -235,12 +249,25 @@ const styles = StyleSheet.create({
     borderColor: 'transparent'
   },
   selectedTheme: { borderWidth: 2 },
-  themeColorPreview: { width: 24, height: 24, borderRadius: 12, marginBottom: 8 },
+
+  themeColorPreview: {
+    width: 36,             // outer circle diameter
+    height: 36,
+    borderRadius: 18,
+    marginBottom: 8,
+    alignItems: 'center',  // center inner dot
+    justifyContent: 'center'
+  },
+  themeColorSecondary: {
+    width: 20,             // inner dot diameter
+    height: 20,
+    borderRadius: 10
+  },
 
   themeName: {
     fontSize: 12,
     textAlign: 'center',  // center each of the two lines
-    lineHeight: 16        // adjust as needed
+    lineHeight: 16        // spacing between lines
   },
 
   disclaimer: {
