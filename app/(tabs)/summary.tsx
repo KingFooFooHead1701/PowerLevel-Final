@@ -171,7 +171,7 @@ export default function SummaryScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
       <View style={styles.header}>
-        <Text style={[styles.title, { color: theme.text }]}>Daily Summary</Text>
+        <Text style={[styles.title, { color: theme.secondary }]}>Daily Summary</Text>
         
         <View style={styles.dateContainer}>
           <TouchableOpacity 

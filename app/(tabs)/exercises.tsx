@@ -69,11 +69,11 @@ export default function ExercisesScreen() {
       <View style={styles.header}>
         <Text style={[styles.title, { color: theme.text }]}>Exercises</Text>
         <TouchableOpacity 
-          style={[styles.addButton, { backgroundColor: theme.primary }]}
-          onPress={navigateToCustomExercise}
-        >
-          <Plus size={20} color="#fff" />
-        </TouchableOpacity>
+  style={[styles.addButton, { backgroundColor: theme.secondary }]}
+  onPress={navigateToCustomExercise}
+>
+  <Plus size={20} color={theme.primary} />
+</TouchableOpacity>
       </View>
 
       <CategoryTabs

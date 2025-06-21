@@ -8,14 +8,13 @@ import {
   Alert,
   TextInput,
   Platform,
-  Dimensions,
   useWindowDimensions
 } from "react-native";
 import { useLocalSearchParams, Stack, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
-import { calculateJoules, formatEnergy } from "@/utils/energy-utils";
+import { calculateJoules } from "@/utils/energy-utils";
 import SetInput from "@/components/SetInput";
 import SetHistoryItem from "@/components/SetHistoryItem";
 import { checkMilestone } from "@/utils/milestone-utils";
@@ -28,39 +27,37 @@ export default function ExerciseDetailScreen() {
   const { exercises, sets, addSet, removeSet, getTotalJoules } = useExerciseStore();
   const { useMetricUnits, usePseudoJoules, bodyWeight } = useSettingsStore();
   const { width, height } = useWindowDimensions();
-  
-  const [activeTab, setActiveTab] = useState("log");
+
+  const [activeTab, setActiveTab] = useState<"log" | "history">("log");
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
-  const [distance, setDistance] = useState(""); // For cardio exercises
-  const [speed, setSpeed] = useState(""); // For cardio exercises (mph or km/h)
-  const [incline, setIncline] = useState(""); // For treadmill exercises (percent)
+  const [distance, setDistance] = useState("");
+  const [speed, setSpeed] = useState("");
+  const [incline, setIncline] = useState("");
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [lastAddedSet, setLastAddedSet] = useState<any>(null);
   const [totalJoules, setTotalJoules] = useState(0);
   const [previousTotalJoules, setPreviousTotalJoules] = useState(0);
-  
+
   const exercise = exercises.find(e => e.id === id);
-  const exerciseSets = sets.filter(set => set.exerciseId === id)
+  const exerciseSets = sets
+    .filter(s => s.exerciseId === id)
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  
-  // Check if this is a treadmill exercise
-  const isTreadmill = exercise?.name?.toLowerCase().includes("treadmill");
-  
-  // Determine if we're in landscape mode
-  const isLandscape = width > height;
-  
-  useEffect(() => {
-    if (!exercise) {
-      router.back();
-      return;
-    }
-    setTotalJoules(getTotalJoules());
-  }, [exercise, sets]);
 
   if (!exercise) {
+    // If we lost the exercise, go back
+    useEffect(() => router.back(), []);
     return null;
   }
+
+  // Detect treadmill workouts
+  const isTreadmill = exercise.name.toLowerCase().includes("treadmill");
+  const isLandscape = width > height;
+
+  // Load total joules initially & on changes
+  useEffect(() => {
+    setTotalJoules(getTotalJoules());
+  }, [sets]);
 
   const checkBodyWeightRequired = () => {
     if (exercise.requiresBodyWeight && (!bodyWeight || bodyWeight <= 0)) {
@@ -69,10 +66,7 @@ export default function ExerciseDetailScreen() {
         "This exercise requires your body weight for accurate energy calculation. Please set your body weight in Settings.",
         [
           { text: "Cancel", style: "cancel" },
-          { 
-            text: "Go to Settings", 
-            onPress: () => router.push("/settings")
-          }
+          { text: "Go to Settings", onPress: () => router.push("/settings") }
         ]
       );
       return false;
@@ -81,24 +75,12 @@ export default function ExerciseDetailScreen() {
   };
 
   const handleAddSet = () => {
-    // Check if body weight is required and set
-    if (!checkBodyWeightRequired()) {
-      return;
-    }
+    if (!checkBodyWeightRequired()) return;
 
-    // Validate inputs based on exercise type
+    // Validate presence
     if (exercise.isCardio) {
-      if (!distance) {
-        Alert.alert("Missing Information", "Please enter distance.");
-        return;
-      }
-      
-      if (!speed) {
-        Alert.alert("Missing Information", "Please enter speed.");
-        return;
-      }
-      
-      // For treadmill exercises, incline is required
+      if (!distance) { Alert.alert("Missing Information", "Please enter distance."); return; }
+      if (!speed)    { Alert.alert("Missing Information", "Please enter speed.");    return; }
       if (isTreadmill && !incline) {
         Alert.alert("Missing Information", "Please enter incline percentage.");
         return;
@@ -110,19 +92,19 @@ export default function ExerciseDetailScreen() {
       }
     }
 
-    const repsNum = parseInt(reps, 10) || 0;
-    const weightNum = parseFloat(weight) || 0;
-    const distanceNum = parseFloat(distance) || 0; // in meters/km
-    const speedNum = parseFloat(speed) || 0; // in km/h or mph
-    const inclineNum = parseFloat(incline) || 0; // in percent
+    // Parse numbers
+    const repsNum     = parseInt(reps, 10)   || 0;
+    const weightNum   = parseFloat(weight)   || 0;
+    const distanceNum = parseFloat(distance) || 0;
+    const speedNum    = parseFloat(speed)    || 0;
+    const inclineNum  = parseFloat(incline) || 0;
 
-    // Validate numeric inputs
+    // Validate numeric
     if (exercise.isCardio) {
       if (distanceNum <= 0 || speedNum <= 0) {
         Alert.alert("Invalid Input", "Please enter valid numbers for distance and speed.");
         return;
       }
-      
       if (isTreadmill && (inclineNum < 0 || inclineNum > 15)) {
         Alert.alert("Invalid Input", "Incline should be between 0% and 15%.");
         return;
@@ -134,6 +116,7 @@ export default function ExerciseDetailScreen() {
       }
     }
 
+    // Calculate joules
     const joules = calculateJoules({
       reps: repsNum,
       weight: weightNum,
@@ -147,9 +130,8 @@ export default function ExerciseDetailScreen() {
       incline: inclineNum
     });
 
-    // Store the current total joules before adding the new set
-    const currentTotalJoules = getTotalJoules();
-    setPreviousTotalJoules(currentTotalJoules);
+    const beforeTotal = getTotalJoules();
+    setPreviousTotalJoules(beforeTotal);
 
     const newSet = {
       id: Date.now().toString(),
@@ -164,84 +146,49 @@ export default function ExerciseDetailScreen() {
     };
 
     addSet(newSet);
-    
-    // Update total joules
-    const updatedTotalJoules = currentTotalJoules + joules;
-    setTotalJoules(updatedTotalJoules);
-    
-    // Store the last added set for the confirmation dialog
+    setTotalJoules(beforeTotal + joules);
     setLastAddedSet(newSet);
-    
-    // Show confirmation dialog
     setShowConfirmation(true);
-    
-    // Note: We're no longer clearing the input fields here
-    // This allows users to quickly add multiple sets with the same values
-    
-    // Check for milestone after adding the set
-    const milestone = checkMilestone(updatedTotalJoules, currentTotalJoules);
-    
+
+    const milestone = checkMilestone(beforeTotal + joules, beforeTotal);
     if (milestone) {
-      // Close confirmation dialog if open
       setShowConfirmation(false);
-      
-      // Navigate to milestone screen
-      router.push({
-        pathname: "/milestone",
-        params: { level: milestone }
-      });
+      router.push({ pathname: "/milestone", params: { level: milestone } });
     }
   };
 
   const handleDeleteSet = (setId: string) => {
-    Alert.alert(
-      "Delete Set",
-      "Are you sure you want to delete this set?",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete", 
-          style: "destructive",
-          onPress: () => {
-            removeSet(setId);
-          }
-        }
-      ]
-    );
+    Alert.alert("Delete Set", "Are you sure?", [
+      { text: "Cancel", style: "cancel" },
+      { text: "Delete", style: "destructive", onPress: () => removeSet(setId) }
+    ]);
   };
 
-  const handleCloseConfirmation = () => {
-    setShowConfirmation(false);
-  };
+  const handleCloseConfirmation = () => setShowConfirmation(false);
 
-  // Adjust layout for landscape mode
   const renderContent = () => {
+    // show reps only if not treadmill
+    const showRepsInput = !isTreadmill;
+
     if (isLandscape) {
       return (
         <View style={styles.landscapeContainer}>
+          {/* Left: Log vs History */}
           <View style={styles.landscapeLeftPanel}>
             {activeTab === "log" ? (
               <ScrollView style={styles.logContainer}>
                 {exercise.isCardio ? (
                   <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
-                    <Text style={[styles.title, { color: theme.text }]}>
-                      Log Cardio Exercise
-                    </Text>
-                    
+                    <Text style={[styles.title, { color: theme.text }]}>Log Cardio Exercise</Text>
+
+                    {/* Distance & Speed */}
                     <View style={styles.inputRow}>
                       <View style={styles.inputGroup}>
                         <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
                           Distance ({useMetricUnits ? "km" : "miles"})
                         </Text>
                         <TextInput
-                          style={[
-                            styles.input,
-                            { 
-                              backgroundColor: theme.inputBackground,
-                              color: theme.text,
-                              borderColor: theme.border,
-                            }
-                          ]}
+                          style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                           value={distance}
                           onChangeText={setDistance}
                           placeholder="0"
@@ -249,20 +196,12 @@ export default function ExerciseDetailScreen() {
                           keyboardType="decimal-pad"
                         />
                       </View>
-                      
                       <View style={styles.inputGroup}>
                         <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
                           Speed ({useMetricUnits ? "km/h" : "mph"})
                         </Text>
                         <TextInput
-                          style={[
-                            styles.input,
-                            { 
-                              backgroundColor: theme.inputBackground,
-                              color: theme.text,
-                              borderColor: theme.border,
-                            }
-                          ]}
+                          style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                           value={speed}
                           onChangeText={setSpeed}
                           placeholder="0"
@@ -271,7 +210,8 @@ export default function ExerciseDetailScreen() {
                         />
                       </View>
                     </View>
-                    
+
+                    {/* Incline only for treadmill */}
                     {isTreadmill && (
                       <View style={styles.inputRow}>
                         <View style={styles.inputGroup}>
@@ -279,14 +219,7 @@ export default function ExerciseDetailScreen() {
                             Incline (%)
                           </Text>
                           <TextInput
-                            style={[
-                              styles.input,
-                              { 
-                                backgroundColor: theme.inputBackground,
-                                color: theme.text,
-                                borderColor: theme.border,
-                              }
-                            ]}
+                            style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                             value={incline}
                             onChangeText={setIncline}
                             placeholder="0"
@@ -294,45 +227,18 @@ export default function ExerciseDetailScreen() {
                             keyboardType="decimal-pad"
                           />
                         </View>
-                        
-                        <View style={styles.inputGroup}>
-                          <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                            Reps (optional)
-                          </Text>
-                          <TextInput
-                            style={[
-                              styles.input,
-                              { 
-                                backgroundColor: theme.inputBackground,
-                                color: theme.text,
-                                borderColor: theme.border,
-                              }
-                            ]}
-                            value={reps}
-                            onChangeText={setReps}
-                            placeholder="0"
-                            placeholderTextColor={theme.textSecondary}
-                            keyboardType="number-pad"
-                          />
-                        </View>
                       </View>
                     )}
-                    
-                    {!isTreadmill && (
+
+                    {/* Reps for cardio when NOT treadmill */}
+                    {exercise.isCardio && showRepsInput && (
                       <View style={styles.inputRow}>
                         <View style={styles.inputGroup}>
                           <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
                             Reps (optional)
                           </Text>
                           <TextInput
-                            style={[
-                              styles.input,
-                              { 
-                                backgroundColor: theme.inputBackground,
-                                color: theme.text,
-                                borderColor: theme.border,
-                              }
-                            ]}
+                            style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
                             value={reps}
                             onChangeText={setReps}
                             placeholder="0"
@@ -342,15 +248,17 @@ export default function ExerciseDetailScreen() {
                         </View>
                       </View>
                     )}
-                    
+
+                    {/* Body weight info */}
                     {exercise.requiresBodyWeight && (
                       <View style={styles.bodyWeightInfo}>
                         <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
-                          Using body weight: {bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
+                          Using body weight: {bodyWeight} {useMetricUnits ? "kg" : "lbs"}
                         </Text>
                       </View>
                     )}
-                    
+
+                    {/* Log button */}
                     <TouchableOpacity
                       style={[styles.addButton, { backgroundColor: theme.primary }]}
                       onPress={handleAddSet}
@@ -359,6 +267,7 @@ export default function ExerciseDetailScreen() {
                     </TouchableOpacity>
                   </View>
                 ) : (
+                  /* Strength / non-cardio */
                   <SetInput
                     reps={reps}
                     weight={weight}
@@ -372,14 +281,15 @@ export default function ExerciseDetailScreen() {
                 )}
               </ScrollView>
             ) : (
+              /* History tab */
               <ScrollView style={styles.historyContainer}>
                 {exerciseSets.length > 0 ? (
-                  exerciseSets.map(set => (
+                  exerciseSets.map(s => (
                     <SetHistoryItem
-                      key={set.id}
-                      set={set}
+                      key={s.id}
+                      set={s}
                       useMetricUnits={useMetricUnits}
-                      onDelete={() => handleDeleteSet(set.id)}
+                      onDelete={() => handleDeleteSet(s.id)}
                       isCardio={exercise.isCardio}
                       isIsometric={exercise.isIsometric}
                       isTreadmill={isTreadmill}
@@ -395,9 +305,10 @@ export default function ExerciseDetailScreen() {
               </ScrollView>
             )}
           </View>
-          
+
+          {/* Right: Info card */}
           <View style={styles.landscapeRightPanel}>
-            <View style={[styles.infoCard, { backgroundColor: theme.cardBackground, height: '100%' }]}>
+            <View style={[styles.infoCard, { backgroundColor: theme.cardBackground, height: "100%" }]}>
               <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
               <Text style={[styles.infoText, { color: theme.textSecondary }]}>
                 Category: {exercise.category}
@@ -409,26 +320,21 @@ export default function ExerciseDetailScreen() {
               )}
               {exercise.isCardio && exercise.metValue && (
                 <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                  Base MET Value: {exercise.metValue} (intensity measure)
+                  Base MET Value: {exercise.metValue}
                 </Text>
               )}
               {isTreadmill && (
                 <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                  MET value adjusts dynamically based on speed and incline
+                  MET value adjusts dynamically based on speed & incline
                 </Text>
               )}
               <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                Energy calculation: {usePseudoJoules ? "Simplified" : "Standard"} joules
+                Energy calc: {usePseudoJoules ? "Simplified" : "Standard"} joules
               </Text>
-              {exercise.requiresBodyWeight && (
-                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                  This exercise uses your body weight in calculations
-                </Text>
-              )}
               {exercise.description && (
-                <ScrollView 
+                <ScrollView
                   style={styles.landscapeDescriptionScrollView}
-                  showsVerticalScrollIndicator={Platform.OS !== 'web'}
+                  showsVerticalScrollIndicator={Platform.OS !== "web"}
                 >
                   <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
                     {exercise.description}
@@ -439,271 +345,203 @@ export default function ExerciseDetailScreen() {
           </View>
         </View>
       );
-    } else {
-      // Portrait mode - original layout
-      return (
-        <>
-          {activeTab === "log" ? (
-            <ScrollView style={styles.logContainer}>
-              {exercise.isCardio ? (
-                <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
-                  <Text style={[styles.title, { color: theme.text }]}>
-                    Log Cardio Exercise
-                  </Text>
-                  
+    }
+
+    // Portrait layout
+    return (
+      <>
+        {activeTab === "log" ? (
+          <ScrollView style={styles.logContainer}>
+            {exercise.isCardio ? (
+              <View style={[styles.cardioInputContainer, { backgroundColor: theme.cardBackground }]}>
+                <Text style={[styles.title, { color: theme.text }]}>Log Cardio Exercise</Text>
+
+                {/* Distance & Speed */}
+                <View style={styles.inputRow}>
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Distance ({useMetricUnits ? "km" : "miles"})
+                    </Text>
+                    <TextInput
+                      style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
+                      value={distance}
+                      onChangeText={setDistance}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="decimal-pad"
+                    />
+                  </View>
+                  <View style={styles.inputGroup}>
+                    <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                      Speed ({useMetricUnits ? "km/h" : "mph"})
+                    </Text>
+                    <TextInput
+                      style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
+                      value={speed}
+                      onChangeText={setSpeed}
+                      placeholder="0"
+                      placeholderTextColor={theme.textSecondary}
+                      keyboardType="decimal-pad"
+                    />
+                  </View>
+                </View>
+
+                {/* Incline */}
+                {isTreadmill && (
                   <View style={styles.inputRow}>
                     <View style={styles.inputGroup}>
                       <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                        Distance ({useMetricUnits ? "km" : "miles"})
+                        Incline (%)
                       </Text>
                       <TextInput
-                        style={[
-                          styles.input,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={distance}
-                        onChangeText={setDistance}
-                        placeholder="0"
-                        placeholderTextColor={theme.textSecondary}
-                        keyboardType="decimal-pad"
-                      />
-                    </View>
-                    
-                    <View style={styles.inputGroup}>
-                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                        Speed ({useMetricUnits ? "km/h" : "mph"})
-                      </Text>
-                      <TextInput
-                        style={[
-                          styles.input,
-                          { 
-                            backgroundColor: theme.inputBackground,
-                            color: theme.text,
-                            borderColor: theme.border,
-                          }
-                        ]}
-                        value={speed}
-                        onChangeText={setSpeed}
+                        style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
+                        value={incline}
+                        onChangeText={setIncline}
                         placeholder="0"
                         placeholderTextColor={theme.textSecondary}
                         keyboardType="decimal-pad"
                       />
                     </View>
                   </View>
-                  
-                  {isTreadmill && (
-                    <View style={styles.inputRow}>
-                      <View style={styles.inputGroup}>
-                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                          Incline (%)
-                        </Text>
-                        <TextInput
-                          style={[
-                            styles.input,
-                            { 
-                              backgroundColor: theme.inputBackground,
-                              color: theme.text,
-                              borderColor: theme.border,
-                            }
-                          ]}
-                          value={incline}
-                          onChangeText={setIncline}
-                          placeholder="0"
-                          placeholderTextColor={theme.textSecondary}
-                          keyboardType="decimal-pad"
-                        />
-                      </View>
-                      
-                      <View style={styles.inputGroup}>
-                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                          Reps (optional)
-                        </Text>
-                        <TextInput
-                          style={[
-                            styles.input,
-                            { 
-                              backgroundColor: theme.inputBackground,
-                              color: theme.text,
-                              borderColor: theme.border,
-                            }
-                          ]}
-                          value={reps}
-                          onChangeText={setReps}
-                          placeholder="0"
-                          placeholderTextColor={theme.textSecondary}
-                          keyboardType="number-pad"
-                        />
-                      </View>
-                    </View>
-                  )}
-                  
-                  {!isTreadmill && (
-                    <View style={styles.inputRow}>
-                      <View style={styles.inputGroup}>
-                        <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
-                          Reps (optional)
-                        </Text>
-                        <TextInput
-                          style={[
-                            styles.input,
-                            { 
-                              backgroundColor: theme.inputBackground,
-                              color: theme.text,
-                              borderColor: theme.border,
-                            }
-                          ]}
-                          value={reps}
-                          onChangeText={setReps}
-                          placeholder="0"
-                          placeholderTextColor={theme.textSecondary}
-                          keyboardType="number-pad"
-                        />
-                      </View>
-                    </View>
-                  )}
-                  
-                  {exercise.requiresBodyWeight && (
-                    <View style={styles.bodyWeightInfo}>
-                      <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
-                        Using body weight: {bodyWeight > 0 ? bodyWeight : "Not set"} {useMetricUnits ? "kg" : "lbs"}
+                )}
+
+                {/* Reps */}
+                {exercise.isCardio && showRepsInput && (
+                  <View style={styles.inputRow}>
+                    <View style={styles.inputGroup}>
+                      <Text style={[styles.inputLabel, { color: theme.textSecondary }]}>
+                        Reps (optional)
                       </Text>
+                      <TextInput
+                        style={[styles.input, { backgroundColor: theme.inputBackground, color: theme.text, borderColor: theme.border }]}
+                        value={reps}
+                        onChangeText={setReps}
+                        placeholder="0"
+                        placeholderTextColor={theme.textSecondary}
+                        keyboardType="number-pad"
+                      />
                     </View>
-                  )}
-                  
-                  <TouchableOpacity
-                    style={[styles.addButton, { backgroundColor: theme.primary }]}
-                    onPress={handleAddSet}
-                  >
-                    <Text style={styles.buttonText}>Log Activity</Text>
-                  </TouchableOpacity>
-                </View>
-              ) : (
-                <SetInput
-                  reps={reps}
-                  weight={weight}
-                  onRepsChange={setReps}
-                  onWeightChange={setWeight}
-                  useMetricUnits={useMetricUnits}
-                  onAddSet={handleAddSet}
-                  requiresBodyWeight={exercise.requiresBodyWeight}
-                  bodyWeight={bodyWeight}
-                />
-              )}
-              
-              <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
-                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                  Category: {exercise.category}
-                </Text>
-                {!exercise.isIsometric && (
-                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                    Displacement: {exercise.displacement} meters
-                  </Text>
+                  </View>
                 )}
-                {exercise.isCardio && exercise.metValue && (
-                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                    Base MET Value: {exercise.metValue} (intensity measure)
-                  </Text>
-                )}
-                {isTreadmill && (
-                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                    MET value adjusts dynamically based on speed and incline
-                  </Text>
-                )}
-                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                  Energy calculation: {usePseudoJoules ? "Simplified" : "Standard"} joules
-                </Text>
+
+                {/* Body weight */}
                 {exercise.requiresBodyWeight && (
-                  <Text style={[styles.infoText, { color: theme.textSecondary }]}>
-                    This exercise uses your body weight in calculations
-                  </Text>
-                )}
-                {exercise.description && (
-                  <ScrollView 
-                    style={styles.descriptionScrollView}
-                    showsVerticalScrollIndicator={Platform.OS !== 'web'}
-                  >
-                    <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
-                      {exercise.description}
+                  <View style={styles.bodyWeightInfo}>
+                    <Text style={[styles.bodyWeightText, { color: theme.textSecondary }]}>
+                      Using body weight: {bodyWeight} {useMetricUnits ? "kg" : "lbs"}
                     </Text>
-                  </ScrollView>
+                  </View>
                 )}
+
+                <TouchableOpacity
+                  style={[styles.addButton, { backgroundColor: theme.primary }]}
+                  onPress={handleAddSet}
+                >
+                  <Text style={styles.buttonText}>Log Activity</Text>
+                </TouchableOpacity>
               </View>
-            </ScrollView>
-          ) : (
-            <ScrollView style={styles.historyContainer}>
-              {exerciseSets.length > 0 ? (
-                exerciseSets.map(set => (
-                  <SetHistoryItem
-                    key={set.id}
-                    set={set}
-                    useMetricUnits={useMetricUnits}
-                    onDelete={() => handleDeleteSet(set.id)}
-                    isCardio={exercise.isCardio}
-                    isIsometric={exercise.isIsometric}
-                    isTreadmill={isTreadmill}
-                  />
-                ))
-              ) : (
-                <View style={styles.emptyHistory}>
-                  <Text style={[styles.emptyHistoryText, { color: theme.textSecondary }]}>
-                    No sets logged for this exercise yet.
-                  </Text>
-                </View>
+            ) : (
+              <SetInput
+                reps={reps}
+                weight={weight}
+                onRepsChange={setReps}
+                onWeightChange={setWeight}
+                useMetricUnits={useMetricUnits}
+                onAddSet={handleAddSet}
+                requiresBodyWeight={exercise.requiresBodyWeight}
+                bodyWeight={bodyWeight}
+              />
+            )}
+
+            {/* Info card */}
+            <View style={[styles.infoCard, { backgroundColor: theme.cardBackground }]}>
+              <Text style={[styles.infoTitle, { color: theme.text }]}>Exercise Information</Text>
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                Category: {exercise.category}
+              </Text>
+              {!exercise.isIsometric && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  Displacement: {exercise.displacement} meters
+                </Text>
               )}
-            </ScrollView>
-          )}
-        </>
-      );
-    }
+              {exercise.isCardio && exercise.metValue && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  Base MET Value: {exercise.metValue}
+                </Text>
+              )}
+              {isTreadmill && (
+                <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                  MET adjusts by speed & incline
+                </Text>
+              )}
+              <Text style={[styles.infoText, { color: theme.textSecondary }]}>
+                Energy calc: {usePseudoJoules ? "Simplified" : "Standard"} joules
+              </Text>
+              {exercise.description && (
+                <ScrollView
+                  style={styles.descriptionScrollView}
+                  showsVerticalScrollIndicator={Platform.OS !== "web"}
+                >
+                  <Text style={[styles.descriptionText, { color: theme.textSecondary }]}>
+                    {exercise.description}
+                  </Text>
+                </ScrollView>
+              )}
+            </View>
+          </ScrollView>
+        ) : (
+          <ScrollView style={styles.historyContainer}>
+            {exerciseSets.length > 0 ? (
+              exerciseSets.map(s => (
+                <SetHistoryItem
+                  key={s.id}
+                  set={s}
+                  useMetricUnits={useMetricUnits}
+                  onDelete={() => handleDeleteSet(s.id)}
+                  isCardio={exercise.isCardio}
+                  isIsometric={exercise.isIsometric}
+                  isTreadmill={isTreadmill}
+                />
+              ))
+            ) : (
+              <View style={styles.emptyHistory}>
+                <Text style={[styles.emptyHistoryText, { color: theme.textSecondary }]}>
+                  No sets logged for this exercise yet.
+                </Text>
+              </View>
+            )}
+          </ScrollView>
+        )}
+      </>
+    );
   };
 
   return (
     <View style={[styles.container, { backgroundColor: theme.background }]}>
       <Stack.Screen options={{ title: exercise.name }} />
-      
+
+      {/* Tab Bar */}
       <View style={[styles.tabBar, { backgroundColor: theme.cardBackground }]}>
         <TouchableOpacity
-          style={[
-            styles.tab,
-            activeTab === "log" && { borderBottomColor: theme.primary, borderBottomWidth: 2 }
-          ]}
+          style={[styles.tab, activeTab === "log" && { borderBottomColor: theme.primary, borderBottomWidth: 2 }]}
           onPress={() => setActiveTab("log")}
         >
-          <Text
-            style={[
-              styles.tabText,
-              { color: activeTab === "log" ? theme.primary : theme.textSecondary }
-            ]}
-          >
+          <Text style={[styles.tabText, { color: activeTab === "log" ? theme.primary : theme.textSecondary }]}>
             Log Set
           </Text>
         </TouchableOpacity>
-        
         <TouchableOpacity
-          style={[
-            styles.tab,
-            activeTab === "history" && { borderBottomColor: theme.primary, borderBottomWidth: 2 }
-          ]}
+          style={[styles.tab, activeTab === "history" && { borderBottomColor: theme.primary, borderBottomWidth: 2 }]}
           onPress={() => setActiveTab("history")}
         >
-          <Text
-            style={[
-              styles.tabText,
-              { color: activeTab === "history" ? theme.primary : theme.textSecondary }
-            ]}
-          >
+          <Text style={[styles.tabText, { color: activeTab === "history" ? theme.primary : theme.textSecondary }]}>
             History
           </Text>
         </TouchableOpacity>
       </View>
 
       {renderContent()}
-      
+
       {/* Confirmation Dialog */}
       <SetConfirmationDialog
         visible={showConfirmation}
@@ -719,63 +557,63 @@ export default function ExerciseDetailScreen() {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
+    flex: 1
   },
   tabBar: {
     flexDirection: "row",
-    height: 48,
+    height: 48
   },
   tab: {
     flex: 1,
     justifyContent: "center",
-    alignItems: "center",
+    alignItems: "center"
   },
   tabText: {
     fontSize: 16,
-    fontWeight: "500",
+    fontWeight: "500"
   },
   logContainer: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   historyContainer: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   cardioInputContainer: {
     padding: 16,
-    borderRadius: 8,
+    borderRadius: 8
   },
   title: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 16,
+    marginBottom: 16
   },
   inputRow: {
     flexDirection: "row",
-    marginBottom: 16,
+    marginBottom: 16
   },
   inputGroup: {
     flex: 1,
-    marginHorizontal: 4,
+    marginHorizontal: 4
   },
   inputLabel: {
     fontSize: 14,
-    marginBottom: 8,
+    marginBottom: 8
   },
   input: {
     height: 48,
     borderRadius: 8,
     borderWidth: 1,
     paddingHorizontal: 12,
-    fontSize: 16,
+    fontSize: 16
   },
   bodyWeightInfo: {
-    marginBottom: 16,
+    marginBottom: 16
   },
   bodyWeightText: {
     fontSize: 14,
-    fontStyle: "italic",
+    fontStyle: "italic"
   },
   addButton: {
     flexDirection: "row",
@@ -783,62 +621,61 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     height: 48,
     borderRadius: 8,
-    marginTop: 8,
+    marginTop: 8
   },
   buttonText: {
     color: "#fff",
     fontSize: 16,
-    fontWeight: "600",
+    fontWeight: "600"
   },
   infoCard: {
     padding: 16,
     borderRadius: 8,
     marginTop: 24,
-    marginBottom: 24,
+    marginBottom: 24
   },
   infoTitle: {
     fontSize: 18,
     fontWeight: "600",
-    marginBottom: 12,
+    marginBottom: 12
   },
   infoText: {
     fontSize: 14,
-    marginBottom: 8,
+    marginBottom: 8
   },
   descriptionScrollView: {
     maxHeight: 200,
-    marginTop: 12,
+    marginTop: 12
   },
   descriptionText: {
     fontSize: 16,
     lineHeight: 24,
-    fontStyle: "italic",
+    fontStyle: "italic"
   },
   emptyHistory: {
     padding: 24,
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   emptyHistoryText: {
     fontSize: 16,
-    textAlign: "center",
+    textAlign: "center"
   },
-  // Landscape specific styles
   landscapeContainer: {
     flex: 1,
-    flexDirection: 'row',
+    flexDirection: "row"
   },
   landscapeLeftPanel: {
     flex: 1,
     borderRightWidth: 1,
-    borderRightColor: '#333',
+    borderRightColor: "#333"
   },
   landscapeRightPanel: {
     flex: 1,
-    padding: 16,
+    padding: 16
   },
   landscapeDescriptionScrollView: {
     flex: 1,
-    marginTop: 12,
-  },
+    marginTop: 12
+  }
 });
