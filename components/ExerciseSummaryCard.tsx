@@ -20,11 +20,13 @@ export default function ExerciseSummaryCard({
 }: ExerciseSummaryCardProps) {
   const { theme } = useTheme();
   const { useMetricUnits } = useSettingsStore();
-  
-  const totalJoules = sets.reduce((sum: number, set: Set) => sum + set.joules, 0);
+
+  const unit = useMetricUnits ? "kg" : "lbs";
+  const totalJoules = sets.reduce((sum, set) => sum + set.joules, 0);
   const totalSets = sets.length;
-  const lastSet = sets[0]; // Sets are already sorted newest first
-  
+  const lastSet = sets[0];
+  const lastTotalWeight = lastSet ? lastSet.reps * lastSet.weight : 0;
+
   return (
     <TouchableOpacity 
       style={[styles.card, { backgroundColor: theme.cardBackground }]}
@@ -44,21 +46,28 @@ export default function ExerciseSummaryCard({
       
       <View style={styles.statsContainer}>
         <View style={styles.statItem}>
-          <Text style={[styles.statValue, { color: theme.text }]}>
-            {totalSets}
-          </Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-            Sets
-          </Text>
+          <Text style={[styles.statValue, { color: theme.text }]}>{totalSets}</Text>
+          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Sets</Text>
         </View>
         
         {lastSet && (
           <View style={styles.statItem}>
             <Text style={[styles.statValue, { color: theme.text }]}>
-              {lastSet.weight} {useMetricUnits ? "kg" : "lbs"}
+              {lastSet.weight} {unit}
             </Text>
             <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
               Last Weight
+            </Text>
+          </View>
+        )}
+
+        {lastSet && (
+          <View style={styles.statItem}>
+            <Text style={[styles.statValue, { color: theme.text }]}>
+              {lastTotalWeight} {unit}
+            </Text>
+            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
+              Total Weight
             </Text>
           </View>
         )}
@@ -107,9 +116,12 @@ const styles = StyleSheet.create({
   },
   statsContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "space-evenly",  // <-- spread children evenly
   },
   statItem: {
+    flexBasis: 0,
+    flexGrow: 1,
+    flexShrink: 1,
     alignItems: "center",
   },
   statValue: {

@@ -107,11 +107,11 @@ export default function SettingsScreen() {
             <Text style={[styles.settingLabel, { color: theme.text }]}>Body Weight</Text>
             <View style={[styles.inputContainer, { backgroundColor: theme.inputBackground }]}>
               <TextInput
-                style={[styles.input, { color: theme.text }]}
+                style={[styles.input, { color: theme.text, textAlign: 'right' }]}
                 value={weightInput}
                 onChangeText={handleWeightChange}
                 keyboardType="numeric"
-                placeholder={useMetricUnits ? 'kg' : 'lbs'}
+                placeholder="Enter Weight"
                 placeholderTextColor={theme.textSecondary}
               />
               <Text style={[styles.inputUnit, { color: theme.textSecondary }]}>
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 40,
-    width: 100
+    width: 160
   },
   input: { flex: 1, height: 40, fontSize: 16 },
   inputUnit: { marginLeft: 4, fontSize: 16 },

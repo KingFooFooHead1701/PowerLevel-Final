@@ -1,3 +1,24 @@
+// hooks/use-theme.tsx
+// ————————————————————————————————————————
+// Polyfill for ISO week number (used later in this file)
+// Source: https://stackoverflow.com/a/6117889
+declare global {
+  interface Date {
+    getWeek?(): number;
+  }
+}
+if (!Date.prototype.getWeek) {
+  Date.prototype.getWeek = function (): number {
+    const d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    // Thursday in current week decides the year.
+    d.setUTCDate(d.getUTCDate() + 4 - (d.getUTCDay()||7));
+    const yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    // Calculate full weeks to the date
+    return Math.ceil((((d.getTime() - yearStart.getTime()) / 86400000) + 1)/7);
+  };
+}
+// ————————————————————————————————————————
+
 import React, { createContext, useContext, useState, useEffect } from "react";
 import { themes, ThemeName } from "@/constants/themes";
 import AsyncStorage from "@react-native-async-storage/async-storage";

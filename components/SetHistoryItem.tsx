@@ -34,6 +34,8 @@ export default function SetHistoryItem({
   const date = new Date(set.date);
   const formattedDate = date.toLocaleDateString();
   const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const unit = useMetricUnits ? "kg" : "lbs";
+  const totalWeight = set.reps * set.weight;
   
   const { abbreviated: energyAbbreviated } = formatEnergy(set.joules);
   
@@ -49,38 +51,41 @@ export default function SetHistoryItem({
       </View>
       
       <View style={styles.detailsContainer}>
-        {isCardio ? (
-          <View style={styles.details}>
-            <Text style={[styles.detailText, { color: theme.text }]}>
-              Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
-            </Text>
-            <Text style={[styles.detailText, { color: theme.text }]}>
-              Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
-            </Text>
-            {isTreadmill && set.incline !== undefined && (
+        <View style={styles.details}>
+          {isCardio ? (
+            <>
               <Text style={[styles.detailText, { color: theme.text }]}>
-                Incline: {set.incline}%
+                Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
               </Text>
-            )}
-            {set.reps > 0 && (
               <Text style={[styles.detailText, { color: theme.text }]}>
-                Reps: {set.reps}
+                Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
               </Text>
-            )}
-          </View>
-        ) : isIsometric ? (
-          <View style={styles.details}>
+              {isTreadmill && set.incline !== undefined && (
+                <Text style={[styles.detailText, { color: theme.text }]}>
+                  Incline: {set.incline}%
+                </Text>
+              )}
+              {set.reps > 0 && (
+                <Text style={[styles.detailText, { color: theme.text }]}>
+                  Reps: {set.reps}
+                </Text>
+              )}
+            </>
+          ) : isIsometric ? (
             <Text style={[styles.detailText, { color: theme.text }]}>
               Duration: {set.reps} seconds
             </Text>
-          </View>
-        ) : (
-          <View style={styles.details}>
-            <Text style={[styles.detailText, { color: theme.text }]}>
-              {set.reps} reps × {set.weight} {useMetricUnits ? "kg" : "lbs"}
-            </Text>
-          </View>
-        )}
+          ) : (
+            <>
+              <Text style={[styles.detailText, { color: theme.text }]}>
+                {set.reps} reps × {set.weight} {unit}
+              </Text>
+              <Text style={[styles.detailText, { color: theme.text, fontStyle: 'italic' }]}>
+                Total: {totalWeight} {unit}
+              </Text>
+            </>
+          )}
+        </View>
         
         <View style={styles.energy}>
           <Text style={[styles.energyText, { color: theme.primary }]}>

@@ -1,6 +1,8 @@
+// app/(tabs)/_layout.tsx
+import React from "react";
 import { Tabs } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
-import { Dumbbell, BarChart2, Settings, Calendar } from "lucide-react-native";
+import { Dumbbell, BarChart2, Settings, Calendar, Award } from "lucide-react-native";
 
 export default function TabLayout() {
   const { theme } = useTheme();
@@ -29,6 +31,7 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+
       <Tabs.Screen
         name="exercises"
         options={{
@@ -37,6 +40,7 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+
       <Tabs.Screen
         name="summary"
         options={{
@@ -45,6 +49,16 @@ export default function TabLayout() {
           headerShown: false,
         }}
       />
+
+      <Tabs.Screen
+        name="achievements"
+        options={{
+          title: "Achievements",
+          tabBarIcon: ({ color }) => <Award size={24} color={color} />,
+          headerShown: false,
+        }}
+      />
+
       <Tabs.Screen
         name="settings"
         options={{
