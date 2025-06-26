@@ -13,25 +13,25 @@ interface ExerciseSummaryCardProps {
   onPress: () => void;
 }
 
-export default function ExerciseSummaryCard({ 
-  exercise, 
-  sets, 
-  onPress 
-}: ExerciseSummaryCardProps) {
+function ExerciseSummaryCard({ exercise, sets, onPress }: ExerciseSummaryCardProps) {
   const { theme } = useTheme();
-  const { useMetricUnits } = useSettingsStore();
+  const { useMetricUnits, bodyWeight } = useSettingsStore();
 
   const unit = useMetricUnits ? "kg" : "lbs";
-  const totalJoules = sets.reduce((sum, set) => sum + set.joules, 0);
+  const totalJoules = sets.reduce((sum, s) => sum + s.joules, 0);
   const totalSets = sets.length;
   const lastSet = sets[0];
-  const lastTotalWeight = lastSet ? lastSet.reps * lastSet.weight : 0;
+
+  // detect isometric by presence of duration
+  const lastDuration = lastSet?.duration ?? 0;
+  const isIsometric = lastDuration > 0;
 
   return (
-    <TouchableOpacity 
+    <TouchableOpacity
       style={[styles.card, { backgroundColor: theme.cardBackground }]}
       onPress={onPress}
     >
+      {/* Header */}
       <View style={styles.header}>
         <View style={[styles.iconContainer, { backgroundColor: theme.primary + "20" }]}>
           <Dumbbell size={20} color={theme.primary} />
@@ -43,59 +43,58 @@ export default function ExerciseSummaryCard({
           </Text>
         </View>
       </View>
-      
+
+      {/* Stats row */}
       <View style={styles.statsContainer}>
+        {/* Total sets */}
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: theme.text }]}>{totalSets}</Text>
           <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Sets</Text>
         </View>
-        
-        {lastSet && (
-          <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.text }]}>
-              {lastSet.weight} {unit}
-            </Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              Last Weight
-            </Text>
-          </View>
-        )}
 
         {lastSet && (
-          <View style={styles.statItem}>
-            <Text style={[styles.statValue, { color: theme.text }]}>
-              {lastTotalWeight} {unit}
-            </Text>
-            <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-              Total Weight
-            </Text>
-          </View>
+          isIsometric ? (
+            <View style={styles.statItem}>
+              <Text style={[styles.statValue, { color: theme.text }]}>
+                {lastDuration} s @ {bodyWeight} {unit}
+              </Text>
+              <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Hold</Text>
+            </View>
+          ) : (
+            <>
+              <View style={styles.statItem}>
+                <Text style={[styles.statValue, { color: theme.text }]}>
+                  {lastSet.weight} {unit}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Last Weight</Text>
+              </View>
+              <View style={styles.statItem}>
+                <Text style={[styles.statValue, { color: theme.text }]}>
+                  {lastSet.reps * lastSet.weight} {unit}
+                </Text>
+                <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Total Weight</Text>
+              </View>
+            </>
+          )
         )}
-        
+
+        {/* Energy */}
         <View style={styles.statItem}>
           <Text style={[styles.statValue, { color: theme.text }]}>
             {formatEnergy(totalJoules).abbreviated}
           </Text>
-          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>
-            Energy
-          </Text>
+          <Text style={[styles.statLabel, { color: theme.textSecondary }]}>Energy</Text>
         </View>
       </View>
     </TouchableOpacity>
   );
 }
 
+export default React.memo(ExerciseSummaryCard);
+
 const styles = StyleSheet.create({
-  card: {
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-  },
-  header: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginBottom: 16,
-  },
+  card: { borderRadius: 12, padding: 16, marginBottom: 16 },
+  header: { flexDirection: "row", alignItems: "center", marginBottom: 12 },
   iconContainer: {
     width: 40,
     height: 40,
@@ -104,32 +103,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginRight: 12,
   },
-  titleContainer: {
-    flex: 1,
-  },
-  title: {
-    fontSize: 18,
-    fontWeight: "600",
-  },
-  category: {
-    fontSize: 14,
-  },
-  statsContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",  // <-- spread children evenly
-  },
-  statItem: {
-    flexBasis: 0,
-    flexGrow: 1,
-    flexShrink: 1,
-    alignItems: "center",
-  },
-  statValue: {
-    fontSize: 16,
-    fontWeight: "600",
-    marginBottom: 4,
-  },
-  statLabel: {
-    fontSize: 12,
-  },
+  titleContainer: { flex: 1 },
+  title: { fontSize: 18, fontWeight: "600" },
+  category: { fontSize: 14 },
+  statsContainer: { flexDirection: "row", justifyContent: "space-evenly" },
+  statItem: { flexBasis: 0, flexGrow: 1, alignItems: "center" },
+  statValue: { fontSize: 16, fontWeight: "600", marginBottom: 4 },
+  statLabel: { fontSize: 12 },
 });

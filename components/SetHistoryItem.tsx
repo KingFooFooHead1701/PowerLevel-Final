@@ -11,6 +11,7 @@ interface SetHistoryItemProps {
     reps: number;
     weight: number;
     joules: number;
+    duration?: number;
     distance?: number;
     speed?: number;
     incline?: number;
@@ -22,13 +23,13 @@ interface SetHistoryItemProps {
   isTreadmill?: boolean;
 }
 
-export default function SetHistoryItem({ 
-  set, 
-  useMetricUnits, 
+function SetHistoryItem({
+  set,
+  useMetricUnits,
   onDelete,
   isCardio,
   isIsometric,
-  isTreadmill
+  isTreadmill,
 }: SetHistoryItemProps) {
   const { theme } = useTheme();
   const date = new Date(set.date);
@@ -36,9 +37,8 @@ export default function SetHistoryItem({
   const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   const unit = useMetricUnits ? "kg" : "lbs";
   const totalWeight = set.reps * set.weight;
-  
   const { abbreviated: energyAbbreviated } = formatEnergy(set.joules);
-  
+
   return (
     <View style={[styles.container, { backgroundColor: theme.cardBackground }]}>
       <View style={styles.header}>
@@ -73,7 +73,7 @@ export default function SetHistoryItem({
             </>
           ) : isIsometric ? (
             <Text style={[styles.detailText, { color: theme.text }]}>
-              Duration: {set.reps} seconds
+              Duration: {set.duration} seconds
             </Text>
           ) : (
             <>
@@ -96,6 +96,8 @@ export default function SetHistoryItem({
     </View>
   );
 }
+
+export default React.memo(SetHistoryItem);
 
 const styles = StyleSheet.create({
   container: {

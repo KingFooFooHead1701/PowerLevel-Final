@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import { Audio } from "expo-av";
+import { Audio } from "expo-audio";
 import { Platform } from "react-native";
 import { Zap } from "lucide-react-native";
 

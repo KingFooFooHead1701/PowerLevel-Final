@@ -15,7 +15,7 @@ import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import { Audio } from "expo-av";
+import { Audio } from "expo-audio";
 import { getPowerTierName } from "@/utils/milestone-utils";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";

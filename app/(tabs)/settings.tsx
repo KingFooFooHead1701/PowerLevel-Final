@@ -1,4 +1,6 @@
-import React, { useState } from 'react';
+// app/(tabs)/settings.tsx
+
+import React, { useState } from "react";
 import {
   StyleSheet,
   Text,
@@ -8,15 +10,15 @@ import {
   TouchableOpacity,
   ScrollView,
   Alert,
-  Platform
-} from 'react-native';
-import { useSettingsStore } from '@/hooks/use-settings-store';
-import { useTheme } from '@/hooks/use-theme';
-import { themes, ThemeName } from '@/constants/themes';
-import { Stack } from 'expo-router';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import ResetDataButton from '@/components/ResetDataButton';
-import { Info } from 'lucide-react-native';
+  Platform,
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Stack } from "expo-router";
+import { useTheme } from "@/hooks/use-theme";
+import { useSettingsStore } from "@/hooks/use-settings-store";
+import ResetDataButton from "@/components/ResetDataButton";
+import { themes, ThemeName } from "@/constants/themes";
+import { Info } from "lucide-react-native";
 
 export default function SettingsScreen() {
   const {
@@ -25,10 +27,12 @@ export default function SettingsScreen() {
     bodyWeight,
     toggleUseMetricUnits,
     toggleUsePseudoJoules,
-    setBodyWeight
+    setBodyWeight,
   } = useSettingsStore();
   const { theme, themeName, setThemeName } = useTheme();
-  const [weightInput, setWeightInput] = useState(bodyWeight ? bodyWeight.toString() : '');
+  const [weightInput, setWeightInput] = useState(
+    bodyWeight ? bodyWeight.toString() : ""
+  );
 
   const handleWeightChange = (text: string) => {
     setWeightInput(text);
@@ -38,45 +42,65 @@ export default function SettingsScreen() {
     }
   };
 
-  const showThemeInfo = () => {
+  const showThemeInfo = () =>
     Alert.alert(
-      'About Themes',
-      'Themes affect the visual appearance of the app. Choose a theme that matches your style and preferences.',
-      [{ text: 'OK' }]
+      "About Themes",
+      "Themes affect the visual appearance of the app. Choose a theme that matches your style and preferences.",
+      [{ text: "OK" }]
     );
-  };
 
-  const showUnitsInfo = () => {
+  const showUnitsInfo = () =>
     Alert.alert(
-      'About Units',
-      'Metric units use kilograms and kilometers. Imperial units use pounds and miles.',
-      [{ text: 'OK' }]
+      "About Units",
+      "Metric units use kilograms and kilometers. Imperial units use pounds and miles.",
+      [{ text: "OK" }]
     );
-  };
 
-  const showPseudoJoulesInfo = () => {
+  const showPseudoJoulesInfo = () =>
     Alert.alert(
-      'About Pseudo-Joules',
-      'Pseudo-joules are a simplified calculation that ignores some physics complexities to make energy values more intuitive for workout tracking.',
-      [{ text: 'OK' }]
+      "About Pseudo-Joules",
+      "Pseudo-joules are a simplified calculation that ignores some physics complexities to make energy values more intuitive for workout tracking.",
+      [{ text: "OK" }]
     );
-  };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]} edges={['bottom']}>
-      <Stack.Screen options={{ title: 'Settings' }} />
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.background }]}
+      edges={["bottom"]}
+    >
+      {/* navigation header title in case you keep it */}
+      <Stack.Screen options={{ title: "Settings" }} />
 
-      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent}>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+      >
+        {/* ---- In-content page title ---- */}
+        <Text style={[styles.pageTitle, { color: theme.text }]}>
+          Settings & Appearance
+        </Text>
+
         {/* Units & Calculations */}
         <View style={[styles.section, { backgroundColor: theme.cardBackground }]}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>Units & Calculations</Text>
+            <Text
+              style={[styles.sectionTitle, { color: theme.text }]}
+            >
+              Units & Calculations
+            </Text>
           </View>
 
           <View style={styles.settingRow}>
             <View style={styles.settingLabelContainer}>
-              <Text style={[styles.settingLabel, { color: theme.text }]}>Use Metric Units</Text>
-              <TouchableOpacity onPress={showUnitsInfo} style={styles.infoButton}>
+              <Text
+                style={[styles.settingLabel, { color: theme.text }]}
+              >
+                Use Metric Units
+              </Text>
+              <TouchableOpacity
+                onPress={showUnitsInfo}
+                style={styles.infoButton}
+              >
                 <Info size={16} color={theme.textSecondary} />
               </TouchableOpacity>
             </View>
@@ -84,14 +108,21 @@ export default function SettingsScreen() {
               value={useMetricUnits}
               onValueChange={toggleUseMetricUnits}
               trackColor={{ false: theme.switchTrackOff, true: theme.primary }}
-              thumbColor={Platform.OS === 'ios' ? undefined : theme.switchThumb}
+              thumbColor={Platform.OS === "ios" ? undefined : theme.switchThumb}
             />
           </View>
 
           <View style={styles.settingRow}>
             <View style={styles.settingLabelContainer}>
-              <Text style={[styles.settingLabel, { color: theme.text }]}>Use Pseudo-Joules</Text>
-              <TouchableOpacity onPress={showPseudoJoulesInfo} style={styles.infoButton}>
+              <Text
+                style={[styles.settingLabel, { color: theme.text }]}
+              >
+                Use Pseudo-Joules
+              </Text>
+              <TouchableOpacity
+                onPress={showPseudoJoulesInfo}
+                style={styles.infoButton}
+              >
                 <Info size={16} color={theme.textSecondary} />
               </TouchableOpacity>
             </View>
@@ -99,23 +130,32 @@ export default function SettingsScreen() {
               value={usePseudoJoules}
               onValueChange={toggleUsePseudoJoules}
               trackColor={{ false: theme.switchTrackOff, true: theme.primary }}
-              thumbColor={Platform.OS === 'ios' ? undefined : theme.switchThumb}
+              thumbColor={Platform.OS === "ios" ? undefined : theme.switchThumb}
             />
           </View>
 
           <View style={styles.settingRow}>
-            <Text style={[styles.settingLabel, { color: theme.text }]}>Body Weight</Text>
-            <View style={[styles.inputContainer, { backgroundColor: theme.inputBackground }]}>
+            <Text style={[styles.settingLabel, { color: theme.text }]}>
+              Body Weight
+            </Text>
+            <View
+              style={[
+                styles.inputContainer,
+                { backgroundColor: theme.inputBackground },
+              ]}
+            >
               <TextInput
-                style={[styles.input, { color: theme.text, textAlign: 'right' }]}
+                style={[styles.input, { color: theme.text, textAlign: "right" }]}
                 value={weightInput}
                 onChangeText={handleWeightChange}
                 keyboardType="numeric"
                 placeholder="Enter Weight"
                 placeholderTextColor={theme.textSecondary}
               />
-              <Text style={[styles.inputUnit, { color: theme.textSecondary }]}>
-                {useMetricUnits ? 'kg' : 'lbs'}
+              <Text
+                style={[styles.inputUnit, { color: theme.textSecondary }]}
+              >
+                {useMetricUnits ? "kg" : "lbs"}
               </Text>
             </View>
           </View>
@@ -124,18 +164,17 @@ export default function SettingsScreen() {
         {/* Appearance / Themes */}
         <View style={[styles.section, { backgroundColor: theme.cardBackground }]}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>Appearance</Text>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              Appearance
+            </Text>
             <TouchableOpacity onPress={showThemeInfo} style={styles.infoButton}>
               <Info size={16} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
-
           <View style={styles.themeGrid}>
             {(Object.keys(themes) as ThemeName[]).map((name) => {
-              // split camelCase into words and join with newline
               const words = name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name];
-              const labelText = words.join('\n');
-
+              const labelText = words.join("\n");
               return (
                 <TouchableOpacity
                   key={name}
@@ -143,27 +182,28 @@ export default function SettingsScreen() {
                     styles.themeItem,
                     { backgroundColor: themes[name].cardBackground },
                     themeName === name && styles.selectedTheme,
-                    themeName === name && { borderColor: themes[name].primary }
+                    themeName === name && { borderColor: themes[name].primary },
                   ]}
                   onPress={() => setThemeName(name)}
                 >
-                  {/* Outer ring = secondary color */}
-                  <View style={[styles.themeColorPreview, { backgroundColor: themes[name].secondary }]}>
-                    {/* Inner dot = primary color */}
+                  <View
+                    style={[
+                      styles.themeColorPreview,
+                      { backgroundColor: themes[name].secondary },
+                    ]}
+                  >
                     <View
                       style={[
                         styles.themeColorSecondary,
-                        { backgroundColor: themes[name].primary }
+                        { backgroundColor: themes[name].primary },
                       ]}
                     />
                   </View>
-
-                  {/* Two-line, centered theme name */}
                   <Text
                     style={[
                       styles.themeName,
                       { color: themes[name].text },
-                      themeName === name && { fontWeight: '700' }
+                      themeName === name && { fontWeight: "700" },
                     ]}
                     numberOfLines={2}
                   >
@@ -178,11 +218,14 @@ export default function SettingsScreen() {
         {/* Data Management */}
         <View style={[styles.section, { backgroundColor: theme.cardBackground }]}>
           <View style={styles.sectionHeader}>
-            <Text style={[styles.sectionTitle, { color: theme.text }]}>Data Management</Text>
+            <Text style={[styles.sectionTitle, { color: theme.text }]}>
+              Data Management
+            </Text>
           </View>
           <ResetDataButton />
           <Text style={[styles.disclaimer, { color: theme.textSecondary }]}>
-            Warning: Reseting data will permanently delete all your exercises, sets, and settings.
+            Warning: Resetting data will permanently delete all your exercises,
+            sets, and settings.
           </Text>
         </View>
 
@@ -202,81 +245,89 @@ const styles = StyleSheet.create({
   scrollView: { flex: 1 },
   scrollContent: { padding: 16 },
 
-  section: { borderRadius: 12, marginBottom: 16, overflow: 'hidden' },
+  pageTitle: {
+    fontSize: 28,
+    fontWeight: "bold",
+    marginTop: 45,    // ← push it down a bit
+    marginBottom: 24,
+  },
+
+
+  section: { borderRadius: 12, marginBottom: 16, overflow: "hidden" },
   sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     paddingHorizontal: 16,
     paddingVertical: 12,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(150,150,150,0.2)'
+    borderBottomColor: "rgba(150,150,150,0.2)",
   },
-  sectionTitle: { fontSize: 18, fontWeight: '600', flex: 1 },
+  sectionTitle: { fontSize: 18, fontWeight: "600", flex: 1 },
 
   settingRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: 16,
     paddingVertical: 14,
     borderBottomWidth: StyleSheet.hairlineWidth,
-    borderBottomColor: 'rgba(150,150,150,0.1)'
+    borderBottomColor: "rgba(150,150,150,0.1)",
   },
-  settingLabelContainer: { flexDirection: 'row', alignItems: 'center', flex: 1 },
+  settingLabelContainer: { flexDirection: "row", alignItems: "center", flex: 1 },
   settingLabel: { fontSize: 16 },
   infoButton: { marginLeft: 8, padding: 4 },
 
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderRadius: 8,
     paddingHorizontal: 12,
     height: 40,
-    width: 160
+    width: 160,
   },
   input: { flex: 1, height: 40, fontSize: 16 },
   inputUnit: { marginLeft: 4, fontSize: 16 },
 
-  themeGrid: { flexDirection: 'row', flexWrap: 'wrap', padding: 12 },
+  themeGrid: { flexDirection: "row", flexWrap: "wrap", padding: 12 },
   themeItem: {
-    width: '30%',
-    marginHorizontal: '1.5%',
+    width: "30%",
+    marginHorizontal: "1.5%",
     marginVertical: 8,
     borderRadius: 8,
     padding: 12,
-    alignItems: 'center',
+    alignItems: "center",
     borderWidth: 2,
-    borderColor: 'transparent'
+    borderColor: "transparent",
   },
   selectedTheme: { borderWidth: 2 },
 
   themeColorPreview: {
-    width: 36,             // outer circle diameter
+    width: 36,
     height: 36,
     borderRadius: 18,
     marginBottom: 8,
-    alignItems: 'center',  // center inner dot
-    justifyContent: 'center'
+    alignItems: "center",
+    justifyContent: "center",
   },
   themeColorSecondary: {
-    width: 20,             // inner dot diameter
+    width: 20,
     height: 20,
-    borderRadius: 10
+    borderRadius: 10,
   },
 
   themeName: {
     fontSize: 12,
-    textAlign: 'center',  // center each of the two lines
-    lineHeight: 16        // spacing between lines
+    textAlign: "center",
+    lineHeight: 16,
   },
 
   disclaimer: {
     fontSize: 12,
-    textAlign: 'center',
+    textAlign: "center",
     paddingHorizontal: 16,
     paddingBottom: 16,
-    fontStyle: 'italic'
+    fontStyle: "italic",
   },
-  footer: { alignItems: 'center', marginTop: 8, marginBottom: 24 },
-  footerText: { fontSize: 14 }
+  footer: { alignItems: "center", marginTop: 8, marginBottom: 24 },
+  footerText: { fontSize: 14 },
 });
