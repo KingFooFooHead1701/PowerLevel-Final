@@ -232,7 +232,7 @@ export default function SettingsScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: theme.textSecondary }]}>
-            Power Level v1.0.0
+            Power Level v3.3.0
           </Text>
         </View>
       </ScrollView>

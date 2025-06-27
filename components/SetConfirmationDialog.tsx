@@ -1,10 +1,16 @@
 // components/SetConfirmationDialog.tsx
 
 import React, { useEffect } from "react";
-import { Modal, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import {
+  Modal,
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity
+} from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
-import { Audio } from "expo-audio";            // ← updated import
+import { Audio } from "expo-av";          // ← make sure this is expo-av
 import { X } from "lucide-react-native";
 
 interface SetConfirmationDialogProps {
@@ -38,14 +44,14 @@ export default function SetConfirmationDialog({
 }: SetConfirmationDialogProps) {
   const { theme } = useTheme();
 
-  // Play sound when dialog appears
+  // play the hammer-tink whenever the dialog opens
   useEffect(() => {
-    let soundObject: Audio.Sound | null = null;
+    let soundObject: Audio.Sound;
     if (visible) {
       (async () => {
         try {
           const { sound } = await Audio.Sound.createAsync(
-            require("../assets/sounds/hammertink.mp3")  // ← correct path
+            require("../assets/sounds/hammertink.mp3")  // ← correct relative path
           );
           soundObject = sound;
           await soundObject.playAsync();
@@ -68,7 +74,12 @@ export default function SetConfirmationDialog({
   const isTreadmill = exercise.name.toLowerCase().includes("treadmill");
 
   return (
-    <Modal visible={visible} transparent animationType="fade" onRequestClose={onClose}>
+    <Modal
+      visible={visible}
+      transparent
+      animationType="fade"
+      onRequestClose={onClose}
+    >
       <View style={styles.modalOverlay}>
         <View style={[styles.modalContent, { backgroundColor: theme.cardBackground }]}>
           <View style={styles.modalHeader}>

@@ -14,15 +14,15 @@ export interface CalculateParams {
   };
   bodyWeight: number;
   duration?: number;   // seconds for isometric holds
-  distance?: number;
-  speed?: number;
-  incline?: number;
+  distance?: number;   // km or miles
+  speed?: number;      // km/h or mph, no longer used for work calc
+  incline?: number;    // percent, for treadmill
 }
 
 /**
  * calculateJoules computes energy expended in joules.
  * - For isometric: uses MET × bodyWeight × time (seconds → hours).
- * - For cardio: uses distance, speed, and MET value.
+ * - For cardio: uses work = force × distance (vertical + rolling).
  * - For strength: uses force × displacement × reps.
  * Returns 0 if required inputs are missing.
  */
@@ -35,43 +35,68 @@ export function calculateJoules({
   exercise,
   bodyWeight,
   duration,
-  distance,
-  speed,
-  incline,
+  distance = 0,
+  incline = 0,
 }: CalculateParams): number {
+  // convert user body weight to kilograms
+  const massKg = useMetricUnits
+    ? bodyWeight
+    : bodyWeight * 0.453592;
+
   // 1) Isometric holds
   if (exercise.isIsometric) {
     if (!duration || duration <= 0) return 0;
-  // convert body weight to kg if user is in imperial
-  const weightKg = useMetricUnits
-    ? bodyWeight
-    : bodyWeight * 0.453592;
-  const met = exercise.metValue ?? 1.5;      // default MET for isometrics
-  const hours = duration / 3600;              // seconds → hours
-  const calories = met * weightKg * hours;    // MET × kg × hours
-  return calories * 4184;                     // kcal → joules
-}
+    const met = exercise.metValue ?? 1.5;      // default MET for isometrics
+    const hours = duration / 3600;              // seconds → hours
+    const calories = met * massKg * hours;      // MET × kg × hours
+    return calories * 4184;                     // kcal → joules
+  }
 
-  // 2) Cardio
+  // 2) Cardio (incl. treadmill)
   if (exercise.isCardio) {
-    const isTreadmill = exercise.name.toLowerCase().includes("treadmill");
-    if (!distance || !speed || (isTreadmill && incline == null)) {
-      return 0;
-    }
-    const durationHours = distance / speed;
-    const met = exercise.metValue ?? 1;
-    const calories = met * bodyWeight * durationHours;
-    return calories * 4184;
+    if (distance <= 0) return 0;
+
+    // convert horizontal distance to meters
+    const distanceMeters = useMetricUnits
+      ? distance * 1000
+      : distance * 1609.34;
+
+    // incline percentage → decimal (e.g. 5% = 0.05)
+    const inclineDecimal = incline / 100;
+
+    // vertical meters climbed
+    const verticalMeters = distanceMeters * inclineDecimal;
+
+    // work against gravity: m * g * h
+    const g = 9.81; // m/s²
+    const gravityWork = massKg * g * verticalMeters;
+
+    // approximate rolling resistance on flat: ~1% of gravity × distance
+    const rollingCoeff = 0.01;
+    const horizontalWork = massKg * g * distanceMeters * rollingCoeff;
+
+    // total mechanical work
+    const totalWork = gravityWork + horizontalWork;
+
+    // pseudo-joules = mechanical work (already in joules)
+    return totalWork;
   }
 
   // 3) Strength / dynamic resistance
-  const massKg = useMetricUnits ? weight : weight * 0.453592;
+  // — always include 30% of your body weight plus any additional weight entered
+  const bodyWeightPortion = 0.30;
+  const baseMassKg = massKg * bodyWeightPortion;
+  const externalMassKg = weight > 0
+    ? (useMetricUnits ? weight : weight * 0.453592)
+    : 0;
+  const lifterMassKg = baseMassKg + externalMassKg;
+
   const heightM = displacement;
   const g = 9.81; // m/s²
-  const workPerRep = massKg * g * heightM;
+  const workPerRep = lifterMassKg * g * heightM;
   const totalWork = workPerRep * reps;
 
-  // simplified pseudo‐joules mode
+  // simplified pseudo-joules mode
   if (usePseudoJoules) {
     return totalWork;
   }
@@ -79,7 +104,6 @@ export function calculateJoules({
   // already in joules
   return totalWork;
 }
-
 
 /**
  * formatEnergy converts joules into a human-readable format.

@@ -2,53 +2,67 @@
 import React, { useEffect, useRef, useState } from "react";
 import { showMessage } from "react-native-flash-message";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
-import { useSettingsStore } from "@/hooks/use-settings-store";
 import { useAchievementStore } from "@/hooks/use-achievement-store";
 import { achievements } from "@/constants/achievements";
 
 export default function AchievementNotifier() {
-  // pull in your workout data
   const { sets } = useExerciseStore();
-  const { /* cardio/distance if used */ } = useSettingsStore();
-
-  // selectors from your zustand store
   const evaluateAchievements = useAchievementStore(s => s.evaluateAchievements);
   const unlockedIds         = useAchievementStore(s => s.unlockedIds);
 
-  // track whether we’ve done our “initial sync”
   const [didInit, setDidInit] = useState(false);
-  // hold the last‐seen unlocked list
   const prevUnlockedRef = useRef<string[]>([]);
 
-  // 1️⃣ every time your underlying data changes, re-run unlock logic
+  // Re-run your unlock logic any time data changes
   useEffect(() => {
     evaluateAchievements();
-  }, [evaluateAchievements, sets /* add other deps here */]);
+  }, [evaluateAchievements, sets]);
 
-  // 2️⃣ once the store’s unlockedIds updates...
+  // Watch unlockedIds; the first time we see a non-empty list, just seed and bail.
   useEffect(() => {
+    // If we haven’t seeded yet…
     if (!didInit) {
-      // first time only: just seed our ref, don’t toast
-      prevUnlockedRef.current = unlockedIds;
-      setDidInit(true);
+      // Once the store has loaded its persisted achievements
+      if (unlockedIds.length > 0) {
+        prevUnlockedRef.current = unlockedIds; // seed
+        setDidInit(true);
+      }
       return;
     }
 
-    // afterwards: figure out which IDs are brand-new
+    // Now only show toasts for IDs added after seeding
     const newOnes = unlockedIds.filter(id => !prevUnlockedRef.current.includes(id));
-    newOnes.forEach(id => {
-      const a = achievements.find(a => a.id === id);
-      if (a) {
-        showMessage({
-          message: a.title,
-          description: a.description,
-          type: "success",
-        });
-      }
-    });
+    if (newOnes.length === 0) return;
 
-    // then update our “last seen” list
+    // **Immediately** update our “seen” list so reload won’t retrigger these
     prevUnlockedRef.current = unlockedIds;
+
+    const queue = newOnes
+      .map(id => achievements.find(a => a.id === id))
+      .filter((a): a is typeof achievements[0] => Boolean(a));
+
+    const showNext = (i: number) => {
+      if (i >= queue.length) return;
+      const a = queue[i]!;
+      showMessage({
+        message:      a.title,
+        description:  a.description,
+        type:         "success",
+        floating:     true,
+        position:     "top",
+        duration:     3000,
+        style: {
+          marginTop:       80,   // your preferred drop distance
+          paddingVertical: 16,
+          borderRadius:    8,
+        },
+        titleStyle: { fontSize: 18 },
+        textStyle:  { fontSize: 14 },
+        onHide:    () => setTimeout(() => showNext(i + 1), 200),
+      });
+    };
+
+    showNext(0);
   }, [unlockedIds, didInit]);
 
   return null;
