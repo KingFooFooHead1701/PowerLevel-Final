@@ -7,7 +7,7 @@ export interface CalculateParams {
   displacement: number;
   usePseudoJoules: boolean;
   exercise: {
-    isCardio: boolean;
+    isCardio?: boolean;
     isIsometric?: boolean;
     name: string;
     metValue?: number;
