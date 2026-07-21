@@ -7,7 +7,7 @@ export async function playSound(asset: any) {
     await sound.playAsync();
     // automatically unload when playback finishes:
     sound.setOnPlaybackStatusUpdate((status) => {
-      if (status.didJustFinish) {
+      if (status.isLoaded && status.didJustFinish) {
         sound.unloadAsync().catch(() => {});
       }
     });
