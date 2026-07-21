@@ -15,14 +15,13 @@ import { useSettingsStore } from "@/hooks/use-settings-store";
 import CustomSplashScreen from "@/components/CustomSplashScreen";
 import AchievementNotifier from "@/components/AchievementNotifier";
 import FlashMessage from "react-native-flash-message";
-import { clearAllAppData } from "@/hooks/use-exercise-store";
 
 export const unstable_settings = {
   initialRouteName: "(tabs)",
 };
 
 SplashScreen.preventAutoHideAsync();
-const APP_VERSION = "1.0.2";
+const APP_VERSION = "1.0.0";
 const APP_VERSION_KEY = "app-version";
 
 export default function RootLayout() {
@@ -41,12 +40,11 @@ export default function RootLayout() {
       try {
         await SplashScreen.preventAutoHideAsync();
         const stored = await AsyncStorage.getItem(APP_VERSION_KEY);
-        if (!stored || stored !== APP_VERSION) {
+        if (!stored) {
           setIsFirstLaunch(true);
           await AsyncStorage.setItem(APP_VERSION_KEY, APP_VERSION);
-          if (stored && stored !== APP_VERSION) {
-            await clearAllAppData();
-          }
+        } else if (stored !== APP_VERSION) {
+          await AsyncStorage.setItem(APP_VERSION_KEY, APP_VERSION);
         }
         await new Promise(r => setTimeout(r, 2000));
       } catch (e) {
