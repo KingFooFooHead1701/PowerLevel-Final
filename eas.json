@@ -20,6 +20,5 @@
   },
   "submit": {
     "production": {}
-  },
-  "packageManager": "npm"
+    }
 }
