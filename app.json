@@ -22,7 +22,14 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundImage": "./assets/images/adaptive-bg.png"
       },
-      "package": "com.kingfoofoohead.powerlevel"
+      "package": "com.kingfoofoohead.powerlevel",
+"blockedPermissions": [
+  "android.permission.RECORD_AUDIO",
+  "android.permission.ACCESS_COARSE_LOCATION",
+  "android.permission.ACCESS_FINE_LOCATION",
+  "android.permission.READ_EXTERNAL_STORAGE",
+  "android.permission.WRITE_EXTERNAL_STORAGE"
+]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
