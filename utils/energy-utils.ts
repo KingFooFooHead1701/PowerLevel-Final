@@ -112,17 +112,19 @@ export interface FormatResult {
   value: number;
   unit: string;
   abbreviated: string;
+  full: string;
 }
 
 export function formatEnergy(joules: number): FormatResult {
+  const full = `${Math.round(joules).toLocaleString()} joules`;
   if (joules >= 1_000_000) {
     const value = +(joules / 1_000_000).toFixed(2);
-    return { value, unit: "MJ", abbreviated: `${value} MJ` };
+    return { value, unit: "MJ", abbreviated: `${value} MJ`, full };
   } else if (joules >= 1_000) {
     const value = +(joules / 1_000).toFixed(1);
-    return { value, unit: "kJ", abbreviated: `${value} kJ` };
+    return { value, unit: "kJ", abbreviated: `${value} kJ`, full };
   } else {
     const value = +joules.toFixed(0);
-    return { value, unit: "J", abbreviated: `${value} J` };
+    return { value, unit: "J", abbreviated: `${value} J`, full };
   }
 }
