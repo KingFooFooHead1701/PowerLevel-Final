@@ -3,7 +3,7 @@
 import { create } from 'zustand';
 import { achievements } from '@/constants/achievements';
 import { useExerciseStore } from '@/hooks/use-exercise-store';
-import { calculateJoules } from '@/utils/energy-utils';
+import { useSettingsStore } from '@/hooks/use-settings-store';
 
 interface AchievementState {
   unlockedIds: string[];
@@ -21,10 +21,8 @@ export const useAchievementStore = create<AchievementState>((set, get) => ({
       sets,
       exercises,
       getTotalJoules,
-      useMetricUnits,
-      usePseudoJoules,
-      bodyWeight,
     } = useExerciseStore.getState();
+    const { useMetricUnits } = useSettingsStore.getState();
 
     const totalJoules = getTotalJoules();
     const totalLiftedUnits = sets.reduce(
