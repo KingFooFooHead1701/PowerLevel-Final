@@ -7,7 +7,6 @@ import {
   View,
   Animated,
   Easing,
-  Platform,
   TouchableOpacity,
   StatusBar,
 } from "react-native";
@@ -16,7 +15,7 @@ import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { formatEnergy } from "@/utils/energy-utils";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import { Audio } from "expo-av";
+import { useAudioPlayer, useAudioPlayerStatus, type AudioPlayer } from "expo-audio";
 import { getPowerTierName } from "@/utils/milestone-utils";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack, useRouter } from "expo-router";
@@ -27,11 +26,13 @@ export default function PowerLevelScreen() {
   const { theme } = useTheme();
   const { getTotalJoules } = useExerciseStore();
   const [totalJoules, setTotalJoules] = useState(0);
-  const [soundsLoaded, setSoundsLoaded] = useState(false);
+  const scannerSound = useAudioPlayer(require("@/assets/sounds/beep.mp3"));
+  const revealSound = useAudioPlayer(require("@/assets/sounds/chirp.mp3"));
+  const thumpSound = useAudioPlayer(require("@/assets/sounds/thump.mp3"));
 
-  const scannerSound = useRef<Audio.Sound | null>(null);
-  const revealSound  = useRef<Audio.Sound | null>(null);
-  const thumpSound   = useRef<Audio.Sound | null>(null);
+  const scannerStatus = useAudioPlayerStatus(scannerSound);
+  const revealStatus = useAudioPlayerStatus(revealSound);
+  const thumpStatus = useAudioPlayerStatus(thumpSound);
 
   const scannerAnim           = useRef(new Animated.Value(0)).current;
   const scannerBGOpacity      = useRef(new Animated.Value(0)).current;
@@ -39,44 +40,29 @@ export default function PowerLevelScreen() {
   const tierOpacity           = useRef(new Animated.Value(0)).current;
   const tierScale             = useRef(new Animated.Value(1)).current;
 
-  useEffect(() => {
+    useEffect(() => {
     setTotalJoules(getTotalJoules());
-    (async () => {
-      if (Platform.OS !== "web") {
-        try {
-          const { sound } = await Audio.Sound.createAsync(require("@/assets/sounds/beep.mp3"));
-          scannerSound.current = sound;
-        } catch {}
-        try {
-          const { sound } = await Audio.Sound.createAsync(require("@/assets/sounds/chirp.mp3"));
-          revealSound.current = sound;
-        } catch {}
-        try {
-          const { sound } = await Audio.Sound.createAsync(require("@/assets/sounds/thump.mp3"));
-          thumpSound.current = sound;
-        } catch {}
-      }
-      setSoundsLoaded(true);
-    })();
-    return () => {
-      (async () => {
-        if (scannerSound.current) await scannerSound.current.unloadAsync();
-        if (revealSound.current)  await revealSound.current.unloadAsync();
-        if (thumpSound.current)   await thumpSound.current.unloadAsync();
-      })();
-    };
-  }, []);
+  }, [getTotalJoules]);
 
   useEffect(() => {
-    if (soundsLoaded) setTimeout(startAnimation, 800);
-  }, [soundsLoaded]);
-
-  const play = async (ref: React.MutableRefObject<Audio.Sound | null>) => {
-    if (ref.current) {
-      await ref.current.setPositionAsync(0);
-      await ref.current.playAsync();
+    if (
+      scannerStatus.isLoaded &&
+      revealStatus.isLoaded &&
+      thumpStatus.isLoaded
+    ) {
+      const timer = setTimeout(startAnimation, 800);
+      return () => clearTimeout(timer);
     }
-  };
+  }, [
+    scannerStatus.isLoaded,
+    revealStatus.isLoaded,
+    thumpStatus.isLoaded,
+  ]);
+
+  const play = async (player: AudioPlayer) => {
+  await player.seekTo(0);
+  player.play();
+};
 
   function startAnimation() {
     // reset

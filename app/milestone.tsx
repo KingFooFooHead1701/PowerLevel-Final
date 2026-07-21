@@ -4,7 +4,7 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Haptics from "expo-haptics";
-import { Audio } from "expo-av";
+import { useAudioPlayer } from "expo-audio";
 import { Platform } from "react-native";
 import { Zap } from "lucide-react-native";
 
@@ -12,39 +12,25 @@ export default function MilestoneScreen() {
   const { level } = useLocalSearchParams();
   const router = useRouter();
   const { theme } = useTheme();
+  const celebrationPlayer = useAudioPlayer(require("@/assets/sounds/thump.mp3"));
 
-  useEffect(() => {
-    // Play celebration sound and haptic feedback
+    useEffect(() => {
     const playCelebration = async () => {
       if (Platform.OS !== "web") {
         try {
-          // Trigger success haptic feedback
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-          
-          // Play celebration sound
-          try {
-            const { sound } = await Audio.Sound.createAsync(
-              require('@/assets/sounds/thump.mp3')
-            );
-            await sound.playAsync();
-            
-            // Unload sound when done
-            sound.setOnPlaybackStatusUpdate((status) => {
-              if (status.isLoaded && status.isPlaying === false && status.positionMillis > 0) {
-                sound.unloadAsync();
-              }
-            });
-          } catch (error) {
-            console.log("Error playing celebration sound:", error);
-          }
+          await Haptics.notificationAsync(
+            Haptics.NotificationFeedbackType.Success
+          );
+          await celebrationPlayer.seekTo(0);
+          celebrationPlayer.play();
         } catch (error) {
           console.log("Error playing celebration:", error);
         }
       }
     };
-    
+
     playCelebration();
-  }, []);
+  }, [celebrationPlayer]);
 
   const handleContinue = () => {
     router.back();

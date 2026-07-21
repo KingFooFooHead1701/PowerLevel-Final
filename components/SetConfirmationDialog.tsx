@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
-import { Audio } from "expo-av";          // ← make sure this is expo-av
+import { useAudioPlayer } from "expo-audio";
 import { X } from "lucide-react-native";
 
 interface SetConfirmationDialogProps {
@@ -43,29 +43,21 @@ export default function SetConfirmationDialog({
   totalJoules,
 }: SetConfirmationDialogProps) {
   const { theme } = useTheme();
+  const hammerPlayer = useAudioPlayer(require("../assets/sounds/hammertink.mp3"));
 
-  // play the hammer-tink whenever the dialog opens
+    // play the hammer-tink whenever the dialog opens
   useEffect(() => {
-    let soundObject: Audio.Sound;
     if (visible) {
       (async () => {
         try {
-          const { sound } = await Audio.Sound.createAsync(
-            require("../assets/sounds/hammertink.mp3")  // ← correct relative path
-          );
-          soundObject = sound;
-          await soundObject.playAsync();
+          await hammerPlayer.seekTo(0);
+          hammerPlayer.play();
         } catch (err) {
-          console.warn("Error loading or playing sound:", err);
+          console.warn("Error playing sound:", err);
         }
       })();
     }
-    return () => {
-      if (soundObject) {
-        soundObject.unloadAsync();
-      }
-    };
-  }, [visible]);
+  }, [visible, hammerPlayer]);
 
   if (!set) return null;
 

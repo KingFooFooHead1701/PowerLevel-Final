@@ -23,13 +23,13 @@
         "backgroundImage": "./assets/images/adaptive-bg.png"
       },
       "package": "com.kingfoofoohead.powerlevel",
-"blockedPermissions": [
-  "android.permission.RECORD_AUDIO",
-  "android.permission.ACCESS_COARSE_LOCATION",
-  "android.permission.ACCESS_FINE_LOCATION",
-  "android.permission.READ_EXTERNAL_STORAGE",
-  "android.permission.WRITE_EXTERNAL_STORAGE"
-]
+      "blockedPermissions": [
+        "android.permission.RECORD_AUDIO",
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION",
+        "android.permission.READ_EXTERNAL_STORAGE",
+        "android.permission.WRITE_EXTERNAL_STORAGE"
+      ]
     },
     "web": {
       "favicon": "./assets/images/favicon.png"
@@ -41,7 +41,15 @@
           "origin": "https://rork.com/"
         }
       ],
-      "expo-font"
+      "expo-font",
+      "expo-web-browser",
+      [
+        "expo-audio",
+        {
+          "microphonePermission": false
+        }
+      ],
+      "expo-asset"
     ],
     "experiments": {
       "typedRoutes": true
