@@ -2,6 +2,7 @@ import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Exercise, defaultExercises } from "@/constants/exercises";
+import type { DistanceUnit } from "@/utils/distance-utils";
 
 export interface Set {
   id: string;
@@ -12,6 +13,7 @@ export interface Set {
   joules: number;
   duration?: number; // in seconds, for isometric exercises
   distance?: number; // in km or miles, for cardio exercises
+  distanceUnit?: DistanceUnit; // preserves the unit used when cardio was logged
   speed?: number; // in km/h or mph, for cardio exercises
   incline?: number; // in percent, for treadmill exercises
 }
@@ -30,8 +32,8 @@ interface ExerciseState {
   resetToDefaults: () => void; // Add reset function
 }
 
-// Current version of the store schema - increment this when making changes to force a reset
-const CURRENT_VERSION = 5; // Incremented to force reset
+// Current version of the store schema. Older persisted data is upgraded in place.
+const CURRENT_VERSION = 5;
 
 export const useExerciseStore = create<ExerciseState>()(
   persist(
@@ -86,12 +88,9 @@ export const useExerciseStore = create<ExerciseState>()(
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
         if (state) {
-          // Check if we need to update from an older version
+          // Keep saved workouts and custom exercises when upgrading older data.
           if (!state.version || state.version < CURRENT_VERSION) {
-            // Reset to defaults if version mismatch
-            console.log("Version mismatch, resetting to defaults");
-            state.exercises = defaultExercises;
-            state.sets = [];
+            console.log("Upgrading persisted workout data");
             state.version = CURRENT_VERSION;
           }
           state.isLoading = false;
