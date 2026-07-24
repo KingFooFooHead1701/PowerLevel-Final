@@ -15,6 +15,11 @@ import { formatDate, isToday } from "@/utils/date-utils";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
 import DatePicker from "@/components/DatePicker";
 import RecentDaysStrip from "@/components/RecentDaysStrip";
+import {
+  formatDistance,
+  getDistanceInUnit,
+  getDistanceUnit,
+} from "@/utils/distance-utils";
 
 interface ExerciseSummary {
   exerciseId: string;
@@ -38,6 +43,7 @@ export default function SummaryScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [exerciseSummary, setExerciseSummary] = useState<ExerciseSummary[]>([]);
   const [allTimeTotal, setAllTimeTotal] = useState(0);
+  const [allTimeDistance, setAllTimeDistance] = useState(0);
   const [datesWithData, setDatesWithData] = useState<Date[]>([]);
   const [scrollToToday, setScrollToToday] = useState(false);
   
@@ -130,7 +136,14 @@ export default function SummaryScreen() {
     // Calculate all-time total
     const total = sets.reduce((sum, set) => sum + (set.weight * set.reps), 0);
     setAllTimeTotal(total);
-  }, [sets, exercises]);
+
+    const displayUnit = getDistanceUnit(useMetricUnits);
+    const distanceTotal = sets.reduce((sum, set) => {
+      if (!set.distance || set.distance <= 0) return sum;
+      return sum + getDistanceInUnit(set.distance, set.distanceUnit, displayUnit);
+    }, 0);
+    setAllTimeDistance(distanceTotal);
+  }, [sets, exercises, useMetricUnits]);
   
   // Navigation functions
   const goToToday = () => {
@@ -167,6 +180,8 @@ export default function SummaryScreen() {
   const formatTotalWeight = (weight: number) => {
     return `${weight.toLocaleString()} ${useMetricUnits ? 'kg' : 'lbs'}`;
   };
+
+  const displayDistanceUnit = getDistanceUnit(useMetricUnits);
   
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: theme.background }]}>
@@ -266,15 +281,6 @@ export default function SummaryScreen() {
                   </View>
                 </View>
               ))}
-              
-              <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
-                  All-Time Total Weight Lifted
-                </Text>
-                <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
-                  {formatTotalWeight(allTimeTotal)}
-                </Text>
-              </View>
             </>
           ) : (
             <View style={[styles.emptyState, { backgroundColor: theme.cardBackground }]}>
@@ -286,6 +292,26 @@ export default function SummaryScreen() {
               </Text>
             </View>
           )}
+
+          <View style={styles.lifetimeStats}>
+            <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
+              <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
+                All-Time Total Weight Lifted
+              </Text>
+              <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
+                {formatTotalWeight(allTimeTotal)}
+              </Text>
+            </View>
+
+            <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
+              <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
+                All-Time Total Distance
+              </Text>
+              <Text style={[styles.allTimeTotal, { color: theme.secondary }]}>
+                {formatDistance(allTimeDistance, displayDistanceUnit)}
+              </Text>
+            </View>
+          </View>
         </ScrollView>
       </View>
       
@@ -406,8 +432,12 @@ const styles = StyleSheet.create({
   allTimeCard: {
     borderRadius: 12,
     padding: 20,
-    marginBottom: 40,
+    marginBottom: 12,
     alignItems: "center",
+  },
+  lifetimeStats: {
+    marginTop: 16,
+    marginBottom: 28,
   },
   allTimeLabel: {
     fontSize: 14,
