@@ -22,6 +22,7 @@ import SetInput from "@/components/SetInput";
 import SetHistoryItem from "@/components/SetHistoryItem";
 import { checkMilestone } from "@/utils/milestone-utils";
 import SetConfirmationDialog from "@/components/SetConfirmationDialog";
+import { getDistanceUnit } from "@/utils/distance-utils";
 
 export default function ExerciseDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -98,7 +99,11 @@ export default function ExerciseDetailScreen() {
         exerciseId: exercise.id,
         date: new Date().toISOString(),
         reps: 0, weight: 0,
-        joules, distance: distanceNum, speed: speedNum, incline: inclineNum
+        joules,
+        distance: distanceNum,
+        distanceUnit: getDistanceUnit(useMetricUnits),
+        speed: speedNum,
+        incline: inclineNum
       };
       addSet(newSet);
       setTotalJoules(before + joules);
