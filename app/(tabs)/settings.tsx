@@ -14,6 +14,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import Constants from "expo-constants";
 import { useTheme } from "@/hooks/use-theme";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import ResetDataButton from "@/components/ResetDataButton";
@@ -294,7 +295,7 @@ export default function SettingsScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: theme.textSecondary }]}>
-            Power Level v1.0.0
+            Power Level v{Constants.expoConfig?.version ?? "1.1.0"}
           </Text>
         </View>
       </ScrollView>
