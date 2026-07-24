@@ -12,6 +12,12 @@ import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
 import { Audio } from "expo-av";          // ← make sure this is expo-av
 import { X } from "lucide-react-native";
+import {
+  formatDistance,
+  getDistanceInUnit,
+  getDistanceUnit,
+} from "@/utils/distance-utils";
+import type { DistanceUnit } from "@/utils/distance-utils";
 
 interface SetConfirmationDialogProps {
   visible: boolean;
@@ -21,6 +27,7 @@ interface SetConfirmationDialogProps {
     weight: number;
     joules: number;
     distance?: number;
+    distanceUnit?: DistanceUnit;
     speed?: number;
     incline?: number;
     duration?: number;
@@ -72,6 +79,17 @@ export default function SetConfirmationDialog({
   const { abbreviated: setEnergy, full: setEnergyFull } = formatEnergy(set.joules);
   const { abbreviated: totalEnergy } = formatEnergy(totalJoules);
   const isTreadmill = exercise.name.toLowerCase().includes("treadmill");
+  const displayDistanceUnit = getDistanceUnit(useMetricUnits);
+  const displayDistance = getDistanceInUnit(
+    set.distance ?? 0,
+    set.distanceUnit,
+    displayDistanceUnit
+  );
+  const displaySpeed = getDistanceInUnit(
+    set.speed ?? 0,
+    set.distanceUnit,
+    displayDistanceUnit
+  );
 
   return (
     <Modal
@@ -97,10 +115,12 @@ export default function SetConfirmationDialog({
             {exercise.isCardio ? (
               <View style={styles.setDetails}>
                 <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                  Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
+                  Distance: {formatDistance(displayDistance, displayDistanceUnit)}
                 </Text>
                 <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                  Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
+                  Speed: {displaySpeed.toLocaleString(undefined, {
+                    maximumFractionDigits: 2,
+                  })} {useMetricUnits ? "km/h" : "mph"}
                 </Text>
                 {isTreadmill && set.incline !== undefined && (
                   <Text style={[styles.detailText, { color: theme.textSecondary }]}>
