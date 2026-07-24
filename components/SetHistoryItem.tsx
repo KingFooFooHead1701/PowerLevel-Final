@@ -3,6 +3,12 @@ import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
 import { Trash2 } from "lucide-react-native";
+import {
+  formatDistance,
+  getDistanceInUnit,
+  getDistanceUnit,
+} from "@/utils/distance-utils";
+import type { DistanceUnit } from "@/utils/distance-utils";
 
 interface SetHistoryItemProps {
   set: {
@@ -13,6 +19,7 @@ interface SetHistoryItemProps {
     joules: number;
     duration?: number;
     distance?: number;
+    distanceUnit?: DistanceUnit;
     speed?: number;
     incline?: number;
   };
@@ -38,6 +45,17 @@ function SetHistoryItem({
   const unit = useMetricUnits ? "kg" : "lbs";
   const totalWeight = set.reps * set.weight;
   const { abbreviated: energyAbbreviated } = formatEnergy(set.joules);
+  const displayDistanceUnit = getDistanceUnit(useMetricUnits);
+  const displayDistance = getDistanceInUnit(
+    set.distance ?? 0,
+    set.distanceUnit,
+    displayDistanceUnit
+  );
+  const displaySpeed = getDistanceInUnit(
+    set.speed ?? 0,
+    set.distanceUnit,
+    displayDistanceUnit
+  );
 
   return (
     <View style={[styles.container, { backgroundColor: theme.cardBackground }]}>
@@ -55,10 +73,12 @@ function SetHistoryItem({
           {isCardio ? (
             <>
               <Text style={[styles.detailText, { color: theme.text }]}>
-                Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
+                Distance: {formatDistance(displayDistance, displayDistanceUnit)}
               </Text>
               <Text style={[styles.detailText, { color: theme.text }]}>
-                Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
+                Speed: {displaySpeed.toLocaleString(undefined, {
+                  maximumFractionDigits: 2,
+                })} {useMetricUnits ? "km/h" : "mph"}
               </Text>
               {isTreadmill && set.incline !== undefined && (
                 <Text style={[styles.detailText, { color: theme.text }]}>
