@@ -14,11 +14,16 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import Constants from "expo-constants";
 import { useTheme } from "@/hooks/use-theme";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import ResetDataButton from "@/components/ResetDataButton";
 import { themes, ThemeName } from "@/constants/themes";
-import { Info } from "lucide-react-native";
+import {
+  findThemeCollection,
+  themeCollections,
+} from "@/constants/theme-collections";
+import { ChevronDown, ChevronUp, Info } from "lucide-react-native";
 
 export default function SettingsScreen() {
   const {
@@ -33,6 +38,9 @@ export default function SettingsScreen() {
   const [weightInput, setWeightInput] = useState(
     bodyWeight ? bodyWeight.toString() : ""
   );
+  const [expandedCollectionId, setExpandedCollectionId] = useState<
+    string | null
+  >(findThemeCollection(themeName)?.id ?? themeCollections[0].id);
 
   const handleWeightChange = (text: string) => {
     setWeightInput(text);
@@ -171,48 +179,127 @@ export default function SettingsScreen() {
               <Info size={16} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
-          <View style={styles.themeGrid}>
-            {(Object.keys(themes) as ThemeName[]).map((name) => {
-              const words = name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name];
-              const labelText = words.join("\n");
+          <Text style={[styles.collectionHint, { color: theme.textSecondary }]}>
+            Choose a collection, then select a color theme.
+          </Text>
+          <View style={styles.collectionGrid}>
+            {themeCollections.map((collection) => {
+              const isExpanded = expandedCollectionId === collection.id;
+              const containsSelectedTheme =
+                collection.themeNames.includes(themeName);
+
               return (
                 <TouchableOpacity
-                  key={name}
+                  key={collection.id}
                   style={[
-                    styles.themeItem,
-                    { backgroundColor: themes[name].cardBackground },
-                    themeName === name && styles.selectedTheme,
-                    themeName === name && { borderColor: themes[name].primary },
+                    styles.collectionItem,
+                    {
+                      backgroundColor: theme.inputBackground,
+                      borderColor:
+                        isExpanded || containsSelectedTheme
+                          ? theme.primary
+                          : theme.border,
+                    },
                   ]}
-                  onPress={() => setThemeName(name)}
+                  onPress={() =>
+                    setExpandedCollectionId(
+                      isExpanded ? null : collection.id
+                    )
+                  }
                 >
-                  <View
-                    style={[
-                      styles.themeColorPreview,
-                      { backgroundColor: themes[name].secondary },
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.themeColorSecondary,
-                        { backgroundColor: themes[name].primary },
-                      ]}
-                    />
-                  </View>
                   <Text
                     style={[
-                      styles.themeName,
-                      { color: themes[name].text },
-                      themeName === name && { fontWeight: "700" },
+                      styles.collectionName,
+                      { color: theme.text },
+                      containsSelectedTheme && { fontWeight: "700" },
                     ]}
                     numberOfLines={2}
                   >
-                    {labelText}
+                    {collection.label}
                   </Text>
+                  <Text
+                    style={[
+                      styles.collectionCount,
+                      { color: theme.textSecondary },
+                    ]}
+                  >
+                    {collection.themeNames.length} themes
+                  </Text>
+                  {isExpanded ? (
+                    <ChevronUp size={16} color={theme.primary} />
+                  ) : (
+                    <ChevronDown size={16} color={theme.textSecondary} />
+                  )}
                 </TouchableOpacity>
               );
             })}
           </View>
+
+          {themeCollections.map((collection) => {
+            if (expandedCollectionId !== collection.id) return null;
+
+            return (
+              <View
+                key={`${collection.id}-themes`}
+                style={[
+                  styles.expandedCollection,
+                  { borderTopColor: theme.border },
+                ]}
+              >
+                <Text
+                  style={[styles.expandedCollectionTitle, { color: theme.text }]}
+                >
+                  {collection.label}
+                </Text>
+                <View style={styles.themeGrid}>
+                  {collection.themeNames.map((name: ThemeName) => {
+                    const words =
+                      name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name];
+                    const labelText = words.join("\n");
+
+                    return (
+                      <TouchableOpacity
+                        key={name}
+                        style={[
+                          styles.themeItem,
+                          { backgroundColor: themes[name].cardBackground },
+                          themeName === name && styles.selectedTheme,
+                          themeName === name && {
+                            borderColor: themes[name].primary,
+                          },
+                        ]}
+                        onPress={() => setThemeName(name)}
+                      >
+                        <View
+                          style={[
+                            styles.themeColorPreview,
+                            { backgroundColor: themes[name].secondary },
+                          ]}
+                        >
+                          <View
+                            style={[
+                              styles.themeColorSecondary,
+                              { backgroundColor: themes[name].primary },
+                            ]}
+                          />
+                        </View>
+                        <Text
+                          style={[
+                            styles.themeName,
+                            { color: themes[name].text },
+                            themeName === name && { fontWeight: "700" },
+                          ]}
+                          numberOfLines={2}
+                        >
+                          {labelText}
+                        </Text>
+                      </TouchableOpacity>
+                    );
+                  })}
+                </View>
+              </View>
+            );
+          })}
         </View>
 
         {/* Data Management */}
@@ -232,7 +319,7 @@ export default function SettingsScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: theme.textSecondary }]}>
-            Power Level v1.0.0
+            Power Level v{Constants.expoConfig?.version ?? "1.1.0"}
           </Text>
         </View>
       </ScrollView>
@@ -288,6 +375,49 @@ const styles = StyleSheet.create({
   input: { flex: 1, height: 40, fontSize: 16 },
   inputUnit: { marginLeft: 4, fontSize: 16 },
 
+  collectionHint: {
+    fontSize: 13,
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
+  collectionGrid: {
+    flexDirection: "row",
+    flexWrap: "wrap",
+    padding: 12,
+  },
+  collectionItem: {
+    width: "30%",
+    minHeight: 104,
+    marginHorizontal: "1.5%",
+    marginVertical: 8,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    paddingVertical: 10,
+    alignItems: "center",
+    justifyContent: "space-between",
+    borderWidth: 2,
+  },
+  collectionName: {
+    minHeight: 36,
+    fontSize: 13,
+    lineHeight: 17,
+    textAlign: "center",
+  },
+  collectionCount: {
+    fontSize: 11,
+    marginVertical: 4,
+    textAlign: "center",
+  },
+  expandedCollection: {
+    borderTopWidth: StyleSheet.hairlineWidth,
+    paddingTop: 4,
+  },
+  expandedCollectionTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    paddingHorizontal: 16,
+    paddingTop: 12,
+  },
   themeGrid: { flexDirection: "row", flexWrap: "wrap", padding: 12 },
   themeItem: {
     width: "30%",

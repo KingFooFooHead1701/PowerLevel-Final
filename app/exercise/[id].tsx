@@ -98,7 +98,12 @@ export default function ExerciseDetailScreen() {
         exerciseId: exercise.id,
         date: new Date().toISOString(),
         reps: 0, weight: 0,
-        joules, distance: distanceNum, speed: speedNum, incline: inclineNum
+        joules,
+        distance: distanceNum,
+        distanceUnit: useMetricUnits ? ("km" as const) : ("mi" as const),
+        speed: speedNum,
+        speedUnit: useMetricUnits ? ("kmh" as const) : ("mph" as const),
+        incline: inclineNum
       };
       addSet(newSet);
       setTotalJoules(before + joules);

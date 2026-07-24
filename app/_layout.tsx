@@ -7,6 +7,7 @@ import { StatusBar } from "expo-status-bar";
 import { useColorScheme, Platform, Alert } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ScreenOrientation from 'expo-screen-orientation';
+import Constants from "expo-constants";
 
 import { Stack } from "expo-router";
 import { ThemeProvider } from "@/hooks/use-theme";
@@ -21,7 +22,7 @@ export const unstable_settings = {
 };
 
 SplashScreen.preventAutoHideAsync();
-const APP_VERSION = "1.0.0";
+const APP_VERSION = Constants.expoConfig?.version ?? "1.1.0";
 const APP_VERSION_KEY = "app-version";
 
 export default function RootLayout() {

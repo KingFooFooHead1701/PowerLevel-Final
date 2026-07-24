@@ -12,7 +12,9 @@ export interface Set {
   joules: number;
   duration?: number; // in seconds, for isometric exercises
   distance?: number; // in km or miles, for cardio exercises
+  distanceUnit?: "km" | "mi"; // recorded unit for safe mixed-unit totals
   speed?: number; // in km/h or mph, for cardio exercises
+  speedUnit?: "kmh" | "mph";
   incline?: number; // in percent, for treadmill exercises
 }
 
