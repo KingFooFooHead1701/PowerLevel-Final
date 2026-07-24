@@ -17,8 +17,15 @@ import { Stack } from "expo-router";
 import { useTheme } from "@/hooks/use-theme";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import ResetDataButton from "@/components/ResetDataButton";
-import { themes, ThemeName } from "@/constants/themes";
-import { Info } from "lucide-react-native";
+import {
+  themes,
+  ThemeName,
+  themeCollections,
+} from "@/constants/themes";
+import { ChevronDown, ChevronRight, Info } from "lucide-react-native";
+
+const formatThemeName = (name: ThemeName) =>
+  (name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name]).join(" ");
 
 export default function SettingsScreen() {
   const {
@@ -32,6 +39,62 @@ export default function SettingsScreen() {
   const { theme, themeName, setThemeName } = useTheme();
   const [weightInput, setWeightInput] = useState(
     bodyWeight ? bodyWeight.toString() : ""
+  );
+  const [expandedCollectionId, setExpandedCollectionId] = useState<string | null>(
+    "risingHeroes"
+  );
+
+  const toggleCollection = (collectionId: string) => {
+    setExpandedCollectionId((current) =>
+      current === collectionId ? null : collectionId
+    );
+  };
+
+  const renderThemeGrid = (themeNames: readonly ThemeName[]) => (
+    <View style={styles.themeGrid}>
+      {themeNames.map((name) => {
+        const labelText = formatThemeName(name);
+        return (
+          <TouchableOpacity
+            key={name}
+            accessibilityRole="button"
+            accessibilityLabel={`${labelText} theme`}
+            accessibilityState={{ selected: themeName === name }}
+            style={[
+              styles.themeItem,
+              { backgroundColor: themes[name].cardBackground },
+              themeName === name && styles.selectedTheme,
+              themeName === name && { borderColor: themes[name].primary },
+            ]}
+            onPress={() => setThemeName(name)}
+          >
+            <View
+              style={[
+                styles.themeColorPreview,
+                { backgroundColor: themes[name].secondary },
+              ]}
+            >
+              <View
+                style={[
+                  styles.themeColorSecondary,
+                  { backgroundColor: themes[name].primary },
+                ]}
+              />
+            </View>
+            <Text
+              style={[
+                styles.themeName,
+                { color: themes[name].text },
+                themeName === name && { fontWeight: "700" },
+              ]}
+              numberOfLines={2}
+            >
+              {labelText}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
   );
 
   const handleWeightChange = (text: string) => {
@@ -171,48 +234,47 @@ export default function SettingsScreen() {
               <Info size={16} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
-          <View style={styles.themeGrid}>
-            {(Object.keys(themes) as ThemeName[]).map((name) => {
-              const words = name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name];
-              const labelText = words.join("\n");
-              return (
+          {themeCollections.map((collection) => {
+            const isExpanded = expandedCollectionId === collection.id;
+            const containsSelectedTheme = (
+              collection.themeNames as readonly ThemeName[]
+            ).includes(themeName);
+            return (
+              <View key={collection.id}>
                 <TouchableOpacity
-                  key={name}
+                  accessibilityRole="button"
+                  accessibilityLabel={`${collection.title} theme collection`}
+                  accessibilityState={{ expanded: isExpanded }}
                   style={[
-                    styles.themeItem,
-                    { backgroundColor: themes[name].cardBackground },
-                    themeName === name && styles.selectedTheme,
-                    themeName === name && { borderColor: themes[name].primary },
+                    styles.collectionHeader,
+                    { borderColor: containsSelectedTheme ? theme.primary : theme.border },
                   ]}
-                  onPress={() => setThemeName(name)}
+                  onPress={() => toggleCollection(collection.id)}
                 >
-                  <View
-                    style={[
-                      styles.themeColorPreview,
-                      { backgroundColor: themes[name].secondary },
-                    ]}
-                  >
-                    <View
+                  <View style={styles.collectionText}>
+                    <Text style={[styles.collectionTitle, { color: theme.text }]}>
+                      {collection.title}
+                    </Text>
+                    <Text
                       style={[
-                        styles.themeColorSecondary,
-                        { backgroundColor: themes[name].primary },
+                        styles.collectionSubtitle,
+                        { color: theme.textSecondary },
                       ]}
-                    />
+                    >
+                      {collection.subtitle} · {collection.themeNames.length}{" "}
+                      {collection.themeNames.length === 1 ? "theme" : "themes"}
+                    </Text>
                   </View>
-                  <Text
-                    style={[
-                      styles.themeName,
-                      { color: themes[name].text },
-                      themeName === name && { fontWeight: "700" },
-                    ]}
-                    numberOfLines={2}
-                  >
-                    {labelText}
-                  </Text>
+                  {isExpanded ? (
+                    <ChevronDown size={20} color={theme.textSecondary} />
+                  ) : (
+                    <ChevronRight size={20} color={theme.textSecondary} />
+                  )}
                 </TouchableOpacity>
-              );
-            })}
-          </View>
+                {isExpanded && renderThemeGrid(collection.themeNames)}
+              </View>
+            );
+          })}
         </View>
 
         {/* Data Management */}
@@ -288,6 +350,30 @@ const styles = StyleSheet.create({
   input: { flex: 1, height: 40, fontSize: 16 },
   inputUnit: { marginLeft: 4, fontSize: 16 },
 
+  collectionHeader: {
+    minHeight: 64,
+    marginHorizontal: 12,
+    marginTop: 10,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: 10,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  collectionText: {
+    flex: 1,
+    paddingRight: 12,
+  },
+  collectionTitle: {
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  collectionSubtitle: {
+    fontSize: 12,
+    marginTop: 3,
+  },
   themeGrid: { flexDirection: "row", flexWrap: "wrap", padding: 12 },
   themeItem: {
     width: "30%",
