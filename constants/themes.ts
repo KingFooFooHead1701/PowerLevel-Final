@@ -1,3 +1,37 @@
+const createTheme = (
+  primary: string,
+  secondary: string,
+  background: string,
+  cardBackground: string
+) => ({
+  primary,
+  secondary,
+  background,
+  backgroundSecondary: cardBackground,
+  cardBackground,
+  text: "#FFFFFF",
+  textSecondary: "#C7C7CC",
+  border: primary,
+  inputBackground: cardBackground,
+  error: "#FF4D4D",
+  switchTrackOff: "#3A3A3A",
+  switchThumb: "#FFFFFF",
+  dangerBackground: "rgba(255, 77, 77, 0.15)",
+  dangerText: "#FF4D4D",
+});
+
+const createHueTheme = (
+  primaryHue: number,
+  secondaryHue: number,
+  saturation: number
+) =>
+  createTheme(
+    `hsl(${primaryHue}, ${saturation}%, 27%)`,
+    `hsl(${secondaryHue}, 82%, 72%)`,
+    `hsl(${primaryHue}, ${Math.max(24, saturation - 24)}%, 7%)`,
+    `hsl(${primaryHue}, ${Math.max(22, saturation - 30)}%, 15%)`
+  );
+
 export const themes = {
   WarriorsAura: {
     primary: "#FF6B00",
@@ -1028,10 +1062,726 @@ export const themes = {
     switchThumb: "#FFFFFF",  
     dangerBackground: "rgba(255, 77, 77, 0.15)",  
     dangerText: "#FF4D4D",  
-  },  
+  },
+
+  // Rising Heroes: original palettes inspired by heroic archetypes.
+  EmeraldResolve: createTheme("#087A3E", "#F7F7F7", "#071A12", "#102D20"),
+  DetonationDrive: createTheme("#C44700", "#F7F7F7", "#180D05", "#332012"),
+  ZeroGravityGlow: createTheme("#B83280", "#E9D5FF", "#1A0D18", "#342033"),
+  EngineRush: createTheme("#2F80ED", "#F2C94C", "#071327", "#122A4D"),
+  FrostfireBalance: createTheme("#0077B6", "#F94144", "#0A1520", "#183247"),
+  RedFortitude: createTheme("#E63946", "#F1FAEE", "#1C090B", "#3B171B"),
+  EarphonePulse: createTheme("#7B2CBF", "#FF4D8D", "#160A22", "#302044"),
+  CreationMind: createTheme("#9D0208", "#F4D35E", "#1A0809", "#38191B"),
+  AcidDance: createTheme("#E056FD", "#7BED9F", "#1A0B20", "#352044"),
+  DarkFlock: createTheme("#5A189A", "#A78BFA", "#090611", "#20162D"),
+  TailwindDisciple: createTheme("#8A5A2B", "#5EEAD4", "#17110A", "#30251A"),
+  SugarStrength: createTheme("#A64B00", "#F4D35E", "#1B1208", "#3A2917"),
+  GrapeMischief: createTheme("#6A0DAD", "#7AE582", "#13071F", "#2A173D"),
+  TapeSwing: createTheme("#946200", "#F2E9E4", "#17120A", "#332918"),
+  StaticSpark: createTheme("#806B00", "#F1FAEE", "#181600", "#37320A"),
+  WildWhisper: createTheme("#2A9D8F", "#E9C46A", "#071815", "#17352F"),
+  InvisibleGleam: createTheme("#3D7180", "#F1FAEE", "#081719", "#173336"),
+  MultiArmGuard: createTheme("#6C757D", "#DDE5B6", "#101316", "#272D32"),
+  AnimaCall: createTheme("#588157", "#DAD7CD", "#0C150C", "#233423"),
+  NavalGleam: createTheme("#4361EE", "#FFD166", "#070D24", "#152657"),
+  SymbolOfPeace: createTheme("#2D6CDF", "#F6C90E", "#071328", "#173B72"),
+  ErasureVeil: createTheme("#495057", "#B5179E", "#0B0D0F", "#24282C"),
+  VoiceAmplifier: createTheme("#806B00", "#E63946", "#1B1600", "#3B3008"),
+  MidnightBloom: createTheme("#7209B7", "#F72585", "#13071D", "#301243"),
+  StonewallMentor: createTheme("#5C6770", "#C7D0D9", "#121416", "#2B3035"),
+  CopycatMentor: createTheme("#3A86FF", "#FFBE0B", "#071327", "#17365F"),
+  AstralRescue: createTheme("#4361EE", "#E0AAFF", "#080A22", "#1C2050"),
+  BloodlineTutor: createTheme("#9D0208", "#F8F9FA", "#180405", "#391113"),
+  Sharpsight: createTheme("#D00000", "#FFBA08", "#1A0505", "#3B1515"),
+  ForgeMaster: createTheme("#B45309", "#7DD3FC", "#1A0E00", "#3A240C"),
+  PrincipalMind: createTheme("#6D4C41", "#E7C9A9", "#171614", "#34312D"),
+  HealingBloom: createTheme("#AD3B63", "#CDEAC0", "#1B0C12", "#3A202A"),
+
+  // Midnight Hunger: masks, investigators, and divided identities.
+  HalfMaskAwakening: createTheme("#9B1C31", "#E5E7EB", "#0E080B", "#27141A"),
+  RabbitWing: createTheme("#7A1CAC", "#FF7AA2", "#120817", "#2D1536"),
+  CrimsonAppetite: createTheme("#A1122C", "#F7C5CC", "#170609", "#351218"),
+  LoyalSunrise: createTheme("#9A6700", "#F8E16C", "#171204", "#33280D"),
+  SerpentPride: createTheme("#356859", "#D5E8D4", "#091411", "#1D302A"),
+  SteelInvestigator: createTheme("#3E5C76", "#C9D6DF", "#09111A", "#1D2D3B"),
+  StitchedProdigy: createTheme("#B14A5A", "#B8F2E6", "#17090D", "#381A21"),
+  OneEyedOracle: createTheme("#6D267D", "#F59EDE", "#100715", "#2A1432"),
+  ReaperSilence: createTheme("#4B5563", "#E5E7EB", "#0D1014", "#252B33"),
+  GourmetNocturne: createTheme("#713A8B", "#D8B4FE", "#100815", "#2C1737"),
+
+  // Mystic Rebirth: found family, monsters, magic, and nation-building.
+  AzureRebirth: createTheme("#0077A8", "#A7F3D0", "#06151B", "#12343F"),
+  StormDragonRoar: createTheme("#4F46A5", "#DDE7FF", "#0B0A1B", "#25224A"),
+  ShrineWeaver: createTheme("#A12A67", "#FBCFE8", "#170812", "#35172A"),
+  VioletGuardian: createTheme("#6D28A8", "#E9D5FF", "#100719", "#2C1740"),
+  CrimsonCommander: createTheme("#A52A2A", "#FFB347", "#180707", "#3A1714"),
+  ShadowOni: createTheme("#254B73", "#8EC5FF", "#07111B", "#172B40"),
+  StormFang: createTheme("#315F44", "#D1FAE5", "#09140E", "#1C3225"),
+  DragonPrincessChaos: createTheme("#B52A70", "#FFD166", "#190912", "#3B1729"),
+  AbyssalSteward: createTheme("#40365C", "#C4B5FD", "#0B0912", "#211B31"),
+  HolyDuelist: createTheme("#5B4D9A", "#FDE68A", "#0D0B18", "#292344"),
+  IronBulwark: createTheme("#6B4F2A", "#D6C19C", "#120D07", "#302317"),
+  SkySpear: createTheme("#1F6A7A", "#8BE0F2", "#061417", "#15343B"),
+
+  // Silver City: odd jobs, rebellion, loyalty, and cosmic comedy.
+  SilverSlacker: createTheme("#56616F", "#E5E7EB", "#0E1115", "#29303A"),
+  GlassesResolve: createTheme("#2C5F91", "#A7D8FF", "#07121D", "#18334D"),
+  CrimsonUmbrella: createTheme("#9E2A2B", "#F4A261", "#170707", "#361718"),
+  DemonViceChief: createTheme("#31572C", "#B7E4C7", "#091209", "#1C301B"),
+  SadistProdigy: createTheme("#8F5B1B", "#FFE08A", "#160F05", "#35250E"),
+  RunawayPatriot: createTheme("#6B4E9B", "#D9C7FF", "#0E0A18", "#2E2244"),
+  RebelInferno: createTheme("#9D0208", "#FF9F1C", "#180405", "#3A1113"),
+  CosmicBrawler: createTheme("#7B2CBF", "#FF595E", "#110719", "#301644"),
+  MoonlitCourtesan: createTheme("#7D3C98", "#F4A261", "#120817", "#311A3C"),
+  UnluckyDrifter: createTheme("#5B5F66", "#D4D4D8", "#101113", "#2B2D31"),
+  SilentMascot: createTheme("#2F6690", "#F8FAFC", "#07131C", "#19374C"),
+  GorillaCaptain: createTheme("#5A3E2B", "#C8B6A6", "#100B08", "#2B1F18"),
+
+  // Shadow Ascension: hunters, monarchs, summons, and limitless growth.
+  ShadowAscendant: createTheme("#4C1D95", "#60A5FA", "#090613", "#201039"),
+  GoldenBlade: createTheme("#8A6400", "#FFE169", "#151105", "#342A0D"),
+  LoyalHeir: createTheme("#2F6F8F", "#A7E3F2", "#07151C", "#183847"),
+  AntKing: createTheme("#6B21A8", "#C084FC", "#0F0618", "#2A123D"),
+  BloodRedKnight: createTheme("#8F1D1D", "#C0C7D1", "#160606", "#351313"),
+  MonarchOfNight: createTheme("#312E81", "#818CF8", "#080713", "#1C1A3F"),
+  ElderFlame: createTheme("#8C4A00", "#FBBF24", "#160D03", "#34200A"),
+  ArcaneInferno: createTheme("#9F1239", "#FB7185", "#17050B", "#38101E"),
+  WhiteTigerFury: createTheme("#475569", "#F8FAFC", "#0B0F14", "#252D37"),
+  ColossusMight: createTheme("#92400E", "#FDBA74", "#170B03", "#371D0A"),
+
+  // Cursed Vanguard: sorcerers, living curses, and impossible techniques.
+  CrimsonVessel: createHueTheme(350, 32, 68),
+  InfiniteAzure: createHueTheme(208, 190, 70),
+  ShadowChimera: createHueTheme(226, 271, 72),
+  ResonantNail: createHueTheme(337, 43, 74),
+  CursedSovereign: createHueTheme(4, 282, 76),
+  CopyboundProdigy: createHueTheme(264, 182, 69),
+  HeavenlySteel: createHueTheme(164, 38, 71),
+  OvertimeGuardian: createHueTheme(39, 215, 73),
+  BoogieImpact: createHueTheme(287, 55, 75),
+  FallenIdeal: createHueTheme(191, 8, 67),
+  TransfiguredDread: createHueTheme(316, 154, 70),
+  VolcanoWrath: createHueTheme(17, 49, 78),
+
+  // Hunter's Resolve: adventurous prodigies, strategists, and royal threats.
+  WildPotential: createHueTheme(117, 39, 69),
+  LightningHeir: createHueTheme(204, 52, 71),
+  ScarletChains: createHueTheme(352, 213, 73),
+  LoyalPhysician: createHueTheme(47, 180, 75),
+  TricksterAura: createHueTheme(289, 25, 77),
+  SpiderChieftain: createHueTheme(247, 6, 68),
+  ChimeraKing: createHueTheme(272, 51, 70),
+  RoyalFeline: createHueTheme(332, 173, 72),
+  RoyalSentinel: createHueTheme(29, 207, 74),
+  RoyalSage: createHueTheme(168, 302, 76),
+  ChairmanSpirit: createHueTheme(12, 61, 78),
+  WishfulSibling: createHueTheme(296, 136, 67),
+
+  // Generational Legends: bold bloodlines, strange powers, and destiny.
+  SunlitGentleman: createHueTheme(44, 211, 70),
+  CrimsonStrategist: createHueTheme(356, 224, 72),
+  StardustFist: createHueTheme(232, 47, 74),
+  DiamondHeart: createHueTheme(178, 331, 76),
+  GoldenDream: createHueTheme(49, 278, 78),
+  OceanResolve: createHueTheme(214, 9, 69),
+  SteelRun: createHueTheme(201, 35, 71),
+  LionheartedHealer: createHueTheme(324, 143, 73),
+  FrozenMoment: createHueTheme(261, 187, 75),
+  AncientPillar: createHueTheme(31, 348, 77),
+  QuietDestroyer: createHueTheme(310, 56, 68),
+  HeavenlyPriest: createHueTheme(192, 288, 70),
+
+  // Devil Engine: dangerous contracts, chaotic hunters, and fierce loyalty.
+  ChainsawHeartbeat: createHueTheme(13, 205, 71),
+  BloodFiend: createHueTheme(347, 222, 73),
+  FoxContract: createHueTheme(27, 170, 75),
+  ControlSmile: createHueTheme(354, 42, 77),
+  NervousSurvivor: createHueTheme(58, 236, 69),
+  VeteranHunter: createHueTheme(219, 19, 72),
+  BombshellRequiem: createHueTheme(6, 188, 74),
+  GhostContract: createHueTheme(155, 275, 76),
+  AngelicSorrow: createHueTheme(196, 338, 78),
+  SharkRush: createHueTheme(209, 8, 70),
+
+  // Afterglow Odyssey: quiet magic, memory, and journeys after victory.
+  TimelessMage: createHueTheme(202, 47, 68),
+  VioletApprentice: createHueTheme(276, 55, 70),
+  CrimsonWarrior: createHueTheme(359, 35, 72),
+  HeroicAfterimage: createHueTheme(221, 48, 74),
+  GentleCleric: createHueTheme(145, 320, 76),
+  SteadfastDwarf: createHueTheme(34, 207, 78),
+  VerdantProdigy: createHueTheme(128, 281, 69),
+  GoldenVeteran: createHueTheme(42, 225, 71),
+  ElvenAuthority: createHueTheme(284, 174, 73),
+  GildedDeceiver: createHueTheme(52, 303, 75),
+
+  // Judgment Game: deduction, ambition, and supernatural consequences.
+  ScarletNotebook: createHueTheme(351, 33, 68),
+  PaleDetective: createHueTheme(218, 44, 70),
+  AppleSpecter: createHueTheme(7, 152, 72),
+  DevotedSecond: createHueTheme(326, 53, 74),
+  SuccessorWhite: createHueTheme(198, 268, 76),
+  SuccessorShadow: createHueTheme(257, 15, 78),
+  CalculatedProsecutor: createHueTheme(22, 210, 69),
+  WatchfulGuardian: createHueTheme(184, 350, 71),
+
+  // Paranormal Pulse: psychic sparks, folklore, aliens, and friendship.
+  PsychicFirebrand: createHueTheme(340, 192, 72),
+  TurboSpecter: createHueTheme(304, 62, 74),
+  OccultRunner: createHueTheme(194, 24, 76),
+  ShrineGrandmother: createHueTheme(349, 171, 78),
+  SerpentAcrobat: createHueTheme(161, 318, 68),
+  AlienPeony: createHueTheme(283, 101, 70),
+  GoldenAnatomy: createHueTheme(48, 231, 73),
+  CursedHouse: createHueTheme(11, 274, 75),
+  StarryMedium: createHueTheme(238, 332, 77),
+  CosmicBoxer: createHueTheme(186, 8, 69),
+
+  // Monster Vanguard: defense-force courage and colossal transformations.
+  EighthAwakening: createHueTheme(110, 8, 70),
+  FrostCaptain: createHueTheme(203, 327, 72),
+  TwinBladeProdigy: createHueTheme(258, 43, 74),
+  CannonHeart: createHueTheme(345, 39, 76),
+  ShieldingFriend: createHueTheme(32, 204, 78),
+  CrimsonViceCaptain: createHueTheme(355, 179, 68),
+  WingedMonster: createHueTheme(229, 12, 71),
+  AncientColossus: createHueTheme(24, 155, 73),
+  TacticalOperator: createHueTheme(176, 286, 75),
+  QuietMarksman: createHueTheme(214, 52, 77),
+
+  // Secret Household: espionage, hidden talents, and found-family warmth.
+  TwilightAgent: createHueTheme(213, 42, 69),
+  ThornAssassin: createHueTheme(342, 126, 71),
+  StarlightTelepath: createHueTheme(323, 54, 73),
+  FutureHound: createHueTheme(38, 205, 75),
+  ElegantHandler: createHueTheme(2, 219, 77),
+  SteelBrother: createHueTheme(231, 13, 68),
+  ScholarlyRival: createHueTheme(51, 267, 70),
+  GardenDirector: createHueTheme(152, 336, 72),
+
+  // Inferno Brigade: blazing squads, faith, and supernatural combustion.
+  AzureInfernal: createHueTheme(207, 16, 73),
+  CrimsonCaptain: createHueTheme(357, 41, 75),
+  GoldenKnight: createHueTheme(46, 215, 77),
+  ElectricEmber: createHueTheme(56, 226, 68),
+  IrisPrayer: createHueTheme(277, 159, 70),
+  PantherFlame: createHueTheme(18, 191, 72),
+  CrimsonWitch: createHueTheme(334, 49, 74),
+  WhiteCladGrace: createHueTheme(193, 327, 76),
+  AshenOracle: createHueTheme(267, 24, 78),
+  VolcanicJuggernaut: createHueTheme(9, 44, 69),
+
+  // Psychic Balance: overwhelming ability, humility, and self-improvement.
+  QuietEsper: createHueTheme(195, 334, 70),
+  RebelliousMentor: createHueTheme(351, 208, 72),
+  GreenTempest: createHueTheme(132, 283, 74),
+  GoldenDimple: createHueTheme(50, 174, 76),
+  BodyImprovement: createHueTheme(25, 206, 78),
+  TelepathicBrother: createHueTheme(216, 46, 68),
+  ClawLeader: createHueTheme(296, 11, 71),
+  HundredPercent: createHueTheme(186, 318, 73),
+
+  // Virtual Blades: digital worlds, sword skills, and steadfast bonds.
+  BlackDualist: createHueTheme(222, 186, 74),
+  LightningRapier: createHueTheme(34, 214, 76),
+  AzureSwordsman: createHueTheme(210, 43, 78),
+  CrimsonGuardian: createHueTheme(353, 204, 69),
+  FairyHealer: createHueTheme(302, 142, 70),
+  GunmetalSniper: createHueTheme(199, 15, 72),
+  FrostKnight: createHueTheme(190, 266, 74),
+  IntegrityKnight: createHueTheme(48, 218, 76),
+  UnderworldEmperor: createHueTheme(263, 8, 78),
+  DigitalSongbird: createHueTheme(328, 181, 68),
 };
 
 export type ThemeName = keyof typeof themes;
+
+const energyLegendsThemeNames = [
+  "WarriorsAura",
+  "RoyalStardust",
+  "TranquilWaterfall",
+  "ImperialBlaze",
+  "StrictlyMaternal",
+  "KingsHearth",
+  "DualPersonality",
+  "TriStrike",
+  "SpiritTremor",
+  "CandyBruiser",
+  "DragonVerdance",
+  "LewdpiggieShifter",
+  "WatcherAbove",
+  "ElderBeacon",
+  "HealingDawn",
+  "ColdConqueror",
+  "SquadCommander",
+  "TurtleHermit",
+  "CrowdChampion",
+  "BadRaddish",
+  "VigilantZeal",
+  "TribeamFlame",
+  "HowlingWolf",
+  "ShadowPuppeteer",
+  "MidnightKeep",
+  "WarriorScholar",
+  "ZenMonk",
+  "EmberLotus",
+  "SyntheticBrother",
+  "SyntheticSister",
+] as const satisfies readonly ThemeName[];
+
+const hiddenVillageThemeNames = [
+  "OrangeFox",
+  "SpiralSage",
+  "CrimsonVision",
+  "NinetailsFury",
+  "CrimsonEclipse",
+  "CopyNinja",
+  "CherryBlossom",
+  "Sandstorm",
+] as const satisfies readonly ThemeName[];
+
+const soulGuardiansThemeNames = [
+  "DeathReaper",
+  "FrostBlade",
+  "HollowBurst",
+  "FrostReaper",
+  "BlossomSovereign",
+  "BattleManiac",
+  "IceDragon",
+] as const satisfies readonly ThemeName[];
+
+const grandVoyageThemeNames = [
+  "StrawHatCrew",
+  "PirateHunter",
+  "FlameEmperor",
+  "GumGumSurge",
+  "ThreeSwordJade",
+  "BlacklegCook",
+  "StormNavigator",
+  "SurgeonsOath",
+] as const satisfies readonly ThemeName[];
+
+const breathingBladesThemeNames = [
+  "DemonSlayer",
+  "ThunderBreath",
+  "WaterPillar",
+  "SunBreather",
+  "LavenderMist",
+] as const satisfies readonly ThemeName[];
+
+export const risingHeroesThemeNames = [
+  "EmeraldResolve",
+  "DetonationDrive",
+  "ZeroGravityGlow",
+  "EngineRush",
+  "FrostfireBalance",
+  "RedFortitude",
+  "EarphonePulse",
+  "CreationMind",
+  "AcidDance",
+  "DarkFlock",
+  "TailwindDisciple",
+  "SugarStrength",
+  "GrapeMischief",
+  "TapeSwing",
+  "StaticSpark",
+  "WildWhisper",
+  "InvisibleGleam",
+  "MultiArmGuard",
+  "AnimaCall",
+  "NavalGleam",
+  "SymbolOfPeace",
+  "ErasureVeil",
+  "VoiceAmplifier",
+  "MidnightBloom",
+  "StonewallMentor",
+  "CopycatMentor",
+  "AstralRescue",
+  "BloodlineTutor",
+  "Sharpsight",
+  "ForgeMaster",
+  "PrincipalMind",
+  "HealingBloom",
+] as const satisfies readonly ThemeName[];
+
+const midnightHungerThemeNames = [
+  "HalfMaskAwakening",
+  "RabbitWing",
+  "CrimsonAppetite",
+  "LoyalSunrise",
+  "SerpentPride",
+  "SteelInvestigator",
+  "StitchedProdigy",
+  "OneEyedOracle",
+  "ReaperSilence",
+  "GourmetNocturne",
+] as const satisfies readonly ThemeName[];
+
+const mysticRebirthThemeNames = [
+  "AzureRebirth",
+  "StormDragonRoar",
+  "ShrineWeaver",
+  "VioletGuardian",
+  "CrimsonCommander",
+  "ShadowOni",
+  "StormFang",
+  "DragonPrincessChaos",
+  "AbyssalSteward",
+  "HolyDuelist",
+  "IronBulwark",
+  "SkySpear",
+] as const satisfies readonly ThemeName[];
+
+const silverCityThemeNames = [
+  "SilverSlacker",
+  "GlassesResolve",
+  "CrimsonUmbrella",
+  "DemonViceChief",
+  "SadistProdigy",
+  "RunawayPatriot",
+  "RebelInferno",
+  "CosmicBrawler",
+  "MoonlitCourtesan",
+  "UnluckyDrifter",
+  "SilentMascot",
+  "GorillaCaptain",
+] as const satisfies readonly ThemeName[];
+
+const shadowAscensionThemeNames = [
+  "ShadowAscendant",
+  "GoldenBlade",
+  "LoyalHeir",
+  "AntKing",
+  "BloodRedKnight",
+  "MonarchOfNight",
+  "ElderFlame",
+  "ArcaneInferno",
+  "WhiteTigerFury",
+  "ColossusMight",
+] as const satisfies readonly ThemeName[];
+
+const cursedVanguardThemeNames = [
+  "CrimsonVessel",
+  "InfiniteAzure",
+  "ShadowChimera",
+  "ResonantNail",
+  "CursedSovereign",
+  "CopyboundProdigy",
+  "HeavenlySteel",
+  "OvertimeGuardian",
+  "BoogieImpact",
+  "FallenIdeal",
+  "TransfiguredDread",
+  "VolcanoWrath",
+] as const satisfies readonly ThemeName[];
+
+const huntersResolveThemeNames = [
+  "WildPotential",
+  "LightningHeir",
+  "ScarletChains",
+  "LoyalPhysician",
+  "TricksterAura",
+  "SpiderChieftain",
+  "ChimeraKing",
+  "RoyalFeline",
+  "RoyalSentinel",
+  "RoyalSage",
+  "ChairmanSpirit",
+  "WishfulSibling",
+] as const satisfies readonly ThemeName[];
+
+const generationalLegendsThemeNames = [
+  "SunlitGentleman",
+  "CrimsonStrategist",
+  "StardustFist",
+  "DiamondHeart",
+  "GoldenDream",
+  "OceanResolve",
+  "SteelRun",
+  "LionheartedHealer",
+  "FrozenMoment",
+  "AncientPillar",
+  "QuietDestroyer",
+  "HeavenlyPriest",
+] as const satisfies readonly ThemeName[];
+
+const devilEngineThemeNames = [
+  "ChainsawHeartbeat",
+  "BloodFiend",
+  "FoxContract",
+  "ControlSmile",
+  "NervousSurvivor",
+  "VeteranHunter",
+  "BombshellRequiem",
+  "GhostContract",
+  "AngelicSorrow",
+  "SharkRush",
+] as const satisfies readonly ThemeName[];
+
+const afterglowOdysseyThemeNames = [
+  "TimelessMage",
+  "VioletApprentice",
+  "CrimsonWarrior",
+  "HeroicAfterimage",
+  "GentleCleric",
+  "SteadfastDwarf",
+  "VerdantProdigy",
+  "GoldenVeteran",
+  "ElvenAuthority",
+  "GildedDeceiver",
+] as const satisfies readonly ThemeName[];
+
+const judgmentGameThemeNames = [
+  "ScarletNotebook",
+  "PaleDetective",
+  "AppleSpecter",
+  "DevotedSecond",
+  "SuccessorWhite",
+  "SuccessorShadow",
+  "CalculatedProsecutor",
+  "WatchfulGuardian",
+] as const satisfies readonly ThemeName[];
+
+const paranormalPulseThemeNames = [
+  "PsychicFirebrand",
+  "TurboSpecter",
+  "OccultRunner",
+  "ShrineGrandmother",
+  "SerpentAcrobat",
+  "AlienPeony",
+  "GoldenAnatomy",
+  "CursedHouse",
+  "StarryMedium",
+  "CosmicBoxer",
+] as const satisfies readonly ThemeName[];
+
+const monsterVanguardThemeNames = [
+  "EighthAwakening",
+  "FrostCaptain",
+  "TwinBladeProdigy",
+  "CannonHeart",
+  "ShieldingFriend",
+  "CrimsonViceCaptain",
+  "WingedMonster",
+  "AncientColossus",
+  "TacticalOperator",
+  "QuietMarksman",
+] as const satisfies readonly ThemeName[];
+
+const secretHouseholdThemeNames = [
+  "TwilightAgent",
+  "ThornAssassin",
+  "StarlightTelepath",
+  "FutureHound",
+  "ElegantHandler",
+  "SteelBrother",
+  "ScholarlyRival",
+  "GardenDirector",
+] as const satisfies readonly ThemeName[];
+
+const infernoBrigadeThemeNames = [
+  "AzureInfernal",
+  "CrimsonCaptain",
+  "GoldenKnight",
+  "ElectricEmber",
+  "IrisPrayer",
+  "PantherFlame",
+  "CrimsonWitch",
+  "WhiteCladGrace",
+  "AshenOracle",
+  "VolcanicJuggernaut",
+] as const satisfies readonly ThemeName[];
+
+const psychicBalanceThemeNames = [
+  "QuietEsper",
+  "RebelliousMentor",
+  "GreenTempest",
+  "GoldenDimple",
+  "BodyImprovement",
+  "TelepathicBrother",
+  "ClawLeader",
+  "HundredPercent",
+] as const satisfies readonly ThemeName[];
+
+const virtualBladesThemeNames = [
+  "BlackDualist",
+  "LightningRapier",
+  "AzureSwordsman",
+  "CrimsonGuardian",
+  "FairyHealer",
+  "GunmetalSniper",
+  "FrostKnight",
+  "IntegrityKnight",
+  "UnderworldEmperor",
+  "DigitalSongbird",
+] as const satisfies readonly ThemeName[];
+
+export type ThemeCollection = {
+  id: string;
+  title: string;
+  subtitle: string;
+  themeNames: readonly ThemeName[];
+};
+
+export const themeCollections = [
+  {
+    id: "risingHeroes",
+    title: "Rising Heroes",
+    subtitle: "Student heroes and academy faculty",
+    themeNames: risingHeroesThemeNames,
+  },
+  {
+    id: "energyLegends",
+    title: "Energy Legends",
+    subtitle: "Martial artists, rivals, mentors, and cosmic powers",
+    themeNames: energyLegendsThemeNames,
+  },
+  {
+    id: "hiddenVillage",
+    title: "Hidden Village",
+    subtitle: "Ninja resolve, elemental power, and team spirit",
+    themeNames: hiddenVillageThemeNames,
+  },
+  {
+    id: "soulGuardians",
+    title: "Soul Guardians",
+    subtitle: "Spirit blades, icy resolve, and shadowed strength",
+    themeNames: soulGuardiansThemeNames,
+  },
+  {
+    id: "grandVoyage",
+    title: "Grand Voyage",
+    subtitle: "Bold crews, open seas, and unbreakable ambition",
+    themeNames: grandVoyageThemeNames,
+  },
+  {
+    id: "breathingBlades",
+    title: "Breathing Blades",
+    subtitle: "Elemental forms, discipline, and demon-hunting courage",
+    themeNames: breathingBladesThemeNames,
+  },
+  {
+    id: "titanFrontier",
+    title: "Titan Frontier",
+    subtitle: "Defiance against overwhelming odds",
+    themeNames: ["TitanRage"],
+  },
+  {
+    id: "dragonGuild",
+    title: "Dragon Guild",
+    subtitle: "Fire-forged friendship and fearless magic",
+    themeNames: ["DragonSlayer"],
+  },
+  {
+    id: "alchemyOath",
+    title: "Alchemy Oath",
+    subtitle: "Equivalent exchange, resolve, and brotherhood",
+    themeNames: ["AlchemistBrothers"],
+  },
+  {
+    id: "arcaneKingdom",
+    title: "Arcane Kingdom",
+    subtitle: "Royal magic, rivalry, and relentless growth",
+    themeNames: ["RoyalPride"],
+  },
+  {
+    id: "midnightHunger",
+    title: "Midnight Hunger",
+    subtitle: "Masks, investigators, and divided identities",
+    themeNames: midnightHungerThemeNames,
+  },
+  {
+    id: "mysticRebirth",
+    title: "Mystic Rebirth",
+    subtitle: "Found family, monsters, magic, and nation-building",
+    themeNames: mysticRebirthThemeNames,
+  },
+  {
+    id: "silverCity",
+    title: "Silver City",
+    subtitle: "Odd jobs, rebellion, loyalty, and cosmic comedy",
+    themeNames: silverCityThemeNames,
+  },
+  {
+    id: "shadowAscension",
+    title: "Shadow Ascension",
+    subtitle: "Hunters, monarchs, summons, and limitless growth",
+    themeNames: shadowAscensionThemeNames,
+  },
+  {
+    id: "cursedVanguard",
+    title: "Cursed Vanguard",
+    subtitle: "Sorcerers, living curses, and impossible techniques",
+    themeNames: cursedVanguardThemeNames,
+  },
+  {
+    id: "huntersResolve",
+    title: "Hunter's Resolve",
+    subtitle: "Adventurous prodigies, strategists, and royal threats",
+    themeNames: huntersResolveThemeNames,
+  },
+  {
+    id: "generationalLegends",
+    title: "Generational Legends",
+    subtitle: "Bold bloodlines, strange powers, and destiny",
+    themeNames: generationalLegendsThemeNames,
+  },
+  {
+    id: "devilEngine",
+    title: "Devil Engine",
+    subtitle: "Dangerous contracts, chaotic hunters, and fierce loyalty",
+    themeNames: devilEngineThemeNames,
+  },
+  {
+    id: "afterglowOdyssey",
+    title: "Afterglow Odyssey",
+    subtitle: "Quiet magic, memory, and journeys after victory",
+    themeNames: afterglowOdysseyThemeNames,
+  },
+  {
+    id: "judgmentGame",
+    title: "Judgment Game",
+    subtitle: "Deduction, ambition, and supernatural consequences",
+    themeNames: judgmentGameThemeNames,
+  },
+  {
+    id: "paranormalPulse",
+    title: "Paranormal Pulse",
+    subtitle: "Psychic sparks, folklore, aliens, and friendship",
+    themeNames: paranormalPulseThemeNames,
+  },
+  {
+    id: "monsterVanguard",
+    title: "Monster Vanguard",
+    subtitle: "Defense-force courage and colossal transformations",
+    themeNames: monsterVanguardThemeNames,
+  },
+  {
+    id: "secretHousehold",
+    title: "Secret Household",
+    subtitle: "Espionage, hidden talents, and found-family warmth",
+    themeNames: secretHouseholdThemeNames,
+  },
+  {
+    id: "infernoBrigade",
+    title: "Inferno Brigade",
+    subtitle: "Blazing squads, faith, and supernatural combustion",
+    themeNames: infernoBrigadeThemeNames,
+  },
+  {
+    id: "psychicBalance",
+    title: "Psychic Balance",
+    subtitle: "Overwhelming ability, humility, and self-improvement",
+    themeNames: psychicBalanceThemeNames,
+  },
+  {
+    id: "virtualBlades",
+    title: "Virtual Blades",
+    subtitle: "Digital worlds, sword skills, and steadfast bonds",
+    themeNames: virtualBladesThemeNames,
+  },
+] as const satisfies readonly ThemeCollection[];
 
 export type Theme = {
   primary: string;
