@@ -12,6 +12,7 @@ import { useTheme } from "@/hooks/use-theme";
 import { useExerciseStore } from "@/hooks/use-exercise-store";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import { formatDate, isToday } from "@/utils/date-utils";
+import { totalDistanceInUnit } from "@/utils/distance-utils";
 import { Calendar, ChevronLeft, ChevronRight } from "lucide-react-native";
 import DatePicker from "@/components/DatePicker";
 import RecentDaysStrip from "@/components/RecentDaysStrip";
@@ -38,6 +39,7 @@ export default function SummaryScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [exerciseSummary, setExerciseSummary] = useState<ExerciseSummary[]>([]);
   const [allTimeTotal, setAllTimeTotal] = useState(0);
+  const [allTimeDistance, setAllTimeDistance] = useState(0);
   const [datesWithData, setDatesWithData] = useState<Date[]>([]);
   const [scrollToToday, setScrollToToday] = useState(false);
   
@@ -68,7 +70,7 @@ export default function SummaryScreen() {
   // Update summary when selected date changes
   useEffect(() => {
     updateSummaryForDate(selectedDate);
-  }, [selectedDate, sets, exercises]);
+  }, [selectedDate, sets, exercises, useMetricUnits]);
   
   // Update summary for a specific date
   const updateSummaryForDate = useCallback((date: Date) => {
@@ -130,7 +132,13 @@ export default function SummaryScreen() {
     // Calculate all-time total
     const total = sets.reduce((sum, set) => sum + (set.weight * set.reps), 0);
     setAllTimeTotal(total);
-  }, [sets, exercises]);
+
+    const distanceTotal = totalDistanceInUnit(
+      sets,
+      useMetricUnits ? "km" : "mi",
+    );
+    setAllTimeDistance(distanceTotal);
+  }, [sets, exercises, useMetricUnits]);
   
   // Navigation functions
   const goToToday = () => {
@@ -166,6 +174,12 @@ export default function SummaryScreen() {
   // Format total weight with commas for thousands
   const formatTotalWeight = (weight: number) => {
     return `${weight.toLocaleString()} ${useMetricUnits ? 'kg' : 'lbs'}`;
+  };
+
+  const formatTotalDistance = (distance: number) => {
+    return `${distance.toLocaleString(undefined, {
+      maximumFractionDigits: 2,
+    })} ${useMetricUnits ? "km" : "mi"}`;
   };
   
   return (
@@ -266,15 +280,6 @@ export default function SummaryScreen() {
                   </View>
                 </View>
               ))}
-              
-              <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
-                <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
-                  All-Time Total Weight Lifted
-                </Text>
-                <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
-                  {formatTotalWeight(allTimeTotal)}
-                </Text>
-              </View>
             </>
           ) : (
             <View style={[styles.emptyState, { backgroundColor: theme.cardBackground }]}>
@@ -286,6 +291,36 @@ export default function SummaryScreen() {
               </Text>
             </View>
           )}
+
+          <View style={[styles.allTimeCard, { backgroundColor: theme.cardBackground }]}>
+            <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
+              All-Time Total Weight Lifted
+            </Text>
+            <Text style={[styles.allTimeSubtitle, { color: theme.textSecondary }]}>
+              Across all workouts
+            </Text>
+            <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
+              {formatTotalWeight(allTimeTotal)}
+            </Text>
+          </View>
+
+          <View
+            style={[
+              styles.allTimeCard,
+              styles.finalAllTimeCard,
+              { backgroundColor: theme.cardBackground },
+            ]}
+          >
+            <Text style={[styles.allTimeLabel, { color: theme.textSecondary }]}>
+              Total Distance Traveled
+            </Text>
+            <Text style={[styles.allTimeSubtitle, { color: theme.textSecondary }]}>
+              Across all workouts
+            </Text>
+            <Text style={[styles.allTimeTotal, { color: theme.primary }]}>
+              {formatTotalDistance(allTimeDistance)}
+            </Text>
+          </View>
         </ScrollView>
       </View>
       
@@ -406,16 +441,24 @@ const styles = StyleSheet.create({
   allTimeCard: {
     borderRadius: 12,
     padding: 20,
-    marginBottom: 40,
+    marginTop: 16,
+    marginBottom: 0,
     alignItems: "center",
   },
   allTimeLabel: {
     fontSize: 14,
+    marginBottom: 2,
+  },
+  allTimeSubtitle: {
+    fontSize: 12,
     marginBottom: 8,
   },
   allTimeTotal: {
     fontSize: 28,
     fontWeight: "bold",
+  },
+  finalAllTimeCard: {
+    marginBottom: 40,
   },
   emptyState: {
     padding: 24,

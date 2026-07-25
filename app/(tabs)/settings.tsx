@@ -14,11 +14,13 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Stack } from "expo-router";
+import Constants from "expo-constants";
 import { useTheme } from "@/hooks/use-theme";
 import { useSettingsStore } from "@/hooks/use-settings-store";
 import ResetDataButton from "@/components/ResetDataButton";
-import { themes, ThemeName } from "@/constants/themes";
-import { Info } from "lucide-react-native";
+import ThemePickerModal from "@/components/ThemePickerModal";
+import { findThemeCollection } from "@/constants/theme-collections";
+import { Info, Palette } from "lucide-react-native";
 
 export default function SettingsScreen() {
   const {
@@ -29,10 +31,15 @@ export default function SettingsScreen() {
     toggleUsePseudoJoules,
     setBodyWeight,
   } = useSettingsStore();
-  const { theme, themeName, setThemeName } = useTheme();
+  const { theme, themeName } = useTheme();
   const [weightInput, setWeightInput] = useState(
     bodyWeight ? bodyWeight.toString() : ""
   );
+  const [themePickerVisible, setThemePickerVisible] = useState(false);
+  const activeThemeCollection = findThemeCollection(themeName);
+  const formattedThemeName = (
+    themeName.match(/[A-Z]?[a-z]+|[0-9]+/g) || [themeName]
+  ).join(" ");
 
   const handleWeightChange = (text: string) => {
     setWeightInput(text);
@@ -171,48 +178,67 @@ export default function SettingsScreen() {
               <Info size={16} color={theme.textSecondary} />
             </TouchableOpacity>
           </View>
-          <View style={styles.themeGrid}>
-            {(Object.keys(themes) as ThemeName[]).map((name) => {
-              const words = name.match(/[A-Z]?[a-z]+|[0-9]+/g) || [name];
-              const labelText = words.join("\n");
-              return (
-                <TouchableOpacity
-                  key={name}
-                  style={[
-                    styles.themeItem,
-                    { backgroundColor: themes[name].cardBackground },
-                    themeName === name && styles.selectedTheme,
-                    themeName === name && { borderColor: themes[name].primary },
-                  ]}
-                  onPress={() => setThemeName(name)}
-                >
-                  <View
-                    style={[
-                      styles.themeColorPreview,
-                      { backgroundColor: themes[name].secondary },
-                    ]}
-                  >
-                    <View
-                      style={[
-                        styles.themeColorSecondary,
-                        { backgroundColor: themes[name].primary },
-                      ]}
-                    />
-                  </View>
-                  <Text
-                    style={[
-                      styles.themeName,
-                      { color: themes[name].text },
-                      themeName === name && { fontWeight: "700" },
-                    ]}
-                    numberOfLines={2}
-                  >
-                    {labelText}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+          <View style={styles.currentThemeRow}>
+            <View
+              style={[
+                styles.currentThemePreview,
+                { backgroundColor: theme.secondary },
+              ]}
+            >
+              <View
+                style={[
+                  styles.currentThemePreviewInner,
+                  { backgroundColor: theme.primary },
+                ]}
+              />
+            </View>
+            <View style={styles.currentThemeText}>
+              <Text
+                style={[styles.currentThemeLabel, { color: theme.textSecondary }]}
+              >
+                Current Theme
+              </Text>
+              <Text style={[styles.currentThemeName, { color: theme.text }]}>
+                {formattedThemeName}
+              </Text>
+              <Text
+                style={[
+                  styles.currentCollectionName,
+                  { color: theme.textSecondary },
+                ]}
+              >
+                {activeThemeCollection?.label ?? "Theme Collection"}
+              </Text>
+            </View>
           </View>
+
+          <TouchableOpacity
+            style={[
+              styles.browseThemesButton,
+              {
+                backgroundColor: theme.inputBackground,
+                borderColor: theme.primary,
+              },
+            ]}
+            onPress={() => setThemePickerVisible(true)}
+            accessibilityRole="button"
+            accessibilityLabel="Browse theme collections"
+          >
+            <Palette size={21} color={theme.primary} />
+            <View style={styles.browseThemesText}>
+              <Text style={[styles.browseThemesTitle, { color: theme.text }]}>
+                Browse Theme Collections
+              </Text>
+              <Text
+                style={[
+                  styles.browseThemesDescription,
+                  { color: theme.textSecondary },
+                ]}
+              >
+                Opens a full-screen theme picker
+              </Text>
+            </View>
+          </TouchableOpacity>
         </View>
 
         {/* Data Management */}
@@ -232,10 +258,15 @@ export default function SettingsScreen() {
         {/* Footer */}
         <View style={styles.footer}>
           <Text style={[styles.footerText, { color: theme.textSecondary }]}>
-            Power Level v1.0.0
+            Power Level v{Constants.expoConfig?.version ?? "1.1.0"}
           </Text>
         </View>
       </ScrollView>
+
+      <ThemePickerModal
+        visible={themePickerVisible}
+        onClose={() => setThemePickerVisible(false)}
+      />
     </SafeAreaView>
   );
 }
@@ -288,37 +319,61 @@ const styles = StyleSheet.create({
   input: { flex: 1, height: 40, fontSize: 16 },
   inputUnit: { marginLeft: 4, fontSize: 16 },
 
-  themeGrid: { flexDirection: "row", flexWrap: "wrap", padding: 12 },
-  themeItem: {
-    width: "30%",
-    marginHorizontal: "1.5%",
-    marginVertical: 8,
-    borderRadius: 8,
-    padding: 12,
+  currentThemeRow: {
+    flexDirection: "row",
     alignItems: "center",
-    borderWidth: 2,
-    borderColor: "transparent",
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
-  selectedTheme: { borderWidth: 2 },
-
-  themeColorPreview: {
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    marginBottom: 8,
+  currentThemePreview: {
+    width: 54,
+    height: 54,
+    borderRadius: 27,
     alignItems: "center",
     justifyContent: "center",
   },
-  themeColorSecondary: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+  currentThemePreviewInner: {
+    width: 30,
+    height: 30,
+    borderRadius: 15,
   },
-
-  themeName: {
+  currentThemeText: {
+    flex: 1,
+    marginLeft: 14,
+  },
+  currentThemeLabel: {
     fontSize: 12,
-    textAlign: "center",
-    lineHeight: 16,
+    marginBottom: 2,
+  },
+  currentThemeName: {
+    fontSize: 17,
+    fontWeight: "700",
+  },
+  currentCollectionName: {
+    fontSize: 13,
+    marginTop: 2,
+  },
+  browseThemesButton: {
+    minHeight: 64,
+    flexDirection: "row",
+    alignItems: "center",
+    borderRadius: 10,
+    borderWidth: 1,
+    paddingHorizontal: 14,
+    paddingVertical: 10,
+    margin: 16,
+  },
+  browseThemesText: {
+    flex: 1,
+    marginLeft: 12,
+  },
+  browseThemesTitle: {
+    fontSize: 15,
+    fontWeight: "700",
+  },
+  browseThemesDescription: {
+    fontSize: 12,
+    marginTop: 3,
   },
 
   disclaimer: {
