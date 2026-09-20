@@ -1,17 +1,15 @@
-// components/SetConfirmationDialog.tsx
-
 import React, { useEffect } from "react";
 import {
   Modal,
   StyleSheet,
   Text,
+  TouchableOpacity,
   View,
-  TouchableOpacity
 } from "react-native";
+import { X } from "lucide-react-native";
+import { useAudioPlayer } from "expo-audio";
 import { useTheme } from "@/hooks/use-theme";
 import { formatEnergy } from "@/utils/energy-utils";
-import { useAudioPlayer } from "expo-audio";
-import { X } from "lucide-react-native";
 
 interface SetConfirmationDialogProps {
   visible: boolean;
@@ -24,6 +22,9 @@ interface SetConfirmationDialogProps {
     speed?: number;
     incline?: number;
     duration?: number;
+    watts?: number;
+    assistance?: number;
+    verticalDistance?: number;
   } | null;
   exercise: {
     name: string;
@@ -43,27 +44,49 @@ export default function SetConfirmationDialog({
   totalJoules,
 }: SetConfirmationDialogProps) {
   const { theme } = useTheme();
-  const hammerPlayer = useAudioPlayer(require("../assets/sounds/hammertink.mp3"));
+  const hammerPlayer = useAudioPlayer(
+    require("../assets/sounds/hammertink.mp3"),
+  );
 
-    // play the hammer-tink whenever the dialog opens
   useEffect(() => {
-    if (visible) {
-      (async () => {
-        try {
-          await hammerPlayer.seekTo(0);
-          hammerPlayer.play();
-        } catch (err) {
-          console.warn("Error playing sound:", err);
-        }
-      })();
-    }
+    if (!visible) return;
+    (async () => {
+      try {
+        await hammerPlayer.seekTo(0);
+        hammerPlayer.play();
+      } catch (error) {
+        console.warn("Error playing sound:", error);
+      }
+    })();
   }, [visible, hammerPlayer]);
 
   if (!set) return null;
 
-  const { abbreviated: setEnergy, full: setEnergyFull } = formatEnergy(set.joules);
+  const weightUnit = useMetricUnits ? "kg" : "lb";
+  const distanceUnit = useMetricUnits ? "km" : "mi";
+  const speedUnit = useMetricUnits ? "km/h" : "mph";
+  const verticalUnit = useMetricUnits ? "m" : "ft";
+  const { abbreviated: setEnergy, full: setEnergyFull } = formatEnergy(
+    set.joules,
+  );
   const { abbreviated: totalEnergy } = formatEnergy(totalJoules);
-  const isTreadmill = exercise.name.toLowerCase().includes("treadmill");
+
+  const details: string[] = [];
+  if (set.reps > 0) details.push(`${set.reps} reps`);
+  if (set.weight > 0) details.push(`Load: ${set.weight} ${weightUnit}`);
+  if (set.duration && set.duration > 0)
+    details.push(`Duration: ${set.duration} sec`);
+  if (set.distance && set.distance > 0)
+    details.push(`Distance: ${set.distance} ${distanceUnit}`);
+  if (set.speed && set.speed > 0)
+    details.push(`Speed: ${set.speed} ${speedUnit}`);
+  if (set.incline !== undefined && set.incline !== 0)
+    details.push(`Grade: ${set.incline}%`);
+  if (set.watts && set.watts > 0) details.push(`Average power: ${set.watts} W`);
+  if (set.assistance && set.assistance > 0)
+    details.push(`Assistance: ${set.assistance} ${weightUnit}`);
+  if (set.verticalDistance && set.verticalDistance > 0)
+    details.push(`Vertical: ${set.verticalDistance} ${verticalUnit}`);
 
   return (
     <Modal
@@ -73,9 +96,16 @@ export default function SetConfirmationDialog({
       onRequestClose={onClose}
     >
       <View style={styles.modalOverlay}>
-        <View style={[styles.modalContent, { backgroundColor: theme.cardBackground }]}>
+        <View
+          style={[
+            styles.modalContent,
+            { backgroundColor: theme.cardBackground },
+          ]}
+        >
           <View style={styles.modalHeader}>
-            <Text style={[styles.modalTitle, { color: theme.text }]}>Set Logged!</Text>
+            <Text style={[styles.modalTitle, { color: theme.text }]}>
+              Activity Logged!
+            </Text>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
               <X size={24} color={theme.textSecondary} />
             </TouchableOpacity>
@@ -86,53 +116,42 @@ export default function SetConfirmationDialog({
               {exercise.name}
             </Text>
 
-            {exercise.isCardio ? (
-              <View style={styles.setDetails}>
-                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                  Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
+            <View style={styles.setDetails}>
+              {details.map((detail) => (
+                <Text
+                  key={detail}
+                  style={[styles.detailText, { color: theme.textSecondary }]}
+                >
+                  {detail}
                 </Text>
-                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                  Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
-                </Text>
-                {isTreadmill && set.incline !== undefined && (
-                  <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                    Incline: {set.incline}%
-                  </Text>
-                )}
-                {set.reps > 0 && (
-                  <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                    Reps: {set.reps}
-                  </Text>
-                )}
-              </View>
-            ) : exercise.isIsometric ? (
-              <View style={styles.setDetails}>
-                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                  Duration: {set.duration} seconds
-                </Text>
-              </View>
-            ) : (
-              <View style={styles.setDetails}>
-                <Text style={[styles.detailText, { color: theme.textSecondary }]}>
-                  {set.reps} reps × {set.weight} {useMetricUnits ? "kg" : "lbs"}
-                </Text>
-              </View>
-            )}
+              ))}
+            </View>
 
             <View style={styles.energyContainer}>
-              <Text style={[styles.energyLabel, { color: theme.textSecondary }]}>
+              <Text
+                style={[styles.energyLabel, { color: theme.textSecondary }]}
+              >
                 Energy Generated:
               </Text>
               <Text style={[styles.energyValue, { color: theme.primary }]}>
                 {setEnergy}
               </Text>
-              <Text style={[styles.energyFull, { color: theme.textSecondary }]}>
+              <Text
+                style={[styles.energyFull, { color: theme.textSecondary }]}
+              >
                 {setEnergyFull}
               </Text>
             </View>
 
-            <View style={[styles.totalContainer, { backgroundColor: theme.backgroundSecondary }]}>
-              <Text style={[styles.totalLabel, { color: theme.textSecondary }]}>
+            <View
+              style={[
+                styles.totalContainer,
+                { backgroundColor: theme.backgroundSecondary },
+              ]}
+            >
+              <Text
+                style={[styles.totalLabel, { color: theme.textSecondary }]}
+              >
                 Total Power Level:
               </Text>
               <Text style={[styles.totalValue, { color: theme.primary }]}>
@@ -177,10 +196,19 @@ const styles = StyleSheet.create({
   modalTitle: { fontSize: 20, fontWeight: "700" },
   closeButton: { padding: 4 },
   modalBody: { width: "100%", alignItems: "center" },
-  exerciseName: { fontSize: 18, fontWeight: "600", marginBottom: 12, textAlign: "center" },
-  setDetails: { alignItems: "center", marginBottom: 16 },
-  detailText: { fontSize: 16, marginBottom: 4, textAlign: "center" },
-  energyContainer: { alignItems: "center", marginVertical: 16, width: "100%" },
+  exerciseName: {
+    fontSize: 18,
+    fontWeight: "600",
+    marginBottom: 12,
+    textAlign: "center",
+  },
+  setDetails: { alignItems: "center", marginBottom: 8 },
+  detailText: { fontSize: 15, marginBottom: 4, textAlign: "center" },
+  energyContainer: {
+    alignItems: "center",
+    marginVertical: 16,
+    width: "100%",
+  },
   energyLabel: { fontSize: 14, marginBottom: 4 },
   energyValue: { fontSize: 32, fontWeight: "700", marginBottom: 4 },
   energyFull: { fontSize: 12 },

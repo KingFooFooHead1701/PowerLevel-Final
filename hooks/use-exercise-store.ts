@@ -10,30 +10,48 @@ export interface Set {
   reps: number;
   weight: number;
   joules: number;
-  duration?: number; // in seconds, for isometric exercises
-  distance?: number; // in km or miles, for cardio exercises
-  distanceUnit?: "km" | "mi"; // recorded unit for safe mixed-unit totals
-  speed?: number; // in km/h or mph, for cardio exercises
+  duration?: number; // seconds
+  distance?: number; // km or miles
+  distanceUnit?: "km" | "mi";
+  speed?: number; // km/h or mph
   speedUnit?: "kmh" | "mph";
-  incline?: number; // in percent, for treadmill exercises
+  incline?: number; // percent
+  watts?: number;
+  assistance?: number; // kg or lb, matching user's unit setting at log time
+  verticalDistance?: number; // meters or feet
+  verticalDistanceUnit?: "m" | "ft";
 }
 
 interface ExerciseState {
   exercises: Exercise[];
   sets: Set[];
   isLoading: boolean;
-  version: number; // Add version tracking
+  version: number;
   addExercise: (exercise: Exercise) => void;
   updateExercise: (id: string, exercise: Partial<Exercise>) => void;
   removeExercise: (id: string) => void;
   addSet: (set: Set) => void;
   removeSet: (id: string) => void;
   getTotalJoules: () => number;
-  resetToDefaults: () => void; // Add reset function
+  resetToDefaults: () => void;
 }
 
-// Current version of the store schema - increment this when making changes to force a reset
-const CURRENT_VERSION = 5; // Incremented to force reset
+// v6 = comprehensive catalog + calculation-family metadata.
+// Unlike earlier migrations, v6 preserves workout history.
+const CURRENT_VERSION = 6;
+
+const isCustomExercise = (exercise: Exercise) =>
+  exercise.category === "Custom" || exercise.id.startsWith("custom-");
+
+const mergeCatalogPreservingCustom = (persisted: Exercise[] | undefined) => {
+  const custom = (persisted ?? []).filter(isCustomExercise);
+  const customIds = new Set(custom.map((exercise) => exercise.id));
+
+  return [
+    ...defaultExercises.filter((exercise) => !customIds.has(exercise.id)),
+    ...custom,
+  ];
+};
 
 export const useExerciseStore = create<ExerciseState>()(
   persist(
@@ -42,41 +60,39 @@ export const useExerciseStore = create<ExerciseState>()(
       sets: [],
       isLoading: true,
       version: CURRENT_VERSION,
-      
-      addExercise: (exercise) => 
+
+      addExercise: (exercise) =>
         set((state) => ({
           exercises: [...state.exercises, exercise],
         })),
-      
+
       updateExercise: (id, updatedExercise) =>
         set((state) => ({
           exercises: state.exercises.map((exercise) =>
             exercise.id === id ? { ...exercise, ...updatedExercise } : exercise
           ),
         })),
-      
+
       removeExercise: (id) =>
         set((state) => ({
           exercises: state.exercises.filter((exercise) => exercise.id !== id),
-          sets: state.sets.filter((set) => set.exerciseId !== id),
+          sets: state.sets.filter((loggedSet) => loggedSet.exerciseId !== id),
         })),
-      
+
       addSet: (newSet) =>
         set((state) => ({
           sets: [newSet, ...state.sets],
         })),
-      
+
       removeSet: (id) =>
         set((state) => ({
-          sets: state.sets.filter((set) => set.id !== id),
+          sets: state.sets.filter((loggedSet) => loggedSet.id !== id),
         })),
-      
-      getTotalJoules: () => {
-        const { sets } = get();
-        return sets.reduce((total, set) => total + set.joules, 0);
-      },
-      
-      resetToDefaults: () => 
+
+      getTotalJoules: () =>
+        get().sets.reduce((total, loggedSet) => total + loggedSet.joules, 0),
+
+      resetToDefaults: () =>
         set({
           exercises: defaultExercises,
           sets: [],
@@ -87,23 +103,19 @@ export const useExerciseStore = create<ExerciseState>()(
       name: "power-level-data",
       storage: createJSONStorage(() => AsyncStorage),
       onRehydrateStorage: () => (state) => {
-        if (state) {
-          // Check if we need to update from an older version
-          if (!state.version || state.version < CURRENT_VERSION) {
-            // Reset to defaults if version mismatch
-            console.log("Version mismatch, resetting to defaults");
-            state.exercises = defaultExercises;
-            state.sets = [];
-            state.version = CURRENT_VERSION;
-          }
-          state.isLoading = false;
-        }
+        if (!state) return;
+
+        // Refresh built-ins and aliases while preserving custom exercises and
+        // every historical set. Old releases reset sets on schema mismatch;
+        // this migration intentionally does not.
+        state.exercises = mergeCatalogPreservingCustom(state.exercises);
+        state.version = CURRENT_VERSION;
+        state.isLoading = false;
       },
     }
   )
 );
 
-// Add a function to clear all app data (for development/testing)
 export const clearAllAppData = async () => {
   try {
     await AsyncStorage.clear();

@@ -15,6 +15,9 @@ interface SetHistoryItemProps {
     distance?: number;
     speed?: number;
     incline?: number;
+    watts?: number;
+    assistance?: number;
+    verticalDistance?: number;
   };
   useMetricUnits: boolean;
   onDelete: () => void;
@@ -27,17 +30,38 @@ function SetHistoryItem({
   set,
   useMetricUnits,
   onDelete,
-  isCardio,
-  isIsometric,
-  isTreadmill,
 }: SetHistoryItemProps) {
   const { theme } = useTheme();
   const date = new Date(set.date);
   const formattedDate = date.toLocaleDateString();
-  const formattedTime = date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  const unit = useMetricUnits ? "kg" : "lbs";
-  const totalWeight = set.reps * set.weight;
+  const formattedTime = date.toLocaleTimeString([], {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  const weightUnit = useMetricUnits ? "kg" : "lb";
+  const distanceUnit = useMetricUnits ? "km" : "mi";
+  const speedUnit = useMetricUnits ? "km/h" : "mph";
+  const verticalUnit = useMetricUnits ? "m" : "ft";
   const { abbreviated: energyAbbreviated } = formatEnergy(set.joules);
+
+  const details: string[] = [];
+  if (set.reps > 0) details.push(`${set.reps} reps`);
+  if (set.weight > 0) details.push(`Load: ${set.weight} ${weightUnit}`);
+  if (set.duration && set.duration > 0)
+    details.push(`Duration: ${set.duration} sec`);
+  if (set.distance && set.distance > 0)
+    details.push(`Distance: ${set.distance} ${distanceUnit}`);
+  if (set.speed && set.speed > 0)
+    details.push(`Speed: ${set.speed} ${speedUnit}`);
+  if (set.incline !== undefined && set.incline !== 0)
+    details.push(`Grade: ${set.incline}%`);
+  if (set.watts && set.watts > 0) details.push(`Average power: ${set.watts} W`);
+  if (set.assistance && set.assistance > 0)
+    details.push(`Assistance: ${set.assistance} ${weightUnit}`);
+  if (set.verticalDistance && set.verticalDistance > 0)
+    details.push(`Vertical: ${set.verticalDistance} ${verticalUnit}`);
+
+  if (details.length === 0) details.push("Activity logged");
 
   return (
     <View style={[styles.container, { backgroundColor: theme.cardBackground }]}>
@@ -49,44 +73,19 @@ function SetHistoryItem({
           <Trash2 size={18} color={theme.error} />
         </TouchableOpacity>
       </View>
-      
+
       <View style={styles.detailsContainer}>
         <View style={styles.details}>
-          {isCardio ? (
-            <>
-              <Text style={[styles.detailText, { color: theme.text }]}>
-                Distance: {set.distance} {useMetricUnits ? "km" : "miles"}
-              </Text>
-              <Text style={[styles.detailText, { color: theme.text }]}>
-                Speed: {set.speed} {useMetricUnits ? "km/h" : "mph"}
-              </Text>
-              {isTreadmill && set.incline !== undefined && (
-                <Text style={[styles.detailText, { color: theme.text }]}>
-                  Incline: {set.incline}%
-                </Text>
-              )}
-              {set.reps > 0 && (
-                <Text style={[styles.detailText, { color: theme.text }]}>
-                  Reps: {set.reps}
-                </Text>
-              )}
-            </>
-          ) : isIsometric ? (
-            <Text style={[styles.detailText, { color: theme.text }]}>
-              Duration: {set.duration} seconds
+          {details.map((detail) => (
+            <Text
+              key={detail}
+              style={[styles.detailText, { color: theme.text }]}
+            >
+              {detail}
             </Text>
-          ) : (
-            <>
-              <Text style={[styles.detailText, { color: theme.text }]}>
-                {set.reps} reps × {set.weight} {unit}
-              </Text>
-              <Text style={[styles.detailText, { color: theme.text, fontStyle: 'italic' }]}>
-                Total: {totalWeight} {unit}
-              </Text>
-            </>
-          )}
+          ))}
         </View>
-        
+
         <View style={styles.energy}>
           <Text style={[styles.energyText, { color: theme.primary }]}>
             {energyAbbreviated}
@@ -126,12 +125,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   detailText: {
-    fontSize: 16,
+    fontSize: 15,
     marginBottom: 4,
   },
   energy: {
     justifyContent: "center",
     alignItems: "flex-end",
+    marginLeft: 12,
   },
   energyText: {
     fontSize: 18,
