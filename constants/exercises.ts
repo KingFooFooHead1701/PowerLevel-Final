@@ -129,21 +129,22 @@ export const legacyExerciseAliases: Record<string, string> = {
   "mountain-climber-full": "mountain-climber",
 };
 
-const legacyAliasExercises: Exercise[] = Object.entries(legacyExerciseAliases)
-  .map(([legacyId, canonicalId]) => {
-    const canonical = canonicalExercises.find(
-      (exercise) => exercise.id === canonicalId,
-    );
-    return canonical
-      ? {
-          ...canonical,
-          id: legacyId,
-          canonicalId,
-          hiddenFromPicker: true,
-        }
-      : undefined;
-  })
-  .filter((exercise): exercise is Exercise => exercise !== undefined);
+const legacyAliasExercises = Object.entries(legacyExerciseAliases).reduce<
+  Exercise[]
+>((aliases, [legacyId, canonicalId]) => {
+  const canonical = canonicalExercises.find(
+    (exercise) => exercise.id === canonicalId,
+  );
+  if (canonical) {
+    aliases.push({
+      ...canonical,
+      id: legacyId,
+      canonicalId,
+      hiddenFromPicker: true,
+    });
+  }
+  return aliases;
+}, []);
 
 export const resolveCanonicalExerciseId = (exerciseId: string): string =>
   legacyExerciseAliases[exerciseId] ?? exerciseId;
